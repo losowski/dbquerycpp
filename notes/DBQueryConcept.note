@@ -1,0 +1,33 @@
+DBQueryConcept
+==============
+
+CONCEPT
+=======
++ One class one table
++ We rebuild the entire schema in terms of links
+	- Columns
+	- Primary key
+	- Foreign keys
++ We leave the constraint handling to the DB
+	- Basically don't f*** it up is the developers rule
++ Support the functions
+	-	SELECT
+	-	UPDATE
+	-	INSERT
+	-	DELETE
++ Use a python script to parse the SQL definition file
++ Autogenerate the library
+	- Build a library of classes to handle all the processes
+
+
+Intention
+=========
+- Make an application friendly C++ implementation of a database library
+- Build a schema specific library that:
+	- Returns reults as an array of class objects
+	- Cache the result within the object until the next select is called
+- Insert data in single function calls
+- Delete data in single function calls
+- Update data in single function calls
+- Handle dependencies on foreign constraints
+
