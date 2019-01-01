@@ -1,0 +1,21 @@
+DBQueryAutogenerator
+====================
+
+INPUT:
+1) reads the SQL generation file
+# May be expanded later to read the DESCRIBE output
+
+COMPONENTS:
++ Input
++ Input Driver
+	+ Reads input into autogenerator engine
++ AutoGenerator Engine
+	+ Schema
+	+ Table
+		+ Columns
+		+ Primary Key
+		+ Foreign Key
++ Output
+	+ Several CPP files based on templates
+	+ Build All the required SQL statements
+	+ Provide an API for CPP to make the database easy to handle
