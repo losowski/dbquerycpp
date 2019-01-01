@@ -1,0 +1,7 @@
+SQLGenerationParser.note
+========================
++ Uses regex
++ Compile entire file into a single string
+	+ Omit all comments
++ Split statements into single SQL statements
+	+ Parse these for required data
