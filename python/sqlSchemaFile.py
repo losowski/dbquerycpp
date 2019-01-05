@@ -4,7 +4,7 @@
 import logging
 #import sqlTables
 
-class SQLFileSchema:
+class SQLSchemaFile:
 	def __init__(self, fileName):
 		self.fileName = fileName
 		self.tables	=	list()
