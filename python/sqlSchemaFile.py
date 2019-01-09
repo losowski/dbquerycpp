@@ -6,6 +6,12 @@ import sqlSchemaBase
 import re
 
 class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
+
+	#SQL Non-commented line (must begin with a tab or alpha numeric
+	nonCommentedLine = re.compile('^[A-Z\t ]+')
+	#SQL Statement Alpha-Numeric etc until ;
+	SQLStatement = re.compile('^[A-Z ]+;')
+
 	def __init__(self, fileName):
 		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
 		self.schemaFile = None
@@ -20,17 +26,35 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		self.schemaFile = open(self.fileName, 'r')
 		# Read in contents
 		fileContents = self.schemaFile.readlines()
-		nonCommentedLine = re.compile('^[A-Z\t]+')
+
+		sqlLine = str()
 		for line in fileContents:
 			#logging.debug("Line %s", line)
-			reComment = nonCommentedLine.match(line)
+			reComment = self.nonCommentedLine.match(line)
 			if (reComment != None):
 				comment = reComment.group(0)
-				logging.info("Match: %s", line)
-			#else:
-			#	logging.info("No Match: %s", line)
+				logging.debug("Match: %s", line)
+				#Build the SQLine
+				#	remove tabs and linefeeds, and make the terminal ; into ;# for splitting
+				sqlLine += line.replace('\t',' ').replace('\n',' ').replace(';',';#')
+		#Now Split it into SQL Statements
+		SQLStatements = sqlLine.split('#')
+		for sqlStatement in SQLStatements:
+			logging.debug("Statement: \"%s\"", sqlStatement)
+			#Check if it really is SQL
+			reSQL = self.SQLStatement.match(line)
+			if (reSQL != None):
+				logging.info("SQL: \"%s\"", sqlStatement)
+				#If we have SQL, run it in
+				self.sqlParser(sqlStatement)
+			else:
+				logging.warning("NOT SQL STATEMENT Ignoring: \"%s\"", sqlStatement)
 		# Close file
 		self.schemaFile.close()
+
+	def sqlParser(self, sqlLine):
+		#Process the SQL line
+		pass
 
 	def run(self):
 		pass
