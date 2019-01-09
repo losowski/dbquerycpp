@@ -3,6 +3,7 @@
 #import
 import logging
 import sqlSchemaBase
+import re
 
 class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	def __init__(self, fileName):
@@ -21,6 +22,12 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		fileContents = self.schemaFile.readlines()
 		for line in fileContents:
 			logging.debug("Line %s", line)
+			reComment = re.search('^[A-Z].*', line)
+			if (reComment != None):
+				comment = reComment.group(0)
+				logging.info("Match: %s", comment)
+			else:
+				logging.info("No Match: %s", reComment)
 		# Close file
 		self.schemaFile.close()
 
