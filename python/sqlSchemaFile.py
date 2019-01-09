@@ -2,21 +2,27 @@
 
 #import
 import logging
-#import sqlTables
+import sqlSchemaBase
 
-class SQLSchemaFile:
+class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	def __init__(self, fileName):
-		self.fileName = fileName
-		self.tables	=	list()
+		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
+		self.schemaFile = None
 		pass
 
 	def __del__(self):
+		sqlSchemaBase.SQLSchemaBase.__del__(self)
 		pass
 
 	def initialise(self):
 		# Open file
+		self.schemaFile = open(self.fileName, 'r')
 		# Read in contents
-		pass
+		fileContents = self.schemaFile.readlines()
+		for line in fileContents:
+			logging.debug("Line %s", line)
+		# Close file
+		self.schemaFile.close()
 
 	def run(self):
 		pass

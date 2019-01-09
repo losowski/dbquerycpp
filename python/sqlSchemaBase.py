@@ -2,7 +2,7 @@
 
 #import
 import logging
-#import sqlTables
+import sqlSchemaTable
 
 class SQLSchemaBase:
 	def __init__(self, fileName):
@@ -14,8 +14,6 @@ class SQLSchemaBase:
 		pass
 
 	def initialise(self):
-		# Open file
-		# Read in contents
 		pass
 
 	def run(self):
