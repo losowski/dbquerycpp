@@ -20,14 +20,15 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		self.schemaFile = open(self.fileName, 'r')
 		# Read in contents
 		fileContents = self.schemaFile.readlines()
+		nonCommentedLine = re.compile('^[A-Z\t]+')
 		for line in fileContents:
-			logging.debug("Line %s", line)
-			reComment = re.search('^[A-Z].*', line)
+			#logging.debug("Line %s", line)
+			reComment = nonCommentedLine.match(line)
 			if (reComment != None):
 				comment = reComment.group(0)
-				logging.info("Match: %s", comment)
-			else:
-				logging.info("No Match: %s", reComment)
+				logging.info("Match: %s", line)
+			#else:
+			#	logging.info("No Match: %s", line)
 		# Close file
 		self.schemaFile.close()
 
