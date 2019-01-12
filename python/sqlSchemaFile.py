@@ -2,8 +2,10 @@
 
 #import
 import logging
-import sqlSchemaBase
 import re
+import sqlSchemaBase
+import sqlSchemaTable
+
 
 class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
@@ -14,6 +16,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	def __init__(self, fileName):
 		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
 		self.schemaFile = None
+		self.tables = dict()	#	tableName - TableObj
 		pass
 
 	def __del__(self):
@@ -54,10 +57,12 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	def sqlParseCreateTable (self, sqlStatement):
 		logging.info("CreateTable: \"%s\"\n", sqlStatement)
 		#Get Table name
-		tableName = self.TableNameSQL.match(sqlStatement)
-		if (tableName != None):
-			logging.info("tableName: \"%s\"", tableName.group('table_name'))
-
+		tableNameMatch = self.TableNameSQL.match(sqlStatement)
+		if (tableNameMatch != None):
+			tableName = tableNameMatch.group('table_name')
+			logging.info("tableName: \"%s\"", tableName)
+			#Create the table object
+			self.tables[tableName] = sqlSchemaTable.SQLSchemaTable(tableName)
 	def run(self):
 		pass
 

@@ -8,6 +8,7 @@ class SQLSchemaTable:
 		self.tableName = tableName
 		self.primaryKey	=	""
 		self.fields = dict()	#Field : (Table, ForeignKey)/None
+		logging.debug("Created table: %s", self.tableName)
 		pass
 
 	def __del__(self):
