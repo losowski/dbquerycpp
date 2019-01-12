@@ -9,8 +9,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
 	#SQL Non-commented line (must begin with a tab or alpha numeric
 	nonCommentedLine = re.compile('^[A-Z\t ]+')
-	#SQL Statement Alpha-Numeric etc until ;
-	SQLStatement = re.compile('^[A-Z ]+;')
+	TableNameSQL = re.compile(r'\w?CREATE TABLE\w?(?<table_name>).*;')
 
 	def __init__(self, fileName):
 		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
@@ -40,21 +39,24 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		#Now Split it into SQL Statements
 		SQLStatements = sqlLine.split('#')
 		for sqlStatement in SQLStatements:
-			logging.debug("Statement: \"%s\"", sqlStatement)
+			#logging.debug("Statement: \"%s\"", sqlStatement)
 			#Check if it really is SQL
-			reSQL = self.SQLStatement.match(line)
-			if (reSQL != None):
-				logging.info("SQL: \"%s\"", sqlStatement)
-				#If we have SQL, run it in
-				self.sqlParser(sqlStatement)
-			else:
-				logging.warning("NOT SQL STATEMENT Ignoring: \"%s\"", sqlStatement)
+			self.sqlParser(sqlStatement)
 		# Close file
 		self.schemaFile.close()
 
-	def sqlParser(self, sqlLine):
-		#Process the SQL line
-		pass
+	def sqlParser(self, sqlStatement):
+		#Check for create table lines
+		if ("CREATE TABLE" in sqlStatement):
+			#logging.info("CreateTableSQL: \"%s\"", comment)
+			self.sqlParseCreateTable(sqlStatement)
+
+	def sqlParseCreateTable (self, sqlStatement):
+		logging.info("CreateTable: \"%s\"\n", sqlStatement)
+		#Get Table name
+		tableName = self.TableNameSQL.search(sqlStatement)
+		if (tableName != None):
+			logging.info("tableName: \"%s\"", tableName.group(table_name))
 
 	def run(self):
 		pass
