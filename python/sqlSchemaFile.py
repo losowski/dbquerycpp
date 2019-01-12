@@ -54,7 +54,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	def sqlParseCreateTable (self, sqlStatement):
 		logging.info("CreateTable: \"%s\"\n", sqlStatement)
 		#Get Table name
-		tableName = self.TableNameSQL.search(sqlStatement)
+		tableName = self.TableNameSQL.match(sqlStatement)
 		if (tableName != None):
 			logging.info("tableName: \"%s\"", tableName.group('table_name'))
 
