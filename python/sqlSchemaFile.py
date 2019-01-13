@@ -63,6 +63,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			logging.info("tableName: \"%s\"", tableName)
 			#Create the table object
 			self.tables[tableName] = sqlSchemaTable.SQLSchemaTable(tableName)
+
 	def run(self):
 		pass
 
