@@ -14,7 +14,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	#Get the table Name
 	TableNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+).*;")
 	#Get the column names
-	ColumnNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\w+(?P<column_name>\S+)\s+(?P<column_type>\S+).*;")
+	ColumnNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s?[\(,]\s+(?P<column_name>\S+)\s+(?P<column_type>\S+).*[\),].*;")
 
 	def __init__(self, fileName):
 		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
@@ -69,7 +69,11 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		#Get the Column names
 		columnNameMatch = self.ColumnNameSQL.match(sqlStatement)
 		if (columnNameMatch != None):
+			logging.critical("columnNameMatch table_name: \"%s\"", columnNameMatch.group('table_name'))
+			logging.critical("columnNameMatch column_name: \"%s\"", columnNameMatch.group('column_name'))
+			logging.critical("columnNameMatch column_type: \"%s\"", columnNameMatch.group('column_type'))
 			logging.critical("columnName: \"%s\"", columnNameMatch.groups())
+			#if 
 			#columnName = columnNameMatch.group('column_name')
 			#logging.info("columnName: \"%s\"", columnName)
 			#Create the table object
