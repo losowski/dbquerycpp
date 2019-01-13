@@ -11,7 +11,10 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
 	#SQL Non-commented line (must begin with a tab or alpha numeric
 	nonCommentedLine = re.compile('^[A-Z\t \(\)]+')
+	#Get the table Name
 	TableNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+).*;")
+	#Get the column names
+	ColumnNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\w+(?P<column_name>\S+)\s+(?P<column_type>\S+).*;")
 
 	def __init__(self, fileName):
 		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
@@ -35,14 +38,14 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			reComment = self.nonCommentedLine.match(line)
 			if (reComment != None):
 				comment = reComment.group(0)
-				logging.debug("Match: %s", line)
+				logging.debug("Non-Commented Match: %s", line)
 				#Build the SQLine
 				#	remove tabs and linefeeds, and make the terminal ; into ;# for splitting
 				sqlLine += line.replace('\t',' ').replace('\n',' ').replace(';',';#')
 		#Now Split it into SQL Statements
 		SQLStatements = sqlLine.split('#')
 		for sqlStatement in SQLStatements:
-			#logging.debug("Statement: \"%s\"", sqlStatement)
+			logging.info("Statement: \"%s\"", sqlStatement)
 			#Check if it really is SQL
 			self.sqlParser(sqlStatement)
 		# Close file
@@ -55,14 +58,22 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			self.sqlParseCreateTable(sqlStatement)
 
 	def sqlParseCreateTable (self, sqlStatement):
-		logging.info("CreateTable: \"%s\"\n", sqlStatement)
+		logging.debug("CreateTable: \"%s\"\n", sqlStatement)
 		#Get Table name
 		tableNameMatch = self.TableNameSQL.match(sqlStatement)
 		if (tableNameMatch != None):
 			tableName = tableNameMatch.group('table_name')
-			logging.info("tableName: \"%s\"", tableName)
+			logging.debug("tableName: \"%s\"", tableName)
 			#Create the table object
 			self.tables[tableName] = sqlSchemaTable.SQLSchemaTable(tableName)
+		#Get the Column names
+		columnNameMatch = self.ColumnNameSQL.match(sqlStatement)
+		if (columnNameMatch != None):
+			logging.critical("columnName: \"%s\"", columnNameMatch.groups())
+			#columnName = columnNameMatch.group('column_name')
+			#logging.info("columnName: \"%s\"", columnName)
+			#Create the table object
+			#self.tables[tableName] = sqlSchemaTable.SQLSchemaTable(columnName)
 
 	def run(self):
 		pass
