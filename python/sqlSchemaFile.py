@@ -15,6 +15,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	TableNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+).*;")
 	#Get the column names
 	ColumnNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s?[\(,]\s+(?P<column_name>\S+)\s+(?P<column_type>\S+).*[\),].*;")
+	#TODO: Make the column code get all the columns
 
 	def __init__(self, fileName):
 		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
