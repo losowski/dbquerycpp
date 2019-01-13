@@ -10,7 +10,7 @@ import sqlSchemaTable
 class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
 	#SQL Non-commented line (must begin with a tab or alpha numeric
-	nonCommentedLine = re.compile('^[A-Z\t ]+')
+	nonCommentedLine = re.compile('^[A-Z\t \(\)]+')
 	TableNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+).*;")
 
 	def __init__(self, fileName):
