@@ -8,7 +8,8 @@ class SQLSchemaTableBase:
 	def __init__(self, tableName):
 		self.tableName = tableName
 		self.primaryKey	=	""
-		self.fields = dict()	#Field : (Table, ForeignKey)/None
+		self.fields = dict()		# field : type
+		self.foreignKeys = dict()	#Field : (Table, ForeignKey)/None
 		logging.debug("Created table: %s", self.tableName)
 		pass
 
@@ -24,3 +25,8 @@ class SQLSchemaTableBase:
 
 	def getPrimaryKey (self, primaryKey):
 		return self.primaryKey
+
+	#Column and type
+	def addColumn(self, columnName, columnType):
+		logging.debug("Adding column: \"%s\" - \"%s\"", columnName, columnType)
+		self.fields[columnName] = columnType

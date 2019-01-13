@@ -69,15 +69,18 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		#Get the Column names
 		columnNameMatch = self.ColumnNameSQL.match(sqlStatement)
 		if (columnNameMatch != None):
-			logging.critical("columnNameMatch table_name: \"%s\"", columnNameMatch.group('table_name'))
-			logging.critical("columnNameMatch column_name: \"%s\"", columnNameMatch.group('column_name'))
-			logging.critical("columnNameMatch column_type: \"%s\"", columnNameMatch.group('column_type'))
-			logging.critical("columnName: \"%s\"", columnNameMatch.groups())
-			#if 
-			#columnName = columnNameMatch.group('column_name')
-			#logging.info("columnName: \"%s\"", columnName)
-			#Create the table object
-			#self.tables[tableName] = sqlSchemaTable.SQLSchemaTable(columnName)
+			#logging.debug("columnNameMatch table_name: \"%s\"", columnNameMatch.group('table_name'))
+			#logging.debug("columnNameMatch column_name: \"%s\"", columnNameMatch.group('column_name'))
+			#logging.debug("columnNameMatch column_type: \"%s\"", columnNameMatch.group('column_type'))
+			#logging.critical("columnName: \"%s\"", columnNameMatch.groups())
+			#Proces Data
+			tableName = columnNameMatch.group('table_name')
+			columnName = columnNameMatch.group('column_name')
+			columnType = columnNameMatch.group('column_type')
+			if (tableName in self.tables):
+				self.tables[tableName].addColumn(columnName, columnType)
+			else:
+				logging.critical("Table: %s does not exist", tableName)
 
 	def run(self):
 		pass
