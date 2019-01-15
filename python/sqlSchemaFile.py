@@ -18,7 +18,10 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	#Get the column names
 	ColumnNameSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+)")
 	#CONSTRAINTS
-	ConstraintSQL = re.compile("\s?CONSTRAINT\s?(?P<column_name>\S+)\s+(?P<constrait_exp>.*)\((?P<column_ref>\S+)\)")
+#	PrimaryKeyConstraintSQL = re.compile("\s?CONSTRAINT\s?(?P<column_name>\S+)\s+PRIMARY\s+KEY\((?P<column_constraint>\S+)\)\s+REFERENCES\s+(?P<table_referenced>\S+)\s+(?P<column_referenced>\S+).*")
+	PrimaryKeyConstraintSQL = re.compile("\s?CONSTRAINT\s+(?P<column_name>\S+).*")
+	#ConstraintSQL = re.compile("\s?CONSTRAINT\s?(?P<column_name>\S+)\s+(?P<constrait_exp>(\S+|\s+)*)\((?P<column_ref>\S+)\)")
+
 
 	#TODO: Make the column code get all the columns
 
@@ -80,26 +83,35 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			#field_definitions split by comma
 			for fieldData in tableFieldDefinitions.split(','):
 				logging.debug("fieldData: \"%s\"", fieldData)
-				#Get the Column names
+				#Run the ReGex for each identity
+				primaryKeyConstraintSQLMatch = self.PrimaryKeyConstraintSQL.match(fieldData)
 				columnNameMatch = self.ColumnNameSQL.match(fieldData)
-				constraintMatch = self.ConstraintSQL.match(fieldData)
-				if (constraintMatch != None):
-					columnName = columnNameMatch.group('column_name')
-					constraintExp = columnNameMatch.group('constrait_exp')
-					columnRef = columnNameMatch.group('column_ref')
-					logging.info("constraintMatch columnName: \"%s\"", columnName)
-					logging.info("constraintMatch constraintExp: \"%s\"", constraintExp)
-					logging.info("constraintMatch columnRef: \"%s\"", columnRef)
+				#Primary Key
+				if (primaryKeyConstraintSQLMatch != None):
+					logging.info("Primary Key Constraint: \"%s\"", fieldData)
+					columnName = primaryKeyConstraintSQLMatch.group('column_name')
+					columnConstraint = primaryKeyConstraintSQLMatch.group('column_constraint')
+					tableReferenced = primaryKeyConstraintSQLMatch.group('table_referenced')
+					columnReferenced = primaryKeyConstraintSQLMatch.group('column_referenced')
+					logging.info("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
+					logging.info("primaryKeyConstraintSQLMatch columnConstraint: \"%s\"", columnConstraint)
+					logging.info("primaryKeyConstraintSQLMatch tableReferenced: \"%s\"", tableReferenced)
+					logging.info("primaryKeyConstraintSQLMatch columnReferenced: \"%s\"", columnReferenced)
+				#Failing above, check if a simple column definition
 				elif (columnNameMatch != None):
+					logging.info("Field definition: \"%s\"", fieldData)
 					#Proces Data
 					columnName = columnNameMatch.group('column_name')
 					columnType = columnNameMatch.group('column_type')
-					logging.info("columnNameMatch column_name: \"%s\"", columnName)
+					logging.debug("columnNameMatch column_name: \"%s\"", columnName)
 					if (columnName != 'CONSTRAINT'):
 						logging.debug("columnNameMatch column_type: \"%s\"", columnType)
 						tableObj.addColumn(columnName, columnType)
 					else:
 						logging.warning("Skipping column_name: \"%s\"", columnName)
+				else:
+					#This is Superfluous - it gets picked up in the fields regex anyway
+					logging.error("Unhandled Constraint: \"%s\"", fieldData)
 			#Store the table object
 			self.tables[tableName] = tableObj
 
