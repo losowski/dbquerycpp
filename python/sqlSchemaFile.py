@@ -19,7 +19,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	ColumnNameSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+)")
 	#CONSTRAINTS
 #	PrimaryKeyConstraintSQL = re.compile("\s?CONSTRAINT\s?(?P<column_name>\S+)\s+PRIMARY\s+KEY\((?P<column_constraint>\S+)\)\s+REFERENCES\s+(?P<table_referenced>\S+)\s+(?P<column_referenced>\S+).*")
-	PrimaryKeyConstraintSQL = re.compile("\s?CONSTRAINT\s+(?P<column_name>\S+).*")
+	PrimaryKeyConstraintSQL = re.compile("\s?(?:CONSTRAINT).*")
 	#ConstraintSQL = re.compile("\s?CONSTRAINT\s?(?P<column_name>\S+)\s+(?P<constrait_exp>(\S+|\s+)*)\((?P<column_ref>\S+)\)")
 
 
@@ -83,6 +83,8 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			#field_definitions split by comma
 			for fieldData in tableFieldDefinitions.split(','):
 				logging.debug("fieldData: \"%s\"", fieldData)
+				if "CONSTRAINT" in fieldData:
+					logging.warning("WTF Is this not processed correctly! \"%s\"", fieldData)
 				#Run the ReGex for each identity
 				primaryKeyConstraintSQLMatch = self.PrimaryKeyConstraintSQL.match(fieldData)
 				columnNameMatch = self.ColumnNameSQL.match(fieldData)
