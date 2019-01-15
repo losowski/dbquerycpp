@@ -17,6 +17,9 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	TableFieldSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s+\((?P<field_definitions>.*)\).*;")
 	#Get the column names
 	ColumnNameSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+)")
+	#CONSTRAINTS
+	ConstraintSQL = re.compile("\s?CONSTRAINT\s?(?P<column_name>\S+)\s+(?P<constrait_exp>.*)\((?P<column_ref>\S+)\)")
+
 	#TODO: Make the column code get all the columns
 
 	def __init__(self, fileName):
@@ -79,13 +82,24 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 				logging.debug("fieldData: \"%s\"", fieldData)
 				#Get the Column names
 				columnNameMatch = self.ColumnNameSQL.match(fieldData)
-				if (columnNameMatch != None):
-					logging.debug("columnNameMatch column_name: \"%s\"", columnNameMatch.group('column_name'))
-					logging.debug("columnNameMatch column_type: \"%s\"", columnNameMatch.group('column_type'))
+				constraintMatch = self.ConstraintSQL.match(fieldData)
+				if (constraintMatch != None):
+					columnName = columnNameMatch.group('column_name')
+					constraintExp = columnNameMatch.group('constrait_exp')
+					columnRef = columnNameMatch.group('column_ref')
+					logging.info("constraintMatch columnName: \"%s\"", columnName)
+					logging.info("constraintMatch constraintExp: \"%s\"", constraintExp)
+					logging.info("constraintMatch columnRef: \"%s\"", columnRef)
+				elif (columnNameMatch != None):
 					#Proces Data
 					columnName = columnNameMatch.group('column_name')
 					columnType = columnNameMatch.group('column_type')
-					tableObj.addColumn(columnName, columnType)
+					logging.info("columnNameMatch column_name: \"%s\"", columnName)
+					if (columnName != 'CONSTRAINT'):
+						logging.debug("columnNameMatch column_type: \"%s\"", columnType)
+						tableObj.addColumn(columnName, columnType)
+					else:
+						logging.warning("Skipping column_name: \"%s\"", columnName)
 			#Store the table object
 			self.tables[tableName] = tableObj
 
