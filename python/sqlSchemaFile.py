@@ -13,6 +13,8 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	nonCommentedLine = re.compile('^[A-Z\t \(\)]+')
 	#Get the table Name
 	TableNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+).*;")
+	#Table Field Definitions
+	TableFieldSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s+\((?P<field_definitions>.*)\).*;")
 	#Get the column names
 	ColumnNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s?[\(,]\s+(?P<column_name>\S+)\s+(?P<column_type>\S+).*[\),].*;")
 	#TODO: Make the column code get all the columns
@@ -61,12 +63,16 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	def sqlParseCreateTable (self, sqlStatement):
 		logging.debug("CreateTable: \"%s\"\n", sqlStatement)
 		#Get Table name
-		tableNameMatch = self.TableNameSQL.match(sqlStatement)
-		if (tableNameMatch != None):
-			tableName = tableNameMatch.group('table_name')
+		tableFieldMatch = self.TableFieldSQL.match(sqlStatement)
+		if (tableFieldMatch != None):
+			tableName = tableFieldMatch.group('table_name')
 			logging.debug("tableName: \"%s\"", tableName)
 			#Create the table object
 			self.tables[tableName] = sqlSchemaTable.SQLSchemaTable(tableName)
+			#Other Field Definitions
+			tableFieldDefinitions = tableFieldMatch.group('field_definitions')
+			logging.debug("tableFieldDefinitions: \"%s\"", tableFieldDefinitions)
+
 		#Get the Column names
 		columnNameMatch = self.ColumnNameSQL.match(sqlStatement)
 		if (columnNameMatch != None):
