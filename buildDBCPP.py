@@ -9,7 +9,7 @@ from python import sqlSchemaFile
 
 def main():
 	print ("Autogenerator for DataBase CPP v0.01")
-	logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', filename='/tmp/buildDBcpp.log',level=logging.DEBUG)
+	logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', filename='/tmp/buildDBcpp.log',level=logging.INFO)
 	sqlSchema = sqlSchemaFile.SQLSchemaFile('database.sql')
 	sqlSchema.initialise()
 	sqlSchema.run()

@@ -10,7 +10,7 @@ class SQLSchemaTableBase:
 		self.primaryKey	=	""
 		self.fields = dict()		# field : type
 		self.foreignKeys = dict()	#Field : (Table, ForeignKey)/None
-		logging.debug("Created table: %s", self.tableName)
+		logging.info("Created table: %s", self.tableName)
 		pass
 
 	def __del__(self):
@@ -28,5 +28,5 @@ class SQLSchemaTableBase:
 
 	#Column and type
 	def addColumn(self, columnName, columnType):
-		logging.debug("Adding column: \"%s\" - \"%s\"", columnName, columnType)
+		logging.info("Adding column: \"%s\" - \"%s\"", columnName, columnType)
 		self.fields[columnName] = columnType
