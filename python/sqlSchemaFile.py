@@ -92,7 +92,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 					logging.info("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
 					continue
 				#Foreign Key
-				if (ForeignKeyConstraintSQLMatch != None):
+				elif (ForeignKeyConstraintSQLMatch != None):
 					logging.info("Foreign Key Constraint: \"%s\"", fieldData)
 					foreignKeyName = ForeignKeyConstraintSQLMatch.group('foreign_key_name')
 					columnName = ForeignKeyConstraintSQLMatch.group('column_name')
