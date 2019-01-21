@@ -11,16 +11,12 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
 	#SQL Non-commented line (must begin with a tab or alpha numeric
 	nonCommentedLine = re.compile('^[A-Z\t \(\)]+')
-	#Get the table Name
-	TableNameSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+).*;")
 	#Table Field Definitions
 	TableFieldSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s+\((?P<field_definitions>.*)\).*;")
 	#Get the column names
 	ColumnNameSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+)")
 	#CONSTRAINTS
-#	PrimaryKeyConstraintSQL = re.compile("\s?CONSTRAINT\s?(?P<column_name>\S+)\s+PRIMARY\s+KEY\((?P<column_constraint>\S+)\)\s+REFERENCES\s+(?P<table_referenced>\S+)\s+(?P<column_referenced>\S+).*")
-	PrimaryKeyConstraintSQL = re.compile("\s?(?:CONSTRAINT).*")
-	#ConstraintSQL = re.compile("\s?CONSTRAINT\s?(?P<column_name>\S+)\s+(?P<constrait_exp>(\S+|\s+)*)\((?P<column_ref>\S+)\)")
+	PrimaryKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<primary_key_name>\S+)\s?PRIMARY\s?KEY\s?\((?P<column_name>\S+)\)")
 
 
 	#TODO: Make the column code get all the columns
@@ -83,22 +79,16 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			#field_definitions split by comma
 			for fieldData in tableFieldDefinitions.split(','):
 				logging.debug("fieldData: \"%s\"", fieldData)
-				if "CONSTRAINT" in fieldData:
-					logging.warning("WTF Is this not processed correctly! \"%s\"", fieldData)
 				#Run the ReGex for each identity
 				primaryKeyConstraintSQLMatch = self.PrimaryKeyConstraintSQL.match(fieldData)
 				columnNameMatch = self.ColumnNameSQL.match(fieldData)
 				#Primary Key
 				if (primaryKeyConstraintSQLMatch != None):
 					logging.info("Primary Key Constraint: \"%s\"", fieldData)
+					primaryKeyName = primaryKeyConstraintSQLMatch.group('primary_key_name')
 					columnName = primaryKeyConstraintSQLMatch.group('column_name')
-					columnConstraint = primaryKeyConstraintSQLMatch.group('column_constraint')
-					tableReferenced = primaryKeyConstraintSQLMatch.group('table_referenced')
-					columnReferenced = primaryKeyConstraintSQLMatch.group('column_referenced')
+					logging.info("primaryKeyConstraintSQLMatch primaryKeyName: \"%s\"", primaryKeyName)
 					logging.info("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
-					logging.info("primaryKeyConstraintSQLMatch columnConstraint: \"%s\"", columnConstraint)
-					logging.info("primaryKeyConstraintSQLMatch tableReferenced: \"%s\"", tableReferenced)
-					logging.info("primaryKeyConstraintSQLMatch columnReferenced: \"%s\"", columnReferenced)
 				#Failing above, check if a simple column definition
 				elif (columnNameMatch != None):
 					logging.info("Field definition: \"%s\"", fieldData)
