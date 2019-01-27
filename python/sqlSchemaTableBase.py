@@ -2,26 +2,28 @@
 
 #import
 import logging
+import sqlSchemaTableColumn
 
 class SQLSchemaTableBase:
 
 	def __init__(self, tableName):
 		self.tableName = tableName
-		self.primaryKey	=	""
-		self.fields = dict()		# field : type
-		self.foreignKeys = dict()	#Field : (Table, ForeignKey)/None
+		self.columns = dict()
+		self.primaryKey = ""
 		logging.info("Created table: %s", self.tableName)
 		pass
 
 	def __del__(self):
 		pass
 
-	def getName (self):
+	def getName(self):
 		return self.tableName
 
 	#Primary Key
-	def setPrimaryKey (self, primaryKey):
+	# NOTE: Only support single column primary key (i.e the first index)
+	def setPrimaryKey(self, primaryKey):
 		self.primaryKey = primaryKey
+		self.columns[primaryKey].setPrimaryKey(True)
 
 	def getPrimaryKey (self, primaryKey):
 		return self.primaryKey
@@ -29,8 +31,10 @@ class SQLSchemaTableBase:
 	#Column and type
 	def addColumn(self, columnName, columnType):
 		logging.info("Adding column: \"%s\" - \"%s\"", columnName, columnType)
-		self.fields[columnName] = columnType
+		self.columns[columnName] = sqlSchemaTableColumn.SQLSchemaTableColumn (columnName, columnType)
 
 	#Foreign Key Links
-	def addForeignKey (self, myColumn, referencedTable, referencedColumn):
-		self.foreignKeys[myColumn] = 
+	def addForeignKey(self, myColumn, referencedTable, referencedColumn):
+		#TODO: Think how to implement this properly
+		#self.foreignKeys[myColumn] = 
+		pass

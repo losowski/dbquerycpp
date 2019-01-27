@@ -3,34 +3,38 @@
 #import
 import logging
 
-class SQLSchemaTableBase:
+class SQLSchemaTableColumnBase:
 
-	def __init__(self, tableName):
-		self.tableName = tableName
-		self.primaryKey	=	""
-		self.fields = dict()		# field : type
-		self.foreignKeys = dict()	#Field : (Table, ForeignKey)/None
-		logging.info("Created table: %s", self.tableName)
-		pass
+	def __init__(self, columnName, columnType):
+		self.columnName = columnName
+		self.columnType = columnType
+		self.primaryKey	=	False
+		self.referencedTable = None
+		self.referencedColumn = None
+		logging.info("Created Column: %s  (%s)", self.columnName, self.columnType)
 
 	def __del__(self):
 		pass
 
-	def getName (self):
-		return self.tableName
+	def getName(self):
+		return self.columnName
 
 	#Primary Key
-	def setPrimaryKey (self, primaryKey):
+	#Primary Key
+	def setPrimaryKey(self, primaryKey):
 		self.primaryKey = primaryKey
 
-	def getPrimaryKey (self, primaryKey):
+	def isPrimaryKey(self):
 		return self.primaryKey
 
-	#Column and type
-	def addColumn(self, columnName, columnType):
-		logging.info("Adding column: \"%s\" - \"%s\"", columnName, columnType)
-		self.fields[columnName] = columnType
-
 	#Foreign Key Links
-	def addForeignKey (self, myColumn, referencedTable, referencedColumn):
-		self.foreignKeys[myColumn] = 
+	def addForeignKey (self, referencedTable, referencedColumn):
+		self.referencedTable = referencedTable
+		self.referencedColumn = referencedColumn
+
+	def getForeignKeyTable(self):
+		return self.referencedTable
+
+	def getForeignKeyColumn(self):
+		return self.referencedColumn
+

@@ -5,6 +5,7 @@ import logging
 import re
 import sqlSchemaBase
 import sqlSchemaTable
+import sqlSchemaTableColumn
 
 
 class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):

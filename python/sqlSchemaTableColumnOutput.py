@@ -2,11 +2,11 @@
 
 #import
 import logging
-import sqlSchemaTableBase
+import sqlSchemaTableColumnBase
 
-class SQLSchemaTableOutput (sqlSchemaTableBase.SQLSchemaTableBase):
-	def __init__(self, tableName):
-		sqlSchemaTableBase.SQLSchemaTableBase.__init__(self, tableName)
+class SQLSchemaTableColumnOutput (sqlSchemaTableColumnBase.SQLSchemaTableColumnBase):
+	def __init__(self, columnName, columnType):
+		sqlSchemaTableColumnBase.SQLSchemaTableColumnBase.__init__(self, columnName, columnType)
 
 	def __del__(self):
-		sqlSchemaTableBase.SQLSchemaTableBase.__del__(self) 
+		sqlSchemaTableColumnBase.SQLSchemaTableColumnBase.__del__(self) 

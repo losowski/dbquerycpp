@@ -2,12 +2,12 @@
 
 #import
 import logging
-import sqlSchemaTableOutput
+import sqlSchemaTableColumnOutput
 
-class SQLSchemaTable (sqlSchemaTableOutput.SQLSchemaTableOutput):
-	def __init__(self, tableName):
-		sqlSchemaTableOutput.SQLSchemaTableOutput.__init__(self, tableName) 
+class SQLSchemaTableColumn (sqlSchemaTableColumnOutput.SQLSchemaTableColumnOutput):
+	def __init__(self, columnName, columnType):
+		sqlSchemaTableColumnOutput.SQLSchemaTableColumnOutput.__init__(self, columnName, columnType) 
 		pass
 
 	def __del__(self):
-		sqlSchemaTableOutput.SQLSchemaTableOutput.__del__(self)
+		sqlSchemaTableColumnOutput.SQLSchemaTableColumnOutput.__del__(self)
