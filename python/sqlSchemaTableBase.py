@@ -34,7 +34,7 @@ class SQLSchemaTableBase:
 		self.columns[columnName] = sqlSchemaTableColumn.SQLSchemaTableColumn (columnName, columnType)
 
 	#Foreign Key Links
-	def addForeignKey(self, myColumn, referencedTable, referencedColumn):
+	def addForeignKey(self, foreignKeyName, myColumn, referencedTable, referencedColumn):
 		#TODO: Think how to implement this properly
 		#self.foreignKeys[myColumn] = 
 		pass

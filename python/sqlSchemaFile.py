@@ -91,7 +91,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 					columnName = primaryKeyConstraintSQLMatch.group('column_name')
 					logging.info("primaryKeyConstraintSQLMatch primaryKeyName: \"%s\"", primaryKeyName)
 					logging.info("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
-					logging.info("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
+					tableObj.setPrimaryKey(columnName)
 					continue
 				#Foreign Key
 				elif (ForeignKeyConstraintSQLMatch != None):
@@ -104,6 +104,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 					logging.info("ForeignKeyConstraintSQLMatch columnName: \"%s\"", columnName)
 					logging.info("ForeignKeyConstraintSQLMatch referencedTable: \"%s\"", referencedTable)
 					logging.info("ForeignKeyConstraintSQLMatch referencedColumn: \"%s\"", referencedColumn)
+					tableObj.addForeignKey(foreignKeyName, columnName, referencedTable,referencedColumn)
 					continue
 				#Failing above, check if a simple column definition
 				# 	Matches pretty much everything!
