@@ -17,7 +17,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	ColumnNameSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+)")
 	#CONSTRAINTS
 	PrimaryKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<primary_key_name>\S+)\s?PRIMARY\s?KEY\s?\((?P<column_name>\S+)\)")
-	ForeignKeyConstraintSQL= re.compile("\s+CONSTRAINT\s?(?P<foreign_key_name>\S+)\s?FOREIGN\s?KEY\s?\((?P<column_name>\S+)\)")
+	ForeignKeyConstraintSQL= re.compile("\s+CONSTRAINT\s?(?P<foreign_key_name>\S+)\s?FOREIGN\s+KEY\s+\((?P<column_name>\S+)\)\s+REFERENCES\s+(?P<referenced_table>\S+)\s+\((?P<referenced_column>\S+)\).*")
 
 	#TODO: Make the column code get all the columns
 
@@ -90,14 +90,19 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 					columnName = primaryKeyConstraintSQLMatch.group('column_name')
 					logging.info("primaryKeyConstraintSQLMatch primaryKeyName: \"%s\"", primaryKeyName)
 					logging.info("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
+					logging.info("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
 					continue
 				#Foreign Key
 				elif (ForeignKeyConstraintSQLMatch != None):
 					logging.info("Foreign Key Constraint: \"%s\"", fieldData)
 					foreignKeyName = ForeignKeyConstraintSQLMatch.group('foreign_key_name')
 					columnName = ForeignKeyConstraintSQLMatch.group('column_name')
+					referencedTable = ForeignKeyConstraintSQLMatch.group('referenced_table')
+					referencedColumn = ForeignKeyConstraintSQLMatch.group('referenced_column')
 					logging.info("ForeignKeyConstraintSQLMatch foreignKeyName: \"%s\"", foreignKeyName)
 					logging.info("ForeignKeyConstraintSQLMatch columnName: \"%s\"", columnName)
+					logging.info("ForeignKeyConstraintSQLMatch referencedTable: \"%s\"", referencedTable)
+					logging.info("ForeignKeyConstraintSQLMatch referencedColumn: \"%s\"", referencedColumn)
 					continue
 				#Failing above, check if a simple column definition
 				# 	Matches pretty much everything!
