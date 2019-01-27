@@ -9,4 +9,4 @@ class SQLSchemaTableColumnOutput (sqlSchemaTableColumnBase.SQLSchemaTableColumnB
 		sqlSchemaTableColumnBase.SQLSchemaTableColumnBase.__init__(self, columnName, columnType)
 
 	def __del__(self):
-		sqlSchemaTableColumnBase.SQLSchemaTableColumnBase.__del__(self) 
+		sqlSchemaTableColumnBase.SQLSchemaTableColumnBase.__del__(self)
