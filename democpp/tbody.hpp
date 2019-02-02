@@ -11,6 +11,7 @@
 #include "dbresult.hpp"
 
 using namespace std;
+using namespace dbquery;
 
 namespace neuronSchema {
 

@@ -9,9 +9,12 @@
 
 using namespace std;
 
+namespace dbquery {
+
 class DBResult
 {
 	public:
+		DBResult(void);
 		DBResult(int primaryKey);
 		~DBResult(void);
 	public:
@@ -26,4 +29,6 @@ class DBResult
 	protected:
 		int			pk;
 };
+
+
 #endif //DBRESULT_HPP
