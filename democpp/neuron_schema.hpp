@@ -22,7 +22,7 @@ class NeuronSchema : public dbquery::DBConnection
 		NeuronSchema(string username, string password);
 		~NeuronSchema(void);
 	public:
-		void connect(void);
+		//void connect(void);
 		tBody build_tBody(int primaryKey);
 		
 };

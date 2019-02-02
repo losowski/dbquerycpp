@@ -31,7 +31,7 @@ class tBody : public DBResult
 		void addRow(void);
 	public:
 		int 		id;
-		string		text
+		string		text;
 };
 }
 #endif //NEURON_SCHEMA_TBODY_HPP
