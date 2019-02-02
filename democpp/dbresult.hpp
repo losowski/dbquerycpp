@@ -30,5 +30,5 @@ class DBResult
 		int			pk;
 };
 
-
+}
 #endif //DBRESULT_HPP

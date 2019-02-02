@@ -16,7 +16,7 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
-class NeuronSchema : public DBConnection
+class NeuronSchema : public dbquery::DBConnection
 {
 	public:
 		NeuronSchema(string username, string password);

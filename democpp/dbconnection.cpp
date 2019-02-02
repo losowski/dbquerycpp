@@ -1,4 +1,4 @@
-#include "dbquery_base.hpp"
+#include "dbconnection.hpp"
 
 using namespace std;
 
