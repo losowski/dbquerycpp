@@ -18,6 +18,7 @@ namespace neuronSchema {
 class tBody : public DBResult
 {
 	public:
+		tBody(void);
 		tBody(int primaryKey);
 		~tBody(void);
 	public:
