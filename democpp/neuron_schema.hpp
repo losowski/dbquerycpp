@@ -7,6 +7,8 @@
 #include <set>
 #include <tuple>
 
+#include "dbconnection.hpp"
+
 #include "tbody.hpp"
 
 using namespace std;
@@ -14,10 +16,10 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
-class NeuronSchema
+class NeuronSchema : public DBConnection
 {
 	public:
-		NeuronSchema(void);
+		NeuronSchema(string username, string password);
 		~NeuronSchema(void);
 	public:
 		void connect(void);

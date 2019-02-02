@@ -73,7 +73,7 @@ PROGRAM_NAME=libdbquery.so
 LDFLAGS = -L/usr/lib/x86_64-linux-gnu
 
 #Soures
-SRCS = dbquery_base.cpp # dbquery.cpp dbquery_connection.cpp 
+SRCS = dbconnection.cpp dbresult.cpp neuron_schema.cpp tbody.cpp
 
 ###########
 ## MAGIC ##
