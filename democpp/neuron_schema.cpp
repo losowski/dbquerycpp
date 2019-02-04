@@ -12,5 +12,8 @@ NeuronSchema::~NeuronSchema(void)
 {
 }
 
+tBody NeuronSchema::build_tBody(int primaryKey)
+{
+}
 
 }

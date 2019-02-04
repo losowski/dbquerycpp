@@ -1,11 +1,7 @@
 #ifndef DBRESULT_HPP
 #define DBRESULT_HPP
 
-#include <string>
-#include <list>
-#include <map>
-#include <set>
-#include <tuple>
+#include "dbconnection.hpp"
 
 using namespace std;
 
@@ -14,8 +10,8 @@ namespace dbquery {
 class DBResult
 {
 	public:
-		DBResult(void);
-		DBResult(int primaryKey);
+		DBResult(DBConnection const * db);
+		DBResult(DBConnection const * db, int primaryKey);
 		~DBResult(void);
 	public:
 		//SELECT
@@ -27,7 +23,9 @@ class DBResult
 		//INSERT
 		virtual void addRow(void) = 0;
 	protected:
-		int			pk;
+		int						pk;
+	private:
+		DBConnection const *	m_db;
 };
 
 }
