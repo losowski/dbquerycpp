@@ -19,7 +19,7 @@ namespace neuronSchema {
 class NeuronSchema : public dbquery::DBConnection
 {
 	public:
-		NeuronSchema(string username, string password);
+		NeuronSchema(const string & connection);
 		~NeuronSchema(void);
 	public:
 		//void connect(void);

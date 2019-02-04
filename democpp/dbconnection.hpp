@@ -2,10 +2,12 @@
 #define DBQUERY_CONNECTION_HPP
 
 #include <string>
-#include <list>
-#include <map>
-#include <set>
-#include <tuple>
+#include <iostream>
+//Libpxx
+#include <pqxx/pqxx>
+#include <pqxx/cursor>
+#include <pqxx/transaction>
+#include <pqxx/result>
 
 using namespace std;
 
@@ -14,13 +16,14 @@ namespace dbquery {
 class DBConnection
 {
 	public:
-		DBConnection(string username, string password);
+		DBConnection(const string & connection);
 		~DBConnection(void);
 	public:
-		void connect(void);
+		void connectDB(void);
+	protected:
+		pqxx::connection *			m_dbconnection;
 	private:
-		string		username;
-		string		password;
+		string						m_connection;
 
 };
 }
