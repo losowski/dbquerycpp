@@ -1,6 +1,7 @@
 #SQL Create DB File Parser
 
 #import
+import sys
 import logging
 import re
 import sqlSchemaBase
@@ -65,6 +66,9 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
 	def sqlParseCreateTable (self, sqlStatement):
 		logging.debug("CreateTable: \"%s\"\n", sqlStatement)
+		if "PRIMARY" not in sqlStatement:
+			logging.critical("CREATE TABLE does not have a PRIMARY KEY defined: \"%s\"", sqlStatement)
+			sys.exit(0)
 		#Get Table name
 		tableFieldMatch = self.TableFieldSQL.match(sqlStatement)
 		if (tableFieldMatch != None):
