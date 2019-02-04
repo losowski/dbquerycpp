@@ -18,8 +18,8 @@ namespace neuronSchema {
 class tBody : public DBResult
 {
 	public:
-		tBody(void);
-		tBody(int primaryKey);
+		tBody(DBConnection const * db);
+		tBody(DBConnection const * db, int primaryKey);
 		~tBody(void);
 	public:
 		//SELECT

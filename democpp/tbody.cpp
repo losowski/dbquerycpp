@@ -5,13 +5,13 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
-tBody::tBody(void):
-	dbquery::DBResult()
+tBody::tBody(DBConnection const * db):
+	dbquery::DBResult(db)
 {
 }
 
-tBody::tBody(int primaryKey):
-	dbquery::DBResult(primaryKey)
+tBody::tBody(DBConnection const * db, int primaryKey):
+	dbquery::DBResult(db, primaryKey)
 {
 }
 
