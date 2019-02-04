@@ -13,18 +13,18 @@ namespace neuronSchema {
 class tBody : public DBResult
 {
 	public:
-		tBody(pqxx::connection const * db);
-		tBody(pqxx::connection const * db, const int primaryKey);
+		tBody(pqxx::connection * db);
+		tBody(pqxx::connection * db, const int primaryKey);
 		~tBody(void);
 	public:
 		//SELECT
-		void getRow(void);
+		void selectRowSQL(pqxx::work* txn);
 		//DELETE
-		void deleteRow(int primaryKey);
+		void deleteRowSQL(pqxx::work* txn, int primaryKey);
 		//UPDATE
-		void saveRow(void);
+		void updateRowSQL(pqxx::work* txn);
 		//INSERT
-		void addRow(void);
+		void insertRowSQL(pqxx::work* txn);
 	public:
 		int 		id;
 		string		text;

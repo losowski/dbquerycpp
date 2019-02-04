@@ -5,12 +5,12 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
-tBody::tBody(pqxx::connection const * db):
+tBody::tBody(pqxx::connection * db):
 	dbquery::DBResult(db)
 {
 }
 
-tBody::tBody(pqxx::connection const * db, const int primaryKey):
+tBody::tBody(pqxx::connection * db, const int primaryKey):
 	dbquery::DBResult(db, primaryKey)
 {
 }
@@ -20,22 +20,22 @@ tBody::~tBody(void)
 }
 
 //SELECT
-void tBody::getRow(void)
+void tBody::selectRowSQL(pqxx::work* txn)
 {
 }
 
 //DELETE
-void tBody::deleteRow(int primaryKey)
+void tBody::deleteRowSQL(pqxx::work* txn, int primaryKey)
 {
 }
 
 //UPDATE
-void tBody::saveRow(void)
+void tBody::updateRowSQL(pqxx::work* txn)
 {
 }
 
 //INSERT
-void tBody::addRow(void)
+void tBody::insertRowSQL(pqxx::work* txn)
 {
 }
 

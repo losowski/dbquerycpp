@@ -10,22 +10,26 @@ namespace dbquery {
 class DBResult
 {
 	public:
-		DBResult(pqxx::connection const * db);
-		DBResult(pqxx::connection const * db, const int primaryKey);
+		DBResult(pqxx::connection * db);
+		DBResult(pqxx::connection * db, const int primaryKey);
 		~DBResult(void);
 	public:
 		//SELECT
-		virtual void getRow(void) = 0;
+		void selectRow(void);
+		virtual void selectRowSQL(pqxx::work* txn) = 0;
 		//DELETE
-		virtual void deleteRow(int primaryKey) = 0;
+		void deleteRow(int primaryKey);
+		virtual void deleteRowSQL(pqxx::work* txn, int primaryKey) = 0;
 		//UPDATE
-		virtual void saveRow(void) = 0;
+		void updateRow(void);
+		virtual void updateRowSQL(pqxx::work* txn) = 0;
 		//INSERT
-		virtual void addRow(void) = 0;
+		void insertRow(void);
+		virtual void insertRowSQL(pqxx::work* txn) = 0;
 	protected:
 		int						pk;
 	private:
-		pqxx::connection const *	m_db;
+		pqxx::connection*		m_db;
 };
 
 }
