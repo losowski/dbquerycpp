@@ -12,8 +12,10 @@ NeuronSchema::~NeuronSchema(void)
 {
 }
 
-tBody NeuronSchema::build_tBody(int primaryKey)
+tBody const * NeuronSchema::build_tBody(int primaryKey)
 {
+	tBody const * obj = new tBody(this->m_dbconnection, primaryKey);
+	return obj;
 }
 
 }

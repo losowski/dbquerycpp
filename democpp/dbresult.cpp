@@ -4,13 +4,13 @@ using namespace std;
 
 namespace dbquery {
 
-DBResult::DBResult(DBConnection const * db):
+DBResult::DBResult(pqxx::connection const * db):
 	pk(0),
 	m_db(db)
 {
 }
 
-DBResult::DBResult(DBConnection const * db, int primaryKey):
+DBResult::DBResult(pqxx::connection const * db, const int primaryKey):
 	pk(primaryKey),
 	m_db(db)
 {

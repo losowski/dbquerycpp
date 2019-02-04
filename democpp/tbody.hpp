@@ -2,11 +2,6 @@
 #define NEURON_SCHEMA_TBODY_HPP
 
 #include <string>
-#include <list>
-#include <map>
-#include <set>
-#include <tuple>
-
 
 #include "dbresult.hpp"
 
@@ -18,8 +13,8 @@ namespace neuronSchema {
 class tBody : public DBResult
 {
 	public:
-		tBody(DBConnection const * db);
-		tBody(DBConnection const * db, int primaryKey);
+		tBody(pqxx::connection const * db);
+		tBody(pqxx::connection const * db, const int primaryKey);
 		~tBody(void);
 	public:
 		//SELECT

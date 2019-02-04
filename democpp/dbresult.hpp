@@ -10,8 +10,8 @@ namespace dbquery {
 class DBResult
 {
 	public:
-		DBResult(DBConnection const * db);
-		DBResult(DBConnection const * db, int primaryKey);
+		DBResult(pqxx::connection const * db);
+		DBResult(pqxx::connection const * db, const int primaryKey);
 		~DBResult(void);
 	public:
 		//SELECT
@@ -25,7 +25,7 @@ class DBResult
 	protected:
 		int						pk;
 	private:
-		DBConnection const *	m_db;
+		pqxx::connection const *	m_db;
 };
 
 }
