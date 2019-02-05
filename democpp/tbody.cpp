@@ -22,6 +22,25 @@ tBody::~tBody(void)
 //SELECT
 void tBody::selectRowSQL(pqxx::work* txn)
 {
+	pqxx::result res = txn.exec("SELECT \
+		id, \
+		text, \
+	FROM \
+		neuron_schema.tBody \
+	WHERE \
+		id = " + txn.quote(pk) + ";");
+	// Only get one result line (as we use the Primary Key
+	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
+	{
+		if (true == id.empty())
+		{
+			id.assign(res[i]["id"].c_str());
+		}
+		if (true == text.empty())
+		{
+			text.assign(res[i]["text"].c_str());
+		}
+	}
 }
 
 //DELETE
