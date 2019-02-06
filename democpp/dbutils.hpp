@@ -14,6 +14,7 @@ class DBUtils
 		~DBUtils(void);
 	public:
 		void toInt(int * integer, const pqxx::field & fieldValue);
+		void toString(string * str, const pqxx::field & fieldValue);
 };
 
 }

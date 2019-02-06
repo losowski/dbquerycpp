@@ -33,7 +33,7 @@ void tBody::selectRowSQL(pqxx::work* txn)
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
 		toInt(&this->id, res[i]["id"]);
-		this->text.assign(res[i]["text"].c_str());
+		toString(&this->text, res[i]["text"]);
 	}
 }
 
