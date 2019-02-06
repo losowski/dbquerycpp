@@ -12,11 +12,9 @@ DBUtils::~DBUtils(void)
 {
 }
 
-
 void DBUtils::toInt(int * integer, const char * integerString)
 {
-	*integer = atoi(integerString);
+	*integer = stoi(integerString);
 }
-
 
 }
