@@ -12,9 +12,9 @@ DBUtils::~DBUtils(void)
 {
 }
 
-void DBUtils::toInt(int * integer, const char * integerString)
+void DBUtils::toInt(int * integer, const pqxx::field & fieldValue)
 {
-	*integer = stoi(integerString);
+	*integer = stoi(fieldValue.c_str());
 }
 
 }

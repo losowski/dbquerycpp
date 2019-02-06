@@ -32,7 +32,7 @@ void tBody::selectRowSQL(pqxx::work* txn)
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
-		toInt(&this->id, res[i]["id"].c_str());
+		toInt(&this->id, res[i]["id"]);
 		this->text.assign(res[i]["text"].c_str());
 	}
 }

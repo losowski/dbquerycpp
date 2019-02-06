@@ -13,7 +13,7 @@ class DBUtils
 		DBUtils(void);
 		~DBUtils(void);
 	public:
-		void toInt(int * integer, const char * integerString);
+		void toInt(int * integer, const pqxx::field & fieldValue);
 };
 
 }
