@@ -1,3 +1,5 @@
+#include "dbsafeutils.hpp"
+
 #include "tbody.hpp"
 
 using namespace std;
@@ -32,8 +34,8 @@ void tBody::selectRowSQL(pqxx::work* txn)
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
-		toInt(&this->id, res[i]["id"]);
-		toString(&this->text, res[i]["text"]);
+		dbquery::DBSafeUtils::safeToInt(&this->id, res[i]["id"]);
+		dbquery::DBSafeUtils::safeToString(&this->text, res[i]["text"]);
 	}
 }
 

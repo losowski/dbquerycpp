@@ -1,3 +1,7 @@
+/*
+ * Utilities to intepret the DB input
+*/
+
 #include "dbutils.hpp"
 
 using namespace std;
