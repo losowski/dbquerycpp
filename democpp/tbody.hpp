@@ -4,6 +4,7 @@
 #include <string>
 
 #include "dbresult.hpp"
+#include "dbsafeutils.hpp"
 
 using namespace std;
 using namespace dbquery;

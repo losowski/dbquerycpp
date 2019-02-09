@@ -2,13 +2,12 @@
 #define DBRESULT_HPP
 
 #include "dbconnection.hpp"
-#include "dbutils.hpp"
 
 using namespace std;
 
 namespace dbquery {
 
-class DBResult : public DBUtils
+class DBResult
 {
 	public:
 		DBResult(pqxx::connection * db);

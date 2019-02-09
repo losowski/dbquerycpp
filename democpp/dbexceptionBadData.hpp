@@ -3,6 +3,11 @@
 
 #include "dbexception.hpp"
 
+/*
+ * Exception for throwing in the event someone puts in a bad data format into the DB
+ * Intention is to stop any database vulnerability with server side testing of inputs
+*/
+
 using namespace std;
 
 namespace dbquery {
