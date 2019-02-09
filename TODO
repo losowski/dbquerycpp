@@ -1,0 +1,7 @@
+TODO List
+---------
++ Split out file reader into own repo
++ Move db* files into their own library
++ Add regex to parse DB inputs to make sure they are safe
++ Create type specific regex templates
++ For string inputs allow free-text regex from the child library
