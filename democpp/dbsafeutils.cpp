@@ -19,19 +19,19 @@ DBSafeUtils::~DBSafeUtils(void)
 void DBSafeUtils::safeToInt(int * integer, const pqxx::field & fieldValue)
 {
 	checkValidInput(fieldValue.c_str(), REGEX_SIGNED_INT);
-	*integer = stoi(fieldValue.c_str());
+	toInt(integer, fieldValue);
 }
 
 void DBSafeUtils::safeToString(string * str, const pqxx::field & fieldValue)
 {
 	checkValidInput(fieldValue.c_str(), REGEX_SIGNED_BASIC_STRING);
-	(*str).assign(fieldValue.c_str());
+	toString(str, fieldValue);
 }
 
 void DBSafeUtils::safeToString(string * str, const pqxx::field & fieldValue, const regex & regexExpression)
 {
 	checkValidInput(fieldValue.c_str(), regexExpression);
-	(*str).assign(fieldValue.c_str());
+	toString(str, fieldValue);
 }
 
 
