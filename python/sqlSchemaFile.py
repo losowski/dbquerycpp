@@ -20,6 +20,8 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	#CONSTRAINTS
 	PrimaryKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<primary_key_name>\S+)\s?PRIMARY\s?KEY\s?\((?P<column_name>\S+)\)")
 	ForeignKeyConstraintSQL= re.compile("\s+CONSTRAINT\s?(?P<foreign_key_name>\S+)\s?FOREIGN\s+KEY\s+\((?P<column_name>\S+)\)\s+REFERENCES\s+(?P<referenced_table>\S+)\s+\((?P<referenced_column>\S+)\).*")
+	# CREATE UNIQUE INDEX pk_body_name ON neuron_schema.tbody USING btree (name COLLATE pg_catalog."default") TABLESPACE pg_default;
+	IndexSQL= re.compile("\s+CREATE\s+(?P<index_type>\S+)\s+INDEX\s+(?P<index_name>\S+)\s+ON\s+(?P<index_table>\S+).*\((?P<index_column>\S+)\).*;")
 
 	#TODO: Make the column code get all the columns
 
@@ -63,6 +65,12 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		if ("CREATE TABLE" in sqlStatement):
 			#logging.info("CreateTableSQL: \"%s\"", comment)
 			self.sqlParseCreateTable(sqlStatement)
+		if ("CREATE UNIQUE INDEX" in sqlStatement):
+			#logging.info("sqlParseCreateUniqueIndex: \"%s\"", comment)
+			self.sqlParseCreateUniqueIndex(sqlStatement)
+		if ("CREATE INDEX" in sqlStatement):
+			#logging.info("sqlParseCreateIndex: \"%s\"", comment)
+			self.sqlParseCreateIndex(sqlStatement)
 
 	def sqlParseCreateTable (self, sqlStatement):
 		logging.debug("CreateTable: \"%s\"\n", sqlStatement)
@@ -128,6 +136,28 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 					logging.error("Unhandled Constraint: \"%s\"", fieldData)
 			#Store the table object
 			self.tables[tableName] = tableObj
+
+
+
+	def sqlParseCreateUniqueIndex (self, sqlStatement):
+		self.sqlParseCreateIndex(sqlStatement)
+
+	def sqlParseCreateIndex (self, sqlStatement):
+		#	IndexSQL= re.compile("\s+CREATE\s+(?P<index_type>\S+)\s+INDEX\s+(?P<index_name>\S+)\s+ON\s+(?P<index_table>\S+).*\((?P<index_column>\S+).*;")
+		IndexSQLMatch = self.IndexSQL.match(sqlStatement)
+		#Primary Key
+		if (IndexSQLMatch != None):
+			logging.info("Adding Indexes: \"%s\"", sqlStatement)
+			indexType = IndexSQLMatch.group('index_type')
+			indexName = IndexSQLMatch.group('index_name')
+			indexTable = IndexSQLMatch.group('index_table')
+			indexColumn = IndexSQLMatch.group('index_column')
+			logging.info("IndexSQLMatch indexType: \"%s\"", indexType)
+			logging.info("IndexSQLMatch indexName: \"%s\"", indexName)
+			logging.info("IndexSQLMatch indexTable: \"%s\"", indexTable)
+			logging.info("IndexSQLMatch indexColumn: \"%s\"", indexColumn)
+			#Setup the known table with the index information
+			self.tables[indexTable].addIndex(indexName, indexColumn)
 
 	def run(self):
 		pass
