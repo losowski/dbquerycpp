@@ -23,7 +23,7 @@ class NeuronSchema : public dbquery::DBConnection
 		~NeuronSchema(void);
 	public:
 		//void connect(void);
-		shared_ptr<tBody> tBody(int primaryKey);
+		shared_ptr<tBody> gtBody(int primaryKey);
 		
 };
 }
