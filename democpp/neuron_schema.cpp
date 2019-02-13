@@ -12,9 +12,9 @@ NeuronSchema::~NeuronSchema(void)
 {
 }
 
-shared_ptr<tBody> NeuronSchema::tBody(int primaryKey)
+shared_ptr<tBody> NeuronSchema::gtBody(int primaryKey)
 {
-	shared_ptr<tBody> obj(new tBody(this->m_dbconnection, primaryKey));
+	shared_ptr<tBody> obj(new tBody(this->m_dbconnection, primaryKey) );
 	return obj;
 }
 
