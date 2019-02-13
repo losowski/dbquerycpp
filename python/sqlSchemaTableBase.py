@@ -38,3 +38,9 @@ class SQLSchemaTableBase:
 		#TODO: Think how to implement this properly
 		#self.foreignKeys[myColumn] = 
 		pass
+
+	#Index
+	def addIndex(self, indexName, indexColumn):
+		#TODO: This should create a function same as the foreign key
+		#	Perhaps a set to avoid duplication of columns
+		pass
