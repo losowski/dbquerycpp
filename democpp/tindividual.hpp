@@ -6,6 +6,8 @@
 #include "dbresult.hpp"
 #include "dbsafeutils.hpp"
 
+#include "tbody.hpp"
+
 using namespace std;
 using namespace dbquery;
 
@@ -27,6 +29,8 @@ class tIndividual : public DBResult
 		void updateRowSQL(pqxx::work* txn);
 		//INSERT
 		void insertRowSQL(pqxx::work* txn);
+		//Schema Functions
+		shared_ptr<tBody> gtBody(void);
 	public:
 		int 		id;
 		int 		body_id;

@@ -28,7 +28,7 @@ class DBResult
 		virtual void insertRowSQL(pqxx::work* txn) = 0;
 	protected:
 		int						pk;
-	private:
+	protected:
 		pqxx::connection*		m_db;
 };
 

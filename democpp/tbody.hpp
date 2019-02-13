@@ -27,6 +27,9 @@ class tBody : public DBResult
 		void updateRowSQL(pqxx::work* txn);
 		//INSERT
 		void insertRowSQL(pqxx::work* txn);
+		//Schema Functions
+		//TODO: Figure out how to implement SQL to go down hierarchy
+		//shared_ptr<tIndividual> gtIndividuals(void);
 	public:
 		int 		id;
 		string		text;

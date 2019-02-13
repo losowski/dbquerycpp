@@ -64,4 +64,12 @@ void tIndividual::insertRowSQL(pqxx::work* txn)
 {
 }
 
+//Schema Functions
+shared_ptr<tBody> tIndividual::gtBody(void)
+{
+	shared_ptr<tBody> obj(new tBody(this->m_db, this->body_id) );
+	obj->selectRow();
+	return obj;
+}
+
 }
