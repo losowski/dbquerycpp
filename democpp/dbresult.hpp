@@ -1,6 +1,10 @@
 #ifndef DBRESULT_HPP
 #define DBRESULT_HPP
 
+#include <string>
+#include <memory>
+#include <map>
+
 #include "dbconnection.hpp"
 
 using namespace std;

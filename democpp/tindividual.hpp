@@ -1,8 +1,6 @@
 #ifndef NEURON_SCHEMA_TINDIVIDUAL_HPP
 #define NEURON_SCHEMA_TINDIVIDUAL_HPP
 
-#include <string>
-
 #include "dbresult.hpp"
 #include "dbsafeutils.hpp"
 

@@ -1,8 +1,6 @@
 #ifndef NEURON_SCHEMA_TBODY_HPP
 #define NEURON_SCHEMA_TBODY_HPP
 
-#include <string>
-
 #include "dbresult.hpp"
 #include "dbsafeutils.hpp"
 
@@ -29,7 +27,6 @@ class tBody : public DBResult
 		void insertRowSQL(pqxx::work* txn);
 		//Schema Functions
 		//TODO: Figure out how to implement SQL to go down hierarchy
-		//shared_ptr<tIndividual> gtIndividuals(void);
 	public:
 		int 		id;
 		string		text;
