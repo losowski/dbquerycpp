@@ -18,4 +18,10 @@ shared_ptr<tBody> NeuronSchema::gtBody(int primaryKey)
 	return obj;
 }
 
+shared_ptr<tIndividual> NeuronSchema::gtIndividual(int primaryKey)
+{
+	shared_ptr<tIndividual> obj(new tIndividual(this->m_dbconnection, primaryKey) );
+	return obj;
+}
+
 }

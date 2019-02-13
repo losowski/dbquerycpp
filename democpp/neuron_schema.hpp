@@ -10,6 +10,7 @@
 #include "dbconnection.hpp"
 
 #include "tbody.hpp"
+#include "tindividual.hpp"
 
 using namespace std;
 using namespace dbquery;
@@ -24,6 +25,7 @@ class NeuronSchema : public dbquery::DBConnection
 	public:
 		//void connect(void);
 		shared_ptr<tBody> gtBody(int primaryKey);
+		shared_ptr<tIndividual> gtIndividual(int primaryKey);
 		
 };
 }
