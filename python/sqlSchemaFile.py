@@ -21,7 +21,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	PrimaryKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<primary_key_name>\S+)\s?PRIMARY\s?KEY\s?\((?P<column_name>\S+)\)")
 	ForeignKeyConstraintSQL= re.compile("\s+CONSTRAINT\s?(?P<foreign_key_name>\S+)\s?FOREIGN\s+KEY\s+\((?P<column_name>\S+)\)\s+REFERENCES\s+(?P<referenced_table>\S+)\s+\((?P<referenced_column>\S+)\).*")
 	# CREATE UNIQUE INDEX pk_body_name ON neuron_schema.tbody USING btree (name COLLATE pg_catalog."default") TABLESPACE pg_default;
-	IndexSQL= re.compile("\s+CREATE\s+(?P<index_type>\S+)\s+INDEX\s+(?P<index_name>\S+)\s+ON\s+(?P<index_table>\S+).*\((?P<index_column>\S+).*;")
+	IndexSQL= re.compile("\s+CREATE\s+(?P<index_type>\S+)\s+INDEX\s+(?P<index_name>\S+)\s+ON\s+(?P<index_table>\S+).*\((?P<index_column>\S+)\).*;")
 
 	#TODO: Make the column code get all the columns
 
