@@ -17,6 +17,13 @@ tBody::tBody(pqxx::connection * db, const int primaryKey):
 {
 }
 
+tBody::tBody(pqxx::connection * db, int id, const string & text):
+	dbquery::DBResult(db),
+	id(id),
+	text(text)
+{
+}
+
 tBody::~tBody(void)
 {
 }

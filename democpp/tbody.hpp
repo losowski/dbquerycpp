@@ -16,6 +16,7 @@ class tBody : public DBResult
 	public:
 		tBody(pqxx::connection * db);
 		tBody(pqxx::connection * db, const int primaryKey);
+		tBody(pqxx::connection * db, int id, const string & text);
 		~tBody(void);
 	public:
 		//SELECT
