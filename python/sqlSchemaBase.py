@@ -2,7 +2,6 @@
 
 #import
 import logging
-import sqlSchemaTable
 
 class SQLSchemaBase:
 	def __init__(self, fileName):

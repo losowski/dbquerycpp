@@ -4,12 +4,12 @@
 import sys
 import logging
 import re
-import sqlSchemaBase
+import sqlSchemaOutput
 import sqlSchemaTable
 import sqlSchemaTableColumn
 
 
-class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
+class SQLSchemaFile (sqlSchemaOutput.SQLSchemaOutput):
 
 	#SQL Non-commented line (must begin with a tab or alpha numeric
 	nonCommentedLine = re.compile('^[A-Z\t \(\)]+')
@@ -26,13 +26,13 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	#TODO: Make the column code get all the columns
 
 	def __init__(self, fileName):
-		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
+		sqlSchemaOutput.SQLSchemaOutput.__init__(self, fileName)
 		self.schemaFile = None
 		self.tables = dict()	#	tableName - TableObj
 		pass
 
 	def __del__(self):
-		sqlSchemaBase.SQLSchemaBase.__del__(self)
+		sqlSchemaOutput.SQLSchemaOutput.__del__(self)
 		pass
 
 	def initialise(self):
