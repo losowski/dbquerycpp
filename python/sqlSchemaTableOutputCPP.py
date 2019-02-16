@@ -1,12 +1,13 @@
 #File to implement the CPP file
+# Uses data from the SQLSchemaTableBase
 
 #import
 import logging
-import sqlSchemaTableBase
+import sqlCPlusPlusTable
 
-class SQLSchemaTableOutputCPP:
+class SQLSchemaTableOutputCPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 	def __init__(self, outputObject):
-		self.outputObject = outputObject
+		sqlCPlusPlusTable.SQLCPlusPlusTable.__init__(self, outputObject)
 
 	def __del__(self):
-		self.outputObject = None
+		sqlCPlusPlusTable.SQLCPlusPlusTable.__del__(self)
