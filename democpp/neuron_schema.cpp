@@ -28,10 +28,10 @@ shared_ptr<tIndividual> NeuronSchema::gtIndividual(int primaryKey)
 	return obj;
 }
 
-shared_ptr <tIndividuals_t> gtIndividualbytBody(int bodyId)
+aptIndividual NeuronSchema::gtIndividualbytBody(const tBody & body)
 {
-	//TODO: Figure out how to generate this list sensibly
-	// Needs some SQL here which breaks the design
+	return gtIndividualsFromBody(this->m_dbconnection, body);
+
 }
 
 }

@@ -11,6 +11,12 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
+class tIndividual;
+
+typedef shared_ptr<tIndividual> ptIndividual;
+typedef vector < ptIndividual >  aptIndividual;
+typedef shared_ptr < aptIndividual>  paptIndividual;
+
 class tIndividual : public DBResult
 {
 	public:
@@ -29,6 +35,7 @@ class tIndividual : public DBResult
 		void insertRowSQL(pqxx::work* txn);
 		//Schema Functions
 		shared_ptr<tBody> gtBody(void);
+		static paptIndividual gtIndividualsFromBody(pqxx::connection* db, const tBody & body);
 	public:
 		int 		id;
 		int 		body_id;

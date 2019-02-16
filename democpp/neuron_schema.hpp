@@ -31,7 +31,7 @@ class NeuronSchema : public dbquery::DBConnection
 		//tIndividual
 		shared_ptr<tIndividual> gtIndividual(int primaryKey);
 		//TODO: Add means to get all tIndividuals for a particular tBody key
-		shared_ptr <tIndividuals_t> gtIndividualbytBody(int bodyId);
+		aptIndividual gtIndividualbytBody(const tBody & body);
 	protected:
 		shared_ptr <tIndividuals_t> tIndividualbytBody;
 };

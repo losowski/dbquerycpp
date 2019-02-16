@@ -72,4 +72,34 @@ shared_ptr<tBody> tIndividual::gtBody(void)
 	return obj;
 }
 
+paptIndividual tIndividual::gtIndividualsFromBody(pqxx::connection* db, const tBody & body)
+{
+	paptIndividual obj (new aptIndividual());
+	pqxx::work txn(*db);
+	pqxx::result res = txn.exec("SELECT \
+		id, \
+		body_id, \
+		name, \
+	FROM \
+		neuron_schema.tIndividual \
+	WHERE \
+		body_id = " + txn.quote(body.id) + ";");
+	// Only get one result line (as we use the Primary Key
+	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
+	{
+		int tid = 0;
+		int tbody_id = 0;
+		string tname();
+		//Store the values
+		dbquery::DBSafeUtils::safeToInt(&tid, res[i]["id"]);
+		dbquery::DBSafeUtils::safeToInt(&tbody_id, res[i]["body_id"]);
+		dbquery::DBSafeUtils::safeToString(&tname, res[i]["name"]);
+		//Create an object
+		ptIndividual pt(new tIndividual(db, tid, tbody_id, tname) );
+		//Store the object
+		obj->push_back(pt);
+	}
+	return obj;
+}
+
 }

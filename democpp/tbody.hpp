@@ -4,10 +4,16 @@
 #include "dbresult.hpp"
 #include "dbsafeutils.hpp"
 
+
 using namespace std;
 using namespace dbquery;
 
 namespace neuronSchema {
+
+class tBody;
+
+typedef shared_ptr<tBody> ptBody;
+typedef vector < ptBody >  aptBody;
 
 class tBody : public DBResult
 {
@@ -31,5 +37,6 @@ class tBody : public DBResult
 		int 		id;
 		string		text;
 };
+
 }
 #endif //NEURON_SCHEMA_TBODY_HPP
