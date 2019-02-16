@@ -22,7 +22,7 @@ class tIndividual : public DBResult
 	public:
 		tIndividual(pqxx::connection * db);
 		tIndividual(pqxx::connection * db, const int primaryKey);
-		tIndividual(pqxx::connection * db, int id, int body_id, const string & name);
+		tIndividual(pqxx::connection * db, int id, int body_id, string & name);
 		~tIndividual(void);
 	public:
 		//SELECT

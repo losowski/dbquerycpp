@@ -17,7 +17,7 @@ tIndividual::tIndividual(pqxx::connection * db, const int primaryKey):
 {
 }
 
-tIndividual::tIndividual(pqxx::connection * db, int id, int body_id, const string & name):
+tIndividual::tIndividual(pqxx::connection * db, int id, int body_id, string & name):
 	dbquery::DBResult(db, id),
 	id(id),
 	body_id(body_id),
@@ -89,7 +89,7 @@ paptIndividual tIndividual::gtIndividualsFromBody(pqxx::connection* db, const tB
 	{
 		int tid = 0;
 		int tbody_id = 0;
-		string tname();
+		string tname;	//default constructor means no constructor brackets
 		//Store the values
 		dbquery::DBSafeUtils::safeToInt(&tid, res[i]["id"]);
 		dbquery::DBSafeUtils::safeToInt(&tbody_id, res[i]["body_id"]);

@@ -14,6 +14,7 @@ class tBody;
 
 typedef shared_ptr<tBody> ptBody;
 typedef vector < ptBody >  aptBody;
+typedef shared_ptr < aptBody>  paptBody;
 
 class tBody : public DBResult
 {

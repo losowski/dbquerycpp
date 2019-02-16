@@ -17,8 +17,6 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
-typedef set < shared_ptr<tIndividual> > tIndividuals_t;
-
 class NeuronSchema : public dbquery::DBConnection
 {
 	public:
@@ -27,13 +25,11 @@ class NeuronSchema : public dbquery::DBConnection
 	public:
 		//void connect(void);
 		//tBody
-		shared_ptr<tBody> gtBody(int primaryKey);
+		ptBody gtBody(int primaryKey);
 		//tIndividual
-		shared_ptr<tIndividual> gtIndividual(int primaryKey);
+		ptIndividual gtIndividual(int primaryKey);
 		//TODO: Add means to get all tIndividuals for a particular tBody key
-		aptIndividual gtIndividualbytBody(const tBody & body);
-	protected:
-		shared_ptr <tIndividuals_t> tIndividualbytBody;
+		paptIndividual gtIndividualbytBody(const tBody & body);
 };
 }
 #endif //NEURON_SCHEMA_HPP
