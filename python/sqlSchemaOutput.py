@@ -15,3 +15,7 @@ class SQLSchemaOutput (sqlSchemaBase.SQLSchemaBase, sqlCPlusPlusBase.SQLCPlusPlu
 		sqlSchemaBase.SQLSchemaBase.__del__(self)
 		sqlCPlusPlusBase.SQLCPlusPlusBase.__del__(self)
 		pass
+
+	def build(self):
+		#TODO: Implement this function
+		pass

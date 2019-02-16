@@ -17,3 +17,6 @@ class SQLSchemaTableOutput (sqlSchemaTableBase.SQLSchemaTableBase):
 		self.hpp = None
 		self.cpp = None
 
+	def build(self):
+		self.hpp.build()
+		self.hpp.build()

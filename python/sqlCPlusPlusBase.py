@@ -10,3 +10,6 @@ class SQLCPlusPlusBase:
 
 	def __del__(self):
 		pass
+
+	def fmt_include(self, library):
+		return "#include \"%{library}\"".format(library = library)
