@@ -16,6 +16,8 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		sqlCPlusPlusBase.SQLCPlusPlusBase.__del__(self)
 		self.outputObject = None
 
+	def tableName(self):
+		return self.outputObject.tableName
 
 	def buildContents(self):
 		return str()

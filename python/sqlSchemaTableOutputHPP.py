@@ -15,5 +15,9 @@ class SQLSchemaTableOutputHPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 
 	def buildContents(self):
 		output = str()
-		#TODO: Implement this function
+		output += self.fmt_ifndefine(self.tableName())
+		output += self.fmt_define(self.tableName())
+		output += self.fmt_include("dbresult")
+		output += self.fmt_include("dbsafeutils")
+		output += self.fmt_endifdefine(self.tableName())
 		return output
