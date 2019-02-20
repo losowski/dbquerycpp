@@ -7,6 +7,7 @@ import sqlSchemaTableColumn
 class SQLSchemaTableBase:
 
 	def __init__(self, tableName):
+		self.schemaName = self.__buildSchemaName(tableName)
 		self.tableName = tableName
 		self.columns = dict()
 		self.primaryKey = ""
@@ -15,6 +16,12 @@ class SQLSchemaTableBase:
 
 	def __del__(self):
 		pass
+
+	def __buildSchemaName(self, tableName):
+		schema = tableName.split(".")[0]
+		schemaName = schema.split("_")[0]
+		schemaName += ''.join( word.title() for word in schema.split("_")[1:])
+		return schemaName
 
 	def getName(self):
 		return self.tableName
@@ -36,7 +43,7 @@ class SQLSchemaTableBase:
 	#Foreign Key Links
 	def addForeignKey(self, foreignKeyName, myColumn, referencedTable, referencedColumn):
 		#TODO: Think how to implement this properly
-		#self.foreignKeys[myColumn] = 
+		#self.foreignKeys[myColumn] =
 		pass
 
 	#Index
