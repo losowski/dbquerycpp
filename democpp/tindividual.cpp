@@ -71,7 +71,7 @@ void tIndividual::updateRowSQL(pqxx::work* txn)
 	SET \
 		body_id = " + txn->quote(body_id) + "\
 	AND \
-		name = " + txn->quote(name)
+		name = " + txn->quote(name) + "\
 	WHERE \
 		id = " + txn->quote(pk) + ";");
 	txn->commit();

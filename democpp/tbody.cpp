@@ -17,10 +17,10 @@ tBody::tBody(pqxx::connection * db, const int primaryKey):
 {
 }
 
-tBody::tBody(pqxx::connection * db, int id, const string & text):
+tBody::tBody(pqxx::connection * db, int id, const string & name):
 	dbquery::DBResult(db, id),
 	id(id),
-	text(text)
+	name(name)
 {
 }
 
@@ -33,7 +33,7 @@ void tBody::selectRowSQL(pqxx::work* txn)
 {
 	pqxx::result res = txn->exec("SELECT \
 		id, \
-		text, \
+		name, \
 	FROM \
 		neuron_schema.tBody \
 	WHERE \
@@ -42,7 +42,7 @@ void tBody::selectRowSQL(pqxx::work* txn)
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
 		dbquery::DBSafeUtils::safeToInt(&this->id, res[i]["id"]);
-		dbquery::DBSafeUtils::safeToString(&this->text, res[i]["text"]);
+		dbquery::DBSafeUtils::safeToString(&this->name, res[i]["name"]);
 	}
 }
 
@@ -54,7 +54,7 @@ void tBody::deleteRowSQL(pqxx::work* txn, int primaryKey)
 	WHERE \
 		id = " + txn->quote(id) + "\
 	AND \
-		text  = " + txn->quote(text) + ";");
+		name  = " + txn->quote(name) + ";");
 	txn->commit();
 }
 
@@ -64,7 +64,7 @@ void tBody::updateRowSQL(pqxx::work* txn)
 	pqxx::result res = txn->exec("UPDATE \
 		neuron_schema.tBody \
 	SET \
-		text  = " + txn->quote(text) + "\
+		name  = " + txn->quote(name) + "\
 	WHERE \
 		id = " + txn->quote(id) + ";");
 	txn->commit();
@@ -75,9 +75,9 @@ void tBody::insertRowSQL(pqxx::work* txn)
 {
 	pqxx::result res = txn->exec("INSERT INTO \
 		neuron_schema.tBody \
-	(id, text) \
+	(id, name) \
 	VALUES (" +\
-		txn->quote(id) + " + " + txn->quote(text) + ");");
+		txn->quote(id) + " + " + txn->quote(name) + ");");
 	txn->commit();
 }
 

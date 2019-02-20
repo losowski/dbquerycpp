@@ -36,7 +36,7 @@ class tBody : public DBResult
 		//TODO: Figure out how to implement SQL to go down hierarchy
 	public:
 		int 		id;
-		string		text;
+		string		name;
 };
 
 }
