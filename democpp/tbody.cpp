@@ -52,7 +52,7 @@ void tBody::deleteRowSQL(pqxx::work* txn, int primaryKey)
 	pqxx::result res = txn->exec("DELETE FROM \
 		neuron_schema.tBody \
 	WHERE \
-		id = " + txn->quote(pk) + "\
+		id = " + txn->quote(id) + "\
 	AND \
 		text  = " + txn->quote(text) + ";");
 	txn->commit();
@@ -66,7 +66,7 @@ void tBody::updateRowSQL(pqxx::work* txn)
 	SET \
 		text  = " + txn->quote(text) + "\
 	WHERE \
-		id = " + txn->quote(pk) + ";");
+		id = " + txn->quote(id) + ";");
 	txn->commit();
 }
 

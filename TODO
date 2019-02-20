@@ -18,6 +18,8 @@ TODO List
 + Template functions to get specifix values from an array (is this possible? )
 + Implement the update delete insert queries
 + Include a locking mechanism in database
++ Utilise a stored procedure for insert and update statements
+
 
 DONE
 + Add regex to parse DB inputs to make sure they are safe

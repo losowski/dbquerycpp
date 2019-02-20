@@ -52,16 +52,40 @@ void tIndividual::selectRowSQL(pqxx::work* txn)
 //DELETE
 void tIndividual::deleteRowSQL(pqxx::work* txn, int primaryKey)
 {
+	pqxx::result res = txn->exec("DELETE FROM \
+		neuron_schema.tIndividual \
+	WHERE \
+		id = " + txn->quote(id) + "\
+	AND \
+		body_id = " + txn->quote(body_id) + "\
+	AND \
+		name = " + txn->quote(name) + ";");
+	txn->commit();
 }
 
 //UPDATE
 void tIndividual::updateRowSQL(pqxx::work* txn)
 {
+	pqxx::result res = txn->exec("UPDATE \
+		neuron_schema.tIndividual \
+	SET \
+		body_id = " + txn->quote(body_id) + "\
+	AND \
+		name = " + txn->quote(name)
+	WHERE \
+		id = " + txn->quote(pk) + ";");
+	txn->commit();
 }
 
 //INSERT
 void tIndividual::insertRowSQL(pqxx::work* txn)
 {
+	pqxx::result res = txn->exec("INSERT INTO \
+		neuron_schema.tIndividual \
+	(id, body_id, name) \
+	VALUES (" +\
+		txn->quote(id) + " + " + txn->quote(body_id) + " + " + txn->quote(name) + ");");
+	txn->commit();
 }
 
 //Schema Functions
