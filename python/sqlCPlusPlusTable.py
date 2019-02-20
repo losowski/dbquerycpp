@@ -19,6 +19,9 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def tableName(self):
 		return self.outputObject.tableName
 
+	def schemaName(self):
+		return self.outputObject.schemaName
+
 	def buildContents(self):
 		return str()
 
