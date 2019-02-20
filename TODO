@@ -1,7 +1,25 @@
 TODO List
 ---------
 + Split out file reader into own repo
-+ Move db* files into their own library
++ Move base classes into own repo (build into debian)
+	+ Move db* files into their own library
+	+ Make library for base classes of demodb
++ Split out the file reader into its own repo. This allows code reuse for building web pages automatically 
++ Use a cstruct to build the menu (universal file for cms)
++ Web pagess should be built with a scc script from style templates specifications (in db)
++ Make caching work on db for quick behaviour 
++ Make query objects accessible from schema class and parent classes
++ schema to implement all the class processing for parent and children (avoids looped dependencies)
++ Sub table primary key
++ Sub table secondary key (indexes!)
++ Sub table foreign key
++ Vector of shared pointers of row data? (Do these get cleared up? )- owned by parent table?
++ Store child data as an array of stored pointers
++ Template functions to get specifix values from an array (is this possible? )
++ Implement the update delete insert queries
++ Include a locking mechanism in database
+
+DONE
 + Add regex to parse DB inputs to make sure they are safe
 + Create type specific regex templates
 + For string inputs allow free-text regex from the child library
