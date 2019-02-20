@@ -49,16 +49,36 @@ void tBody::selectRowSQL(pqxx::work* txn)
 //DELETE
 void tBody::deleteRowSQL(pqxx::work* txn, int primaryKey)
 {
+	pqxx::result res = txn->exec("DELETE FROM \
+		neuron_schema.tBody \
+	WHERE \
+		id = " + txn->quote(pk) + "\
+	AND \
+		text  = " + txn->quote(text) + ";");
+	txn->commit();
 }
 
 //UPDATE
 void tBody::updateRowSQL(pqxx::work* txn)
 {
+	pqxx::result res = txn->exec("UPDATE \
+		neuron_schema.tBody \
+	SET \
+		text  = " + txn->quote(text) + "\
+	WHERE \
+		id = " + txn->quote(pk) + ";");
+	txn->commit();
 }
 
 //INSERT
 void tBody::insertRowSQL(pqxx::work* txn)
 {
+	pqxx::result res = txn->exec("INSERT INTO \
+		neuron_schema.tBody \
+	(id, text) \
+	VALUES (" +\
+		txn->quote(id) + " + " + txn->quote(text) + ");");
+	txn->commit();
 }
 
 }
