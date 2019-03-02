@@ -4,8 +4,7 @@
 import logging
 
 class SQLSchemaBase:
-	def __init__(self, fileName):
-		self.fileName = fileName
+	def __init__(self):
 		self.tables	=	list()
 		pass
 

@@ -7,8 +7,8 @@ import sqlCPlusPlusBase
 
 class SQLSchemaOutput (sqlSchemaBase.SQLSchemaBase, sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def __init__(self, fileName):
-		sqlSchemaBase.SQLSchemaBase.__init__(self, fileName)
-		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self)
+		sqlSchemaBase.SQLSchemaBase.__init__(self)
+		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, fileName)
 		pass
 
 	def __del__(self):
