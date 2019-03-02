@@ -7,9 +7,9 @@ import logging
 import sqlCPlusPlusBase
 
 class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
-	def __init__(self, outputObject, filename):
-		completeFilename = outputObject.schema + filename
-		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, completeFilename)
+	def __init__(self, outputObject, extension):
+		filename = outputObject.getSchema() + extension
+		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, filename)
 		self.outputObject = outputObject
 
 

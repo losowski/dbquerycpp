@@ -13,6 +13,7 @@ def main():
 	sqlSchema = sqlSchemaFile.SQLSchemaFile('database.sql')
 	sqlSchema.initialise()
 	sqlSchema.run()
+	sqlSchema.build()
 	for tableName, tableObj in sqlSchema.getTables().iteritems():
 		tableObj.build()
 		pass

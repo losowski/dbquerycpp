@@ -21,6 +21,9 @@ class SQLSchemaBase:
 	def getTables(self):
 		return self.tables
 
+	def setSchema(self, schema):
+		self.schema = schema
+
 	def getSchema(self):
 		return self.schema
 

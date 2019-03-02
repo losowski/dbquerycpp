@@ -7,7 +7,7 @@ import sqlCPlusPlusSchema
 
 class SQLSchemaOutputCPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 	def __init__(self, outputObject):
-		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__init__(self, outputObject, ".hpp")
+		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__init__(self, outputObject, ".cpp")
 
 	def __del__(self):
 		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__del__(self)

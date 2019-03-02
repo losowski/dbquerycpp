@@ -9,7 +9,6 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 	def __init__(self, outputObject):
 		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__init__(self, outputObject, ".hpp")
 
-
 	def __del__(self):
 		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__del__(self)
 
