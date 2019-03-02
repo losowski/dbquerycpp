@@ -4,12 +4,13 @@
 import sys
 import logging
 import re
-import sqlSchemaOutput
 import sqlSchemaTable
 import sqlSchemaTableColumn
+import sqlSchemaOutputHPP
+import sqlSchemaOutputCPP
 
 
-class SQLSchemaFile (sqlSchemaOutput.SQLSchemaOutput):
+class SQLSchemaFile:
 
 	#SQL Non-commented line (must begin with a tab or alpha numeric
 	nonCommentedLine = re.compile('^[A-Z\t \(\)]+')
@@ -26,13 +27,17 @@ class SQLSchemaFile (sqlSchemaOutput.SQLSchemaOutput):
 	#TODO: Make the column code get all the columns
 
 	def __init__(self, fileName):
-		sqlSchemaOutput.SQLSchemaOutput.__init__(self, fileName)
+		self.fileName = fileName
 		self.schemaFile = None
 		self.tables = dict()	#	tableName - TableObj
+		self.schema = "demo" #TODO: Implement this properly
+		self.hpp = None
+		self.cpp = None
 		pass
 
 	def __del__(self):
-		sqlSchemaOutput.SQLSchemaOutput.__del__(self)
+		self.hpp = None
+		self.cpp = None
 		pass
 
 	def initialise(self):
@@ -40,6 +45,9 @@ class SQLSchemaFile (sqlSchemaOutput.SQLSchemaOutput):
 		self.schemaFile = open(self.fileName, 'r')
 		# Read in contents
 		fileContents = self.schemaFile.readlines()
+		# Build the schema
+		self.hpp =  sqlSchemaOutputHPP.SQLSchemaOutputHPP(self)
+		self.cpp =  sqlSchemaOutputCPP.SQLSchemaOutputCPP(self)
 
 		sqlLine = str()
 		for line in fileContents:
@@ -160,6 +168,10 @@ class SQLSchemaFile (sqlSchemaOutput.SQLSchemaOutput):
 			self.tables[indexTable].addIndex(indexName, indexColumn)
 
 	def run(self):
+		pass
+
+	def build(self):
+		#TODO: Implement this function
 		pass
 
 	def getTables(self):
