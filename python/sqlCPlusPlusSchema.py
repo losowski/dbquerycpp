@@ -17,11 +17,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		sqlCPlusPlusBase.SQLCPlusPlusBase.__del__(self)
 		self.outputObject = None
 
-	def tableName(self):
-		return self.outputObject.tableName
-
 	def schemaName(self):
-		return self.outputObject.schemaName
+		return self.outputObject.getSchema().capitalize()
 
 	def buildContents(self):
 		return str()
