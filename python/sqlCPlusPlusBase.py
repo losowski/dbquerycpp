@@ -29,6 +29,9 @@ class SQLCPlusPlusBase:
 	def fmt_include(self, library):
 		return "#include \"{library}\"\n".format(library = library)
 
+	def fmt_lib_include(self, library):
+		return "#include <{library}>\n".format(library = library)
+
 	#Use Namespace
 	def useNamespace (self, namespace):
 		return "using namespace {namespace};\n".format(namespace=namespace)
