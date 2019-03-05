@@ -19,4 +19,4 @@ class SQLSchemaTableOutput (sqlSchemaTableBase.SQLSchemaTableBase):
 
 	def build(self):
 		self.hpp.build()
-		self.hpp.build()
+		self.cpp.build()
