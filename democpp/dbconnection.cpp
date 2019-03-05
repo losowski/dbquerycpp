@@ -40,5 +40,17 @@ void DBConnection::connectDB(void)
 	}
 }
 
+//Transaction Entries
+shared_ptr<pqxx::work> DBConnection::getTransaction(void)
+{
+	shared_ptr<pqxx::work> txn( new pqxx::work (*m_dbconnection) );
+	return txn;
+}
+
+void DBConnection::commit(shared_ptr<pqxx::work> transaction)
+{
+	transaction->commit();
+}
+
 
 }
