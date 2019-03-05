@@ -14,10 +14,6 @@ def main():
 	sqlSchema.initialise()
 	sqlSchema.run()
 	sqlSchema.build()
-	for tableName, tableObj in sqlSchema.getTables().iteritems():
-		tableObj.build()
-		pass
-	sqlSchema.build()
 	#Signal handler needed here to wait before exiting
 	#sigset = [signal.SIGINT, signal.SIGTERM]
 	#signal.sigwait(sigset) #3.3 only

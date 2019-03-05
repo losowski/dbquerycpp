@@ -27,5 +27,14 @@ class SQLSchemaBase:
 	def getSchema(self):
 		return self.schema
 
+	def build(self):
+		#Build Schema files
+		self.hpp.build()
+		self.hpp.build()
+		#Build Table files
+		for tableName, tableObj in self.tables.iteritems():
+			tableObj.build()
+			pass
+
 	def shutdown(self):
 		pass

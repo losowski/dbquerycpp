@@ -187,9 +187,5 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	def run(self):
 		pass
 
-	def build(self):
-		self.hpp.build()
-		self.hpp.build()
-
 	def shutdown(self):
 		pass
