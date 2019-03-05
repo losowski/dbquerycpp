@@ -6,11 +6,13 @@ import logging
 class SQLSchemaBase:
 	def __init__(self):
 		self.tables = dict()	#	tableName - TableObj
-		self.schema = "demo" #TODO: Implement this properly
-		pass
+		self.schema = "schema"
+		self.hpp = None
+		self.cpp = None
 
 	def __del__(self):
-		pass
+		self.hpp = None
+		self.cpp = None
 
 	def initialise(self):
 		pass

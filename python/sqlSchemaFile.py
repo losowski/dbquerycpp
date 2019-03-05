@@ -34,14 +34,10 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		sqlSchemaBase.SQLSchemaBase.__init__(self)
 		self.fileName = fileName
 		self.schemaFile = None
-		self.hpp = None
-		self.cpp = None
 		pass
 
 	def __del__(self):
 		sqlSchemaBase.SQLSchemaBase.__del__(self)
-		self.hpp = None
-		self.cpp = None
 		pass
 
 	def initialise(self):
@@ -49,9 +45,6 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		self.schemaFile = open(self.fileName, 'r')
 		# Read in contents
 		fileContents = self.schemaFile.readlines()
-		# Build the schema
-		self.hpp =  sqlSchemaOutputHPP.SQLSchemaOutputHPP(self)
-		self.cpp =  sqlSchemaOutputCPP.SQLSchemaOutputCPP(self)
 
 		sqlLine = str()
 		for line in fileContents:
@@ -185,7 +178,9 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			self.setSchema(schemaName)
 
 	def run(self):
-		pass
+		# Build the schema
+		self.hpp = sqlSchemaOutputHPP.SQLSchemaOutputHPP(self)
+		self.cpp = sqlSchemaOutputCPP.SQLSchemaOutputCPP(self)
 
 	def shutdown(self):
 		pass
