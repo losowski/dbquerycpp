@@ -19,19 +19,19 @@ typedef shared_ptr < aptBody>  paptBody;
 class tBody : public DBResult
 {
 	public:
-		tBody(pqxx::connection * db);
-		tBody(pqxx::connection * db, const int primaryKey);
-		tBody(pqxx::connection * db, int id, const string & text);
+		tBody(dbquery::DBConnection * connection);
+		tBody(dbquery::DBConnection * connection, const int primaryKey);
+		tBody(dbquery::DBConnection * connection, int id, const string & text);
 		~tBody(void);
 	public:
 		//SELECT
-		void selectRowSQL(pqxx::work* txn);
+		void selectRowSQL(shared_ptr<pqxx::work> txn);
 		//DELETE
-		void deleteRowSQL(pqxx::work* txn, int primaryKey);
+		void deleteRowSQL(shared_ptr<pqxx::work> txn, int primaryKey);
 		//UPDATE
-		void updateRowSQL(pqxx::work* txn);
+		void updateRowSQL(shared_ptr<pqxx::work> txn);
 		//INSERT
-		void insertRowSQL(pqxx::work* txn);
+		void insertRowSQL(shared_ptr<pqxx::work> txn);
 		//Schema Functions
 		//TODO: Figure out how to implement SQL to go down hierarchy
 	public:

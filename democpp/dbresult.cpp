@@ -4,15 +4,15 @@ using namespace std;
 
 namespace dbquery {
 
-DBResult::DBResult(pqxx::connection * db):
+DBResult::DBResult(dbquery::DBConnection * connection):
 	pk(0),
-	m_db(db)
+	m_connection(connection)
 {
 }
 
-DBResult::DBResult(pqxx::connection * db, const int primaryKey):
+DBResult::DBResult(dbquery::DBConnection * connection, const int primaryKey):
 	pk(primaryKey),
-	m_db(db)
+	m_connection(connection)
 {
 }
 
@@ -25,8 +25,8 @@ void DBResult::selectRow(void)
 {
 	try
 	{
-		pqxx::work txn(*m_db);
-		//pqxx::result res = txn.exec("SELECT \)
+		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
+		selectRowSQL(txn);
 		//txn.commit(); //For changes only
 	}
 	catch (const pqxx::sql_error &e)
@@ -40,9 +40,9 @@ void DBResult::deleteRow(int primaryKey)
 {
 	try
 	{
-		pqxx::work txn(*m_db);
+		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
 		//pqxx::result res = txn.exec("SELECT \)
-		txn.commit(); //For changes only
+		txn->commit(); //For changes only
 	}
 	catch (const pqxx::sql_error &e)
 	{
@@ -55,9 +55,9 @@ void DBResult::updateRow(void)
 {
 	try
 	{
-		pqxx::work txn(*m_db);
+		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
 		//pqxx::result res = txn.exec("SELECT \)
-		txn.commit(); //For changes only
+		txn->commit(); //For changes only
 	}
 	catch (const pqxx::sql_error &e)
 	{
@@ -70,9 +70,9 @@ void DBResult::insertRow(void)
 {
 	try
 	{
-		pqxx::work txn(*m_db);
+		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
 		//pqxx::result res = txn.exec("SELECT \)
-		txn.commit(); //For changes only
+		txn->commit(); //For changes only
 	}
 	catch (const pqxx::sql_error &e)
 	{

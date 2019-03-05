@@ -20,22 +20,22 @@ typedef shared_ptr < aptIndividual>  paptIndividual;
 class tIndividual : public DBResult
 {
 	public:
-		tIndividual(pqxx::connection * db);
-		tIndividual(pqxx::connection * db, const int primaryKey);
-		tIndividual(pqxx::connection * db, int id, int body_id, string & name);
+		tIndividual(dbquery::DBConnection * connection);
+		tIndividual(dbquery::DBConnection * connection, const int primaryKey);
+		tIndividual(dbquery::DBConnection * connection, int id, int body_id, string & name);
 		~tIndividual(void);
 	public:
 		//SELECT
-		void selectRowSQL(pqxx::work* txn);
+		void selectRowSQL(shared_ptr<pqxx::work> txn);
 		//DELETE
-		void deleteRowSQL(pqxx::work* txn, int primaryKey);
+		void deleteRowSQL(shared_ptr<pqxx::work> txn, int primaryKey);
 		//UPDATE
-		void updateRowSQL(pqxx::work* txn);
+		void updateRowSQL(shared_ptr<pqxx::work> txn);
 		//INSERT
-		void insertRowSQL(pqxx::work* txn);
+		void insertRowSQL(shared_ptr<pqxx::work> txn);
 		//Schema Functions
 		shared_ptr<tBody> gtBody(void);
-		static paptIndividual gtIndividualsFromBody(pqxx::connection* db, const tBody & body);
+		static paptIndividual gtIndividualsFromBody(dbquery::DBConnection * connection, const tBody & body);
 	public:
 		int 		id;
 		int 		body_id;

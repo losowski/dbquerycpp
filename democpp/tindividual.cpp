@@ -7,18 +7,18 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
-tIndividual::tIndividual(pqxx::connection * db):
-	dbquery::DBResult(db)
+tIndividual::tIndividual(dbquery::DBConnection * connection):
+	dbquery::DBResult(connection)
 {
 }
 
-tIndividual::tIndividual(pqxx::connection * db, const int primaryKey):
-	dbquery::DBResult(db, primaryKey)
+tIndividual::tIndividual(dbquery::DBConnection * connection, const int primaryKey):
+	dbquery::DBResult(connection, primaryKey)
 {
 }
 
-tIndividual::tIndividual(pqxx::connection * db, int id, int body_id, string & name):
-	dbquery::DBResult(db, id),
+tIndividual::tIndividual(dbquery::DBConnection * connection, int id, int body_id, string & name):
+	dbquery::DBResult(connection, id),
 	id(id),
 	body_id(body_id),
 	name(name)
@@ -30,7 +30,7 @@ tIndividual::~tIndividual(void)
 }
 
 //SELECT
-void tIndividual::selectRowSQL(pqxx::work* txn)
+void tIndividual::selectRowSQL(shared_ptr<pqxx::work> txn)
 {
 	pqxx::result res = txn->exec("SELECT \
 		id, \
@@ -50,7 +50,7 @@ void tIndividual::selectRowSQL(pqxx::work* txn)
 }
 
 //DELETE
-void tIndividual::deleteRowSQL(pqxx::work* txn, int primaryKey)
+void tIndividual::deleteRowSQL(shared_ptr<pqxx::work> txn, int primaryKey)
 {
 	pqxx::result res = txn->exec("DELETE FROM \
 		neuron_schema.tIndividual \
@@ -60,11 +60,10 @@ void tIndividual::deleteRowSQL(pqxx::work* txn, int primaryKey)
 		body_id = " + txn->quote(body_id) + "\
 	AND \
 		name = " + txn->quote(name) + ";");
-	txn->commit();
 }
 
 //UPDATE
-void tIndividual::updateRowSQL(pqxx::work* txn)
+void tIndividual::updateRowSQL(shared_ptr<pqxx::work> txn)
 {
 	pqxx::result res = txn->exec("UPDATE \
 		neuron_schema.tIndividual \
@@ -74,40 +73,38 @@ void tIndividual::updateRowSQL(pqxx::work* txn)
 		name = " + txn->quote(name) + "\
 	WHERE \
 		id = " + txn->quote(pk) + ";");
-	txn->commit();
 }
 
 //INSERT
-void tIndividual::insertRowSQL(pqxx::work* txn)
+void tIndividual::insertRowSQL(shared_ptr<pqxx::work> txn)
 {
 	pqxx::result res = txn->exec("INSERT INTO \
 		neuron_schema.tIndividual \
 	(id, body_id, name) \
 	VALUES (" +\
 		txn->quote(id) + " + " + txn->quote(body_id) + " + " + txn->quote(name) + ");");
-	txn->commit();
 }
 
 //Schema Functions
 shared_ptr<tBody> tIndividual::gtBody(void)
 {
-	shared_ptr<tBody> obj(new tBody(this->m_db, this->body_id) );
+	shared_ptr<tBody> obj(new tBody(m_connection, this->body_id) );
 	obj->selectRow();
 	return obj;
 }
 
-paptIndividual tIndividual::gtIndividualsFromBody(pqxx::connection* db, const tBody & body)
+paptIndividual tIndividual::gtIndividualsFromBody(dbquery::DBConnection * connection, const tBody & body)
 {
 	paptIndividual obj (new aptIndividual());
-	pqxx::work txn(*db);
-	pqxx::result res = txn.exec("SELECT \
+	shared_ptr<pqxx::work> txn = connection->getTransaction();
+	pqxx::result res = txn->exec("SELECT \
 		id, \
 		body_id, \
 		name, \
 	FROM \
 		neuron_schema.tIndividual \
 	WHERE \
-		body_id = " + txn.quote(body.id) + ";");
+		body_id = " + txn->quote(body.id) + ";");
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
@@ -119,7 +116,7 @@ paptIndividual tIndividual::gtIndividualsFromBody(pqxx::connection* db, const tB
 		dbquery::DBSafeUtils::safeToInt(&tbody_id, res[i]["body_id"]);
 		dbquery::DBSafeUtils::safeToString(&tname, res[i]["name"]);
 		//Create an object
-		ptIndividual pt(new tIndividual(db, tid, tbody_id, tname) );
+		ptIndividual pt(new tIndividual(connection, tid, tbody_id, tname) );
 		//Store the object
 		obj->push_back(pt);
 	}

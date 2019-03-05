@@ -15,7 +15,7 @@ NeuronSchema::~NeuronSchema(void)
 //tBody
 ptBody NeuronSchema::gtBody(int primaryKey)
 {
-	shared_ptr<tBody> obj(new tBody(this->m_dbconnection, primaryKey) );
+	shared_ptr<tBody> obj(new tBody(this, primaryKey) );
 	obj->selectRow();
 	return obj;
 }
@@ -23,14 +23,14 @@ ptBody NeuronSchema::gtBody(int primaryKey)
 //tIndividual
 ptIndividual NeuronSchema::gtIndividual(int primaryKey)
 {
-	shared_ptr<tIndividual> obj(new tIndividual(this->m_dbconnection, primaryKey) );
+	shared_ptr<tIndividual> obj(new tIndividual(this, primaryKey) );
 	obj->selectRow();
 	return obj;
 }
 
 paptIndividual NeuronSchema::gtIndividualbytBody(const tBody & body)
 {
-	return tIndividual::gtIndividualsFromBody(this->m_dbconnection, body);
+	return tIndividual::gtIndividualsFromBody(this, body);
 
 }
 

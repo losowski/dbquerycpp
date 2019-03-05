@@ -7,18 +7,18 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
-tBody::tBody(pqxx::connection * db):
-	dbquery::DBResult(db)
+tBody::tBody(dbquery::DBConnection * connection):
+	dbquery::DBResult(connection)
 {
 }
 
-tBody::tBody(pqxx::connection * db, const int primaryKey):
-	dbquery::DBResult(db, primaryKey)
+tBody::tBody(dbquery::DBConnection * connection, const int primaryKey):
+	dbquery::DBResult(connection, primaryKey)
 {
 }
 
-tBody::tBody(pqxx::connection * db, int id, const string & name):
-	dbquery::DBResult(db, id),
+tBody::tBody(dbquery::DBConnection * connection, int id, const string & name):
+	dbquery::DBResult(connection, id),
 	id(id),
 	name(name)
 {
@@ -29,7 +29,7 @@ tBody::~tBody(void)
 }
 
 //SELECT
-void tBody::selectRowSQL(pqxx::work* txn)
+void tBody::selectRowSQL(shared_ptr<pqxx::work> txn)
 {
 	pqxx::result res = txn->exec("SELECT \
 		id, \
@@ -47,7 +47,7 @@ void tBody::selectRowSQL(pqxx::work* txn)
 }
 
 //DELETE
-void tBody::deleteRowSQL(pqxx::work* txn, int primaryKey)
+void tBody::deleteRowSQL(shared_ptr<pqxx::work> txn, int primaryKey)
 {
 	pqxx::result res = txn->exec("DELETE FROM \
 		neuron_schema.tBody \
@@ -55,11 +55,10 @@ void tBody::deleteRowSQL(pqxx::work* txn, int primaryKey)
 		id = " + txn->quote(id) + "\
 	AND \
 		name  = " + txn->quote(name) + ";");
-	txn->commit();
 }
 
 //UPDATE
-void tBody::updateRowSQL(pqxx::work* txn)
+void tBody::updateRowSQL(shared_ptr<pqxx::work> txn)
 {
 	pqxx::result res = txn->exec("UPDATE \
 		neuron_schema.tBody \
@@ -67,18 +66,16 @@ void tBody::updateRowSQL(pqxx::work* txn)
 		name  = " + txn->quote(name) + "\
 	WHERE \
 		id = " + txn->quote(id) + ";");
-	txn->commit();
 }
 
 //INSERT
-void tBody::insertRowSQL(pqxx::work* txn)
+void tBody::insertRowSQL(shared_ptr<pqxx::work> txn)
 {
 	pqxx::result res = txn->exec("INSERT INTO \
 		neuron_schema.tBody \
 	(id, name) \
 	VALUES (" +\
 		txn->quote(id) + " + " + txn->quote(name) + ");");
-	txn->commit();
 }
 
 }
