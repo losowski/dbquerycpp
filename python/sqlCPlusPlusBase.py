@@ -6,7 +6,7 @@ import logging
 
 class SQLCPlusPlusBase:
 	def __init__(self, filename):
-		self.fileName = filename		
+		self.fileName = filename
 		pass
 
 	def __del__(self):
@@ -38,6 +38,26 @@ class SQLCPlusPlusBase:
 
 	def defineNamespace (self, namespace, content):
 		return "namespace {namespace}\n{{\n\n{content}\n\n}}\n".format(namespace = namespace, content=content)
+
+	#Class Functions
+	def classNameDefinition (self, className, derivedClass):
+		return "class {className} : public {derivedClass}".format(className = className, derivedClass = derivedClass)
+
+	def classScoping (self, className, functionDetails):
+		return "{ret} {className}::{functionName} ({arguments})".format(ret = functionDetails[0], className= className, functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
+
+	#Parameters = Ordered Dict (name, typeof)
+	def functionArgs (self, parameters):
+		ret = str()
+		for name, typeof in parameters.iteritems():
+			ret += "{typeof} {name}".format(name = name, typeof = typeof)
+		return ret
+
+	# Class HPP: functions : (scope, name, argument(s))
+	def buildClassHPP(self, className, derivedClass, functions):
+		pass
+
+
 
 	#Build the File
 	#Overload this to build the actual file
