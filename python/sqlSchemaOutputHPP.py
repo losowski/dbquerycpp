@@ -16,11 +16,15 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 		output = str()
 		output += self.fmt_ifndefine(self.schemaName())
 		output += self.fmt_define(self.schemaName())
-		output += self.fmt_include("dbresult.hpp")
+		#Incldues
+		output += self.fmt_include("dbconnection.hpp")
+		output += self.getTableIncludes()
+		#Using Namespaces
 		output += self.useNamespace("std")
 		output += self.useNamespace("dbquery")
+		#Code
 		namespaced = str()
+		#Make a namespace
 		output += self.defineNamespace(self.schemaName(), namespaced)
-		output += self.fmt_include("dbsafeutils")
 		output += self.fmt_endifdefine(self.schemaName())
 		return output

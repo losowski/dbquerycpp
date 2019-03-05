@@ -23,4 +23,9 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildContents(self):
 		return str()
 
-
+	#Get Table Includes
+	def getTableIncludes(self):
+		ret = str()
+		for tableName, tableObj in self.outputObject.tables.iteritems():
+			ret += self.fmt_include(tableName+".hpp")
+		return ret
