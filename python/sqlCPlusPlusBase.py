@@ -41,21 +41,42 @@ class SQLCPlusPlusBase:
 
 	#Class Functions
 	def classNameDefinition (self, className, derivedClass):
-		return "class {className} : public {derivedClass}".format(className = className, derivedClass = derivedClass)
+		return "class {className} : public {derivedClass}\n".format(className = className, derivedClass = derivedClass)
 
-	def classScoping (self, className, functionDetails):
+	def classFunctionCPP (self, className, functionDetails):
 		return "{ret} {className}::{functionName} ({arguments})".format(ret = functionDetails[0], className= className, functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
 
-	#Parameters = Ordered Dict (name, typeof)
+	def classFunctionHPP (self, functionDetails):
+		return "{ret} {functionName} ({arguments})".format(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
+
+	def functionListHPP(self, functions):
+		val = str()
+		for function in functions.iteritems():
+			val += classFunctionHPP(function)
+		return val
+
+	def constructorListHPP (self, className, constructors):
+		val = "\tpublic:\n"
+		for parameters in constructors:
+			val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
+		val += "\t\t~{className} (void);\n".format(className = className)
+		return val
+
+	#Parameters = list (type name)
 	def functionArgs (self, parameters):
 		ret = str()
-		for name, typeof in parameters.iteritems():
-			ret += "{typeof} {name}".format(name = name, typeof = typeof)
+		logging.info("Parameters: %s", parameters)
+		ret += ", ".join ("{name} {typeof}".format(name = name, typeof = typeof) for (name, typeof) in parameters)
 		return ret
 
 	# Class HPP: functions : (scope, name, argument(s))
-	def buildClassHPP(self, className, derivedClass, functions):
-		pass
+	def buildClassHPP(self, className, derivedClass, constructors, functions):
+		ret = self.classNameDefinition(className, derivedClass)
+		ret += "{\n"
+		ret += self.constructorListHPP(className, constructors)
+		#TODO: Make functions
+		ret += "}\n"
+		return ret
 
 
 

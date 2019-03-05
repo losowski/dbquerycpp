@@ -1,12 +1,19 @@
 #File to implement the CPP file
 # Uses data from the SQLSchemaTableBase
 
-
 #import
 import logging
 import sqlCPlusPlusBase
 
 class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
+	#Ordered Dict (typeof, name)
+	CONSTRUCTOR_ARGS =	(
+							(
+								("const string &", "connection",),
+							),	#One constructor
+						)
+
+
 	def __init__(self, outputObject, extension):
 		filename = outputObject.getSchema() + extension
 		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, filename)
