@@ -15,6 +15,9 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
 	#SQL Non-commented line (must begin with a tab or alpha numeric
 	nonCommentedLine = re.compile('^[A-Z\t \(\)]+')
+	#Schema Definition
+	#	CREATE SCHEMA IF NOT EXISTS neuron_schema AUTHORIZATION neuron;
+	SchemaSQL = re.compile("\s?CREATE\s+SCHEMA\s+IF\s+NOT\s+EXISTS\s+(?P<schema_name>\S+)\s+.*;")
 	#Table Field Definitions
 	TableFieldSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s+\((?P<field_definitions>.*)\).*;")
 	#Get the column names
@@ -74,12 +77,15 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		if ("CREATE TABLE" in sqlStatement):
 			#logging.info("CreateTableSQL: \"%s\"", comment)
 			self.sqlParseCreateTable(sqlStatement)
-		if ("CREATE UNIQUE INDEX" in sqlStatement):
+		elif ("CREATE UNIQUE INDEX" in sqlStatement):
 			#logging.info("sqlParseCreateUniqueIndex: \"%s\"", comment)
 			self.sqlParseCreateUniqueIndex(sqlStatement)
-		if ("CREATE INDEX" in sqlStatement):
+		elif ("CREATE INDEX" in sqlStatement):
 			#logging.info("sqlParseCreateIndex: \"%s\"", comment)
 			self.sqlParseCreateIndex(sqlStatement)
+		elif ("CREATE SCHEMA" in sqlStatement):
+			#logging.info("sqlParseCreateIndex: \"%s\"", comment)
+			self.sqlParseCreateSchema(sqlStatement)
 
 	def sqlParseCreateTable (self, sqlStatement):
 		logging.debug("CreateTable: \"%s\"\n", sqlStatement)
@@ -167,6 +173,16 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			logging.info("IndexSQLMatch indexColumn: \"%s\"", indexColumn)
 			#Setup the known table with the index information
 			self.tables[indexTable].addIndex(indexName, indexColumn)
+
+	def sqlParseCreateSchema (self, sqlStatement):
+		#	SchemaSQL = re.compile("\s?CREATE\s+SCHEMA\s+IF\s+NOT\s+EXISTS\s+(?P<schema_name>\S+)\s+.*;")
+		SchemaSQLMatch = self.SchemaSQL.match(sqlStatement)
+		#Primary Key
+		if (SchemaSQLMatch != None):
+			logging.info("Getting Schema name: \"%s\"", sqlStatement)
+			schemaName = SchemaSQLMatch.group('schema_name')
+			logging.error("SchemaSQLMatch schemaName: \"%s\"", schemaName)
+			self.setSchema(schemaName)
 
 	def run(self):
 		pass
