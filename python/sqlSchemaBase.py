@@ -31,7 +31,7 @@ class SQLSchemaBase:
 
 	def build(self):
 		#Build Schema files
-		self.hpp.build()
+		self.cpp.build()
 		self.hpp.build()
 		#Build Table files
 		for tableName, tableObj in self.tables.iteritems():
