@@ -1,12 +1,6 @@
 #ifndef NEURON_SCHEMA_HPP
 #define NEURON_SCHEMA_HPP
 
-#include <string>
-#include <list>
-#include <map>
-#include <set>
-#include <tuple>
-
 #include "dbconnection.hpp"
 
 #include "tbody.hpp"
