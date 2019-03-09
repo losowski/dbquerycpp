@@ -5,6 +5,8 @@
 import logging
 
 class SQLCPlusPlusBase:
+	CONST_TABLENAME = 'tableName'
+
 	def __init__(self, filename):
 		self.fileName = filename
 		pass
@@ -39,22 +41,32 @@ class SQLCPlusPlusBase:
 	def defineNamespace (self, namespace, content):
 		return "namespace {namespace}\n{{\n\n{content}\n\n}}\n".format(namespace = namespace, content=content)
 
+	#Function Parameters = list (type name)
+	def functionArgs (self, parameters, templateDict = dict()):
+		ret = str()
+		logging.info("Parameters: %s", parameters)
+		ret += ", ".join ("{name} {typeof}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (name, typeof) in parameters)
+		return ret
+
 	#Class Functions
 	def classNameDefinition (self, className, derivedClass):
 		return "class {className} : public {derivedClass}\n".format(className = className, derivedClass = derivedClass)
 
 	def classFunctionCPP (self, className, functionDetails):
-		return "{ret} {className}::{functionName} ({arguments})".format(ret = functionDetails[0], className= className, functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
+		return "{ret} {className}::{functionName}({arguments})".format(ret = functionDetails[0], className= className, functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
 
-	def classFunctionHPP (self, functionDetails):
-		return "{ret} {functionName} ({arguments})".format(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
+	def classFunctionHPP (self, ret, functionName, arguments, templateDict):
+		return "{ret} {functionName}({arguments})".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
 
-	def functionListHPP(self, functions):
+	def templatedNamedFunctionHPP (self, tableName, templateFunctions):
 		val = str()
-		for function in functions.iteritems():
-			val += classFunctionHPP(function)
+		for functionDetails in templateFunctions:
+			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableName,})
 		return val
 
+	#List Functions
+	# HEADER
+	#	Constructor
 	def constructorListHPP (self, className, constructors):
 		val = "\tpublic:\n"
 		for parameters in constructors:
@@ -62,14 +74,15 @@ class SQLCPlusPlusBase:
 		val += "\t\t~{className} (void);\n".format(className = className)
 		return val
 
-	#Parameters = list (type name)
-	def functionArgs (self, parameters):
-		ret = str()
-		logging.info("Parameters: %s", parameters)
-		ret += ", ".join ("{name} {typeof}".format(name = name, typeof = typeof) for (name, typeof) in parameters)
-		return ret
+	#	Function
+	def functionListHPP(self, functions):
+		val = str()
+		for function in functions.iteritems():
+			#val += classFunctionHPP(function)
+			pass
+		return val
 
-	# Class HPP: functions : (scope, name, argument(s))
+	# 	Class HPP: functions : (scope, name, argument(s)) 
 	def buildClassHPP(self, className, derivedClass, constructors, functions):
 		ret = self.classNameDefinition(className, derivedClass)
 		ret += "{\n"

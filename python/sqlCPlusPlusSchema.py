@@ -13,6 +13,15 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 							),	#One constructor
 						)
 
+	#Schema templates - (ret, functionNametemplate, arguments)
+	SCHEMA_FUNCTION_TEMPLATES =	(
+									("pt{tableName}", "gt{tableName}", (
+																			("int", "primaryKey"),
+																		)
+										),
+								)
+
+
 
 	def __init__(self, outputObject, extension):
 		filename = outputObject.getSchema() + extension
@@ -36,3 +45,11 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			ret += self.fmt_include(tableName+".hpp")
 		return ret
+
+	#Templated Table Functions
+	#templateFunctions = (ret, functionNametemplate, arguments)
+	def templatedFunctionListHPP(self, templateFunctions):
+		val = "\tpublic:\n"
+		for tableName, tableObj in self.outputObject.tables.iteritems():
+			val += "\t\t" + self.templatedNamedFunctionHPP(tableName, templateFunctions) + ";\n\n"
+		return val
