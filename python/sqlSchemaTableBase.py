@@ -25,7 +25,7 @@ class SQLSchemaTableBase:
 		return schemaName
 
 	def getFullName(self):
-		return self.tableName
+		return self.tableFullName
 
 	def getName(self):
 		return self.tableName
