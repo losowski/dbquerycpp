@@ -47,6 +47,9 @@ class SQLCPlusPlusBase:
 		return ret
 
 	#Class Functions
+	def className(self, className):
+		return "class {className};\n\n".format(className = className)
+
 	def classNameDefinition (self, className, derivedClass):
 		return "class {className} : public {derivedClass}\n".format(className = className, derivedClass = derivedClass)
 
