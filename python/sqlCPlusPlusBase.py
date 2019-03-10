@@ -74,6 +74,14 @@ class SQLCPlusPlusBase:
 		val += "\t\t~{className} (void);\n".format(className = className)
 		return val
 
+	#Templated Table Functions
+	#templateFunctions = (ret, functionNametemplate, arguments)
+	def templatedFunctionListHPP(self, templateFunctions):
+		val = "\tpublic:\n\t\t//Get single child objects\n"
+		for tableName, tableObj in self.outputObject.tables.iteritems():
+			val += "\t\t" + self.templatedNamedFunctionHPP(tableObj.getName(), templateFunctions) + ";\n"
+		return val
+
 	#	Function
 	def functionListHPP(self, functions):
 		val = str()
@@ -88,6 +96,7 @@ class SQLCPlusPlusBase:
 		ret += "{\n"
 		ret += self.constructorListHPP(className, constructors)
 		#TODO: Make functions
+		ret += self.templatedFunctionListHPP(functions)
 		ret += "}\n"
 		return ret
 

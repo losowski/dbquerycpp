@@ -45,11 +45,3 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			ret += self.fmt_include(tableObj.getName() + ".hpp")
 		return ret
-
-	#Templated Table Functions
-	#templateFunctions = (ret, functionNametemplate, arguments)
-	def templatedFunctionListHPP(self, templateFunctions):
-		val = "\tpublic:\n"
-		for tableName, tableObj in self.outputObject.tables.iteritems():
-			val += "\t\t" + self.templatedNamedFunctionHPP(tableObj.getName(), templateFunctions) + ";\n\n"
-		return val
