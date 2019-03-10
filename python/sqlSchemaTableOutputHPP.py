@@ -15,13 +15,15 @@ class SQLSchemaTableOutputHPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 
 	def buildContents(self):
 		output = str()
-		output += self.fmt_ifndefine(self.tableName())
-		output += self.fmt_define(self.tableName())
+		output += self.fmt_ifndefine(self.tableFullName())
+		output += self.fmt_define(self.tableFullName())
 		output += self.fmt_include("dbresult.hpp")
 		output += self.useNamespace("std")
 		output += self.useNamespace("dbquery")
 		namespaced = str()
+		#Build Class Functions
+		#namespaced += self.buildClassHPP(self.schemaName(), "dbquery::DBConnection", self.CONSTRUCTOR_ARGS, self.SCHEMA_FUNCTION_TEMPLATES)
 		output += self.defineNamespace(self.schemaName(), namespaced)
 		output += self.fmt_include("dbsafeutils")
-		output += self.fmt_endifdefine(self.tableName())
+		output += self.fmt_endifdefine(self.tableFullName())
 		return output
