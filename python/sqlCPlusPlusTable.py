@@ -10,8 +10,18 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							(
-								("const string &", "connection",),
+								("dbquery::DBConnection *", "connection",),
 							),	#One constructor
+							(
+								("dbquery::DBConnection *", "connection",),
+								("const int", "primaryKey"),
+							),	#Two constructor
+
+							(
+								("dbquery::DBConnection *", "connection",),
+								("int", "id"),
+								("const string &", "text"),
+							),	#Three constructor
 						)
 
 	#Schema templates - (ret, functionNametemplate, arguments)
