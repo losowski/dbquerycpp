@@ -48,6 +48,6 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += "{\n"
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		#TODO: Make functions
-		ret += self.templatedFunctionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
+		ret += self.functionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
 		ret += "}\n"
 		return ret

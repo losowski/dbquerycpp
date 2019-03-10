@@ -47,6 +47,12 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return ret
 
 	#Templated Table Functions
+	def templatedNamedFunctionHPP (self, tableName, templateFunctions):
+		val = str()
+		for functionDetails in templateFunctions:
+			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableName,})
+		return val
+
 	#templateFunctions = (ret, functionNametemplate, arguments)
 	def templatedTableFunctionListHPP(self, templateFunctions):
 		val = "\tpublic:\n\t\t//Get single child objects\n"

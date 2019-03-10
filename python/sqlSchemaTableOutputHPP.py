@@ -22,7 +22,7 @@ class SQLSchemaTableOutputHPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 		output += self.useNamespace("dbquery")
 		namespaced = str()
 		#Build Class Functions
-		#namespaced += self.buildClassHPP(self.schemaName(), "dbquery::DBResult", self.CONSTRUCTOR_ARGS, self.SCHEMA_FUNCTION_TEMPLATES)
+		#namespaced += self.buildClassHPP(self.schemaName(), "dbquery::DBResult")
 		output += self.defineNamespace(self.schemaName(), namespaced)
 		output += self.fmt_include("dbsafeutils")
 		output += self.fmt_endifdefine(self.tableFullName())

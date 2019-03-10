@@ -58,12 +58,6 @@ class SQLCPlusPlusBase:
 	def classFunctionHPP (self, ret, functionName, arguments, templateDict):
 		return "{ret} {functionName}({arguments})".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
 
-	def templatedNamedFunctionHPP (self, tableName, templateFunctions):
-		val = str()
-		for functionDetails in templateFunctions:
-			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableName,})
-		return val
-
 	#List Functions
 	# HEADER
 	#	Constructor
@@ -72,13 +66,6 @@ class SQLCPlusPlusBase:
 		for parameters in constructors:
 			val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
 		val += "\t\t~{className} (void);\n".format(className = className)
-		return val
-
-	#Templated Table Functions
-	#templateFunctions = (ret, functionNametemplate, arguments)
-	def templatedFunctionListHPP(self, templateFunctions):
-		val = "\tpublic:\n\t\t//Get single child objects\n"
-		val += "\t\t" + self.templatedNamedFunctionHPP(tableObj.getName(), templateFunctions) + ";\n"
 		return val
 
 	#	Function
