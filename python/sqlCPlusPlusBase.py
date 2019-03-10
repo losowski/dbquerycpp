@@ -37,7 +37,11 @@ class SQLCPlusPlusBase:
 		return "using namespace {namespace};\n".format(namespace=namespace)
 
 	def defineNamespace (self, namespace, content):
-		return "namespace {namespace}\n{{\n\n{content}\n\n}}\n".format(namespace = namespace, content=content)
+		return "namespace {namespace}\n{{\n\n{content}\n\n}}\n".format(namespace = namespace, content = content)
+
+	#Typedef
+	def fmt_typedef (self, knownType, customType):
+		return "typedef {knownType} {customType}\n".format(knownType = knownType, customType = customType)
 
 	#Function Parameters = list (type name)
 	def functionArgs (self, parameters, templateDict = dict()):
