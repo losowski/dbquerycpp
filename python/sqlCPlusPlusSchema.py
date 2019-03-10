@@ -6,6 +6,7 @@ import logging
 import sqlCPlusPlusBase
 
 class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
+	CONST_TABLENAME = 'tableName'
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							(

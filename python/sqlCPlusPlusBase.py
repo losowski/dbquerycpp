@@ -5,8 +5,6 @@
 import logging
 
 class SQLCPlusPlusBase:
-	CONST_TABLENAME = 'tableName'
-
 	def __init__(self, filename):
 		self.fileName = filename
 		pass
@@ -55,7 +53,7 @@ class SQLCPlusPlusBase:
 	def classFunctionCPP (self, className, functionDetails):
 		return "{ret} {className}::{functionName}({arguments})".format(ret = functionDetails[0], className= className, functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
 
-	def classFunctionHPP (self, ret, functionName, arguments, templateDict):
+	def classFunctionHPP (self, ret, functionName, arguments, templateDict = dict()):
 		return "{ret} {functionName}({arguments})".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
 
 	#List Functions
@@ -71,8 +69,8 @@ class SQLCPlusPlusBase:
 	#	Function
 	def functionListHPP(self, functions):
 		val = str()
-		for function in functions.iteritems():
-			#val += classFunctionHPP(function)
+		for functionDetails in functions:
+			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2])
 			pass
 		return val
 
