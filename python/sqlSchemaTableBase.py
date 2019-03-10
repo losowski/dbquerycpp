@@ -8,7 +8,8 @@ class SQLSchemaTableBase:
 
 	def __init__(self, tableName):
 		self.schemaName = self.__buildSchemaName(tableName)
-		self.tableName = tableName
+		self.tableName = tableName.split(".")[1]
+		self.tableFullName = tableName
 		self.columns = dict()
 		self.primaryKey = ""
 		logging.info("Created table: %s", self.tableName)
@@ -22,6 +23,9 @@ class SQLSchemaTableBase:
 		schemaName = schema.split("_")[0]
 		schemaName += ''.join( word.title() for word in schema.split("_")[1:])
 		return schemaName
+
+	def getFullName(self):
+		return self.tableName
 
 	def getName(self):
 		return self.tableName
