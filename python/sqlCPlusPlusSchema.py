@@ -51,7 +51,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def templatedNamedFunctionHPP (self, tableName, templateFunctions):
 		val = str()
 		for functionDetails in templateFunctions:
-			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableName,})
+			val += self.classFunctionTemplateHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableName,})
 		return val
 
 	#templateFunctions = (ret, functionNametemplate, arguments)

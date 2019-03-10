@@ -50,11 +50,16 @@ class SQLCPlusPlusBase:
 	def classNameDefinition (self, className, derivedClass):
 		return "class {className} : public {derivedClass}\n".format(className = className, derivedClass = derivedClass)
 
-	def classFunctionCPP (self, className, functionDetails):
-		return "{ret} {className}::{functionName}({arguments})".format(ret = functionDetails[0], className= className, functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
+	#	Header
+	def classFunctionTemplateHPP (self, ret, functionName, arguments, templateDict = dict()):
+		return "{ret} {functionName}({arguments})".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
 
 	def classFunctionHPP (self, ret, functionName, arguments, templateDict = dict()):
-		return "{ret} {functionName}({arguments})".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
+		return "{ret} {functionName}({arguments})".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
+
+	#	IMPL
+	def classFunctionCPP (self, className, functionDetails):
+		return "{ret} {className}::{functionName}({arguments})".format(ret = functionDetails[0], className= className, functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )
 
 	#List Functions
 	# HEADER
@@ -68,9 +73,9 @@ class SQLCPlusPlusBase:
 
 	#	Function
 	def functionListHPP(self, functions):
-		val = str()
+		val = "\tpublic:\n"
 		for functionDetails in functions:
-			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2])
+			val += "\t\t" + self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2]) + ";\n"
 			pass
 		return val
 
