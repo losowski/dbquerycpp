@@ -42,4 +42,12 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildContents(self):
 		return str()
 
-
+	# 	Class HPP: functions : (scope, name, argument(s))
+	def buildClassHPP(self, className, derivedClass):
+		ret = self.classNameDefinition(className, derivedClass)
+		ret += "{\n"
+		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
+		#TODO: Make functions
+		ret += self.templatedFunctionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
+		ret += "}\n"
+		return ret

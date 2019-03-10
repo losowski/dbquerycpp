@@ -45,3 +45,22 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			ret += self.fmt_include(tableObj.getName() + ".hpp")
 		return ret
+
+	#Templated Table Functions
+	#templateFunctions = (ret, functionNametemplate, arguments)
+	def templatedTableFunctionListHPP(self, templateFunctions):
+		val = "\tpublic:\n\t\t//Get single child objects\n"
+		for tableName, tableObj in self.outputObject.tables.iteritems():
+			val += "\t\t" + self.templatedNamedFunctionHPP(tableObj.getName(), templateFunctions) + ";\n"
+		return val
+
+
+	# 	Class HPP: functions : (scope, name, argument(s)) 
+	def buildSchemaClassHPP(self, className, derivedClass, constructors, functions):
+		ret = self.classNameDefinition(className, derivedClass)
+		ret += "{\n"
+		ret += self.constructorListHPP(className, constructors)
+		#TODO: Make functions
+		ret += self.templatedTableFunctionListHPP(functions)
+		ret += "}\n"
+		return ret

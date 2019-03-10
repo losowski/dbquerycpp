@@ -25,7 +25,7 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 		#Code
 		namespaced = str()
 		#Build Class Functions
-		namespaced += self.buildClassHPP(self.schemaName(), "dbquery::DBConnection", self.CONSTRUCTOR_ARGS, self.SCHEMA_FUNCTION_TEMPLATES)
+		namespaced += self.buildSchemaClassHPP(self.schemaName(), "dbquery::DBConnection", self.CONSTRUCTOR_ARGS, self.SCHEMA_FUNCTION_TEMPLATES)
 		#Make a namespace
 		output += self.defineNamespace(self.schemaName(), namespaced)
 		output += self.fmt_endifdefine(self.schemaName())
