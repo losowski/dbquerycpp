@@ -45,6 +45,12 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 									),
 								)
 
+	TYPEDEFS =	(
+					("shared_ptr<{className}>", "p{className}"),
+					("vector < p{className} >", "ap{className}"),
+					("shared_ptr < ap{className}>", "pap{className}"),
+				)
+
 	def __init__(self, outputObject, filename):
 		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, filename)
 		self.outputObject = outputObject
@@ -66,6 +72,15 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildContents(self):
 		return str()
 
+
+	#Typedef
+	def typedefListHPP(self, className):
+		val = str()
+		for typedefDetails in self.TYPEDEFS:
+			val += self.fmt_typedef(knownType = typedefDetails[0].format(className = className), customType = typedefDetails[1].format(className = className))
+		return val
+
+	#Variables
 	def classVariableListHPP(self):
 		val = "\tpublic:\n"
 		for columnName, columnObj in self.outputObject.getColumns().iteritems():

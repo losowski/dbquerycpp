@@ -5,6 +5,7 @@
 import logging
 
 class SQLCPlusPlusBase:
+
 	def __init__(self, filename):
 		self.fileName = filename
 		pass
@@ -41,7 +42,7 @@ class SQLCPlusPlusBase:
 
 	#Typedef
 	def fmt_typedef (self, knownType, customType):
-		return "typedef {knownType} {customType}\n".format(knownType = knownType, customType = customType)
+		return "typedef {knownType} {customType};\n".format(knownType = knownType, customType = customType)
 
 	#Function Parameters = list (type name)
 	def functionArgs (self, parameters, templateDict = dict()):
