@@ -26,11 +26,25 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 	#Schema templates - (ret, functionNametemplate, arguments)
 	SCHEMA_FUNCTION_TEMPLATES =	(
-									("p{tableName}", "g{tableName}", (
-																			("int", "primaryKey"),
-																		)
-										),
+									("void", "selectRowSQL",	(
+																	("shared_ptr<pqxx::work>", "txn"),
+																)
+									),
+									("void", "deleteRowSQL",	(
+																	("shared_ptr<pqxx::work>", "txn"),
+																	("int", "primaryKey"),
+																)
+									),
+									("void", "updateRowSQL",	(
+																	("shared_ptr<pqxx::work>", "txn"),
+																)
+									),
+									("void", "insertRowSQL",	(
+																	("shared_ptr<pqxx::work>", "txn"),
+																)
+									),
 								)
+
 	def __init__(self, outputObject, filename):
 		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, filename)
 		self.outputObject = outputObject
