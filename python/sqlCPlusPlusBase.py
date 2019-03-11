@@ -83,10 +83,11 @@ class SQLCPlusPlusBase:
 		val = "\tpublic:\n"
 		for functionDetails in functions:
 			val += "\t\t" + self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2]) + ";\n"
-			pass
 		return val
 
-
+	# Variables
+	def classVariableHPP (self, variableType, variableName):
+		return "\t\t{variableType}\t\t\t{variableName};\n".format(variableType = variableType, variableName = variableName)
 
 	#Build the File
 	#Overload this to build the actual file

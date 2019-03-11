@@ -66,12 +66,21 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildContents(self):
 		return str()
 
+	def classVariableListHPP(self):
+		val = "\tpublic:\n"
+		for columnName, columnObj in self.outputObject.getColumns().iteritems():
+			val += self.classVariableHPP(variableType = columnObj.getType(), variableName = columnObj.getName())
+		return val
+
+
 	# 	Class HPP: functions : (scope, name, argument(s))
 	def buildClassHPP(self, className, derivedClass):
 		ret = self.classNameDefinition(className, derivedClass)
 		ret += "{\n"
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
-		#TODO: Make functions
+		#Functions
 		ret += self.functionListHPP(self.CLASS_FUNCTIONS)
+		#Variables
+		ret += self.classVariableListHPP()
 		ret += "}\n"
 		return ret

@@ -30,6 +30,9 @@ class SQLSchemaTableBase:
 	def getName(self):
 		return self.tableName
 
+	def getColumns (self):
+		return self.columns
+
 	#Primary Key
 	# NOTE: Only support single column primary key (i.e the first index)
 	def setPrimaryKey(self, primaryKey):

@@ -19,6 +19,9 @@ class SQLSchemaTableColumnBase:
 	def getName(self):
 		return self.columnName
 
+	def getType(self):
+		return self.columnType
+
 	#Primary Key
 	#Primary Key
 	def setPrimaryKey(self, primaryKey):
