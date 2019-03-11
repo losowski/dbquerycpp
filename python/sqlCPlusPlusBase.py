@@ -63,7 +63,7 @@ class SQLCPlusPlusBase:
 		return "{ret} {functionName}({arguments})".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
 
 	def classFunctionHPP (self, ret, functionName, arguments, templateDict = dict()):
-		return "{ret} {functionName}({arguments})".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
+		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
 
 	#	IMPL
 	def classFunctionCPP (self, className, functionDetails):
@@ -83,7 +83,7 @@ class SQLCPlusPlusBase:
 	def functionListHPP(self, functions):
 		val = "\tpublic:\n"
 		for functionDetails in functions:
-			val += "\t\t" + self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2]) + ";\n"
+			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2])
 		return val
 
 	# Variables
