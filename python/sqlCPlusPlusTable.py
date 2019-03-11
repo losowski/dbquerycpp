@@ -25,7 +25,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 						)
 
 	#Schema templates - (ret, functionNametemplate, arguments)
-	SCHEMA_FUNCTION_TEMPLATES =	(
+	CLASS_FUNCTIONS =	(
 									("void", "selectRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
 																)
@@ -72,6 +72,6 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += "{\n"
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		#TODO: Make functions
-		ret += self.functionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
+		ret += self.functionListHPP(self.CLASS_FUNCTIONS)
 		ret += "}\n"
 		return ret
