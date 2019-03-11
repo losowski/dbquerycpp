@@ -28,6 +28,5 @@ class SQLSchemaTableOutputHPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 		#Build Class Functions
 		namespaced += self.buildClassHPP(self.tableName(), "dbquery::DBResult")
 		output += self.defineNamespace(self.schemaName(), namespaced)
-
 		output += self.fmt_endifdefine(self.tableFullName())
 		return output
