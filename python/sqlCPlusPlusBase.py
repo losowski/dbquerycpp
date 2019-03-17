@@ -48,7 +48,7 @@ class SQLCPlusPlusBase:
 	def functionArgs (self, parameters, templateDict = dict()):
 		ret = str()
 		logging.info("Parameters: %s", parameters)
-		ret += ", ".join ("{name} {typeof}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (name, typeof) in parameters)
+		ret += ", ".join ("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		return ret
 
 	#Class Functions
