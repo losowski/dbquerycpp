@@ -19,7 +19,13 @@ TODO List
 + Implement the update delete insert queries
 + Include a locking mechanism in database
 + Utilise a stored procedure for insert and update statements
-
++ Build a transaction object
+	- Takes in Shared Pointer "result" clases
+	- Processes each as one transaction
+	- Queues up the errors
+	- can add results to the process
+	- generates a new transaction object for the next commit
+	- i.e Groups all actions into one save transaction
 
 DONE
 + Add regex to parse DB inputs to make sure they are safe
