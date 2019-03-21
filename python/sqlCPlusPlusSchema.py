@@ -22,13 +22,6 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 										),
 								)
 
-	CONSTRUCTOR_ARGS_CPP =	(
-								#One constructor
-								(
-									("const string &", "connection",),
-								),
-							)
-
 	CONSTRUCTOR_INIT_CPP =	(	#One constructor
 								(
 									("dbquery::DBConnection", ("connection",),),
