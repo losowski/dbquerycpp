@@ -14,5 +14,18 @@ class SQLSchemaOutputCPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 
 	def buildContents(self):
 		output = str()
-		#TODO: Implement this function
+		output += self.fmt_ifndefine(self.schemaName())
+		output += self.fmt_define(self.schemaName())
+		#Incldues
+		output += self.fmt_include(self.schemaName() + ".hpp")
+		#Using Namespaces
+		output += self.useNamespace("std")
+		#output += self.useNamespace("dbquery") -- Unused
+		#Code
+		namespaced = str()
+		#Build Class Functions
+		namespaced += self.buildSchemaClassCPP(self.schemaName(), self.CONSTRUCTOR_ARGS_CPP, self.CONSTRUCTOR_INIT_CPP, self.SCHEMA_FUNCTION_TEMPLATES)
+		#Make a namespace
+		output += self.defineNamespace(self.schemaName(), namespaced)
+		output += self.fmt_endifdefine(self.schemaName())
 		return output

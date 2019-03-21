@@ -28,7 +28,7 @@ class SQLCPlusPlusBase:
 
 	#includes
 	def fmt_include(self, library):
-		return "#include \"{library}\"\n".format(library = library)
+		return "#include \"{library}\"\n".format(library = library.lower())
 
 	def fmt_lib_include(self, library):
 		return "#include <{library}>\n".format(library = library)
@@ -47,7 +47,7 @@ class SQLCPlusPlusBase:
 	#Function Parameters = list (type name)
 	def functionArgs (self, parameters, templateDict = dict()):
 		ret = str()
-		logging.info("Parameters: %s", parameters)
+		#logging.debug("functionArgs: %s", parameters)
 		ret += ", ".join ("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		return ret
 
@@ -55,7 +55,7 @@ class SQLCPlusPlusBase:
 	def className(self, className):
 		return "class {className};\n\n".format(className = className)
 
-	def classNameDefinition (self, className, derivedClass):
+	def classNameDefinitionHPP (self, className, derivedClass):
 		return "class {className} : public {derivedClass}\n".format(className = className, derivedClass = derivedClass)
 
 	#	Header
@@ -77,6 +77,36 @@ class SQLCPlusPlusBase:
 		for parameters in constructors:
 			val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
 		val += "\t\t~{className} (void);\n".format(className = className)
+		return val
+
+
+	#Constructor List
+	def parameterList (self, parameterList):
+		logging.debug("parameterList: %s", parameterList)
+		ret = ", ".join ("{name}".format(name = name) for name in parameterList)
+		logging.debug("parameterList output: %s", ret)
+		return ret
+
+
+	def constructorBuilder(self, classConstructors):
+		logging.debug("classConstructors: %s", classConstructors)
+		ret = str()
+		for construct in classConstructors:
+			objectName = construct[0]
+			logging.debug("objectName construct: %s", objectName)
+			initArgs = construct[1]
+			logging.debug("initArgs construct: %s", initArgs)
+			ret += "{objectName} ({initArgs})".format(objectName = objectName, initArgs = self.parameterList(initArgs) )
+		logging.info("constructorBuilder output: %s", ret)
+		return ret
+
+	def constructorListCPP (self, className, constructors, constructionArgs):
+		val = str()
+		for idx, parameters in enumerate(constructors):
+			logging.info("IDX: %s", idx)
+			logging.info("parameters: %s", parameters)
+			val += "t{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs[idx]))
+		val += "~{className}::{className} (void)\n{{\n}}\n".format(className = className)
 		return val
 
 	#	Function

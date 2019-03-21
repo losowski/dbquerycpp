@@ -90,7 +90,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 	# 	Class HPP: functions : (scope, name, argument(s))
 	def buildClassHPP(self, className, derivedClass):
-		ret = self.classNameDefinition(className, derivedClass)
+		ret = self.classNameDefinitionHPP(className, derivedClass)
 		ret += "{\n"
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		#Functions

@@ -9,10 +9,40 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	CONST_TABLENAME = 'tableName'
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
+							#One constructor
 							(
 								("const string &", "connection",),
-							),	#One constructor
+							),
 						)
+
+	CONSTRUCTOR_ARGS_CPP_2 =	(
+								#Parameters
+									(
+										(
+											("const string &", "connection",),
+										),	#One constructor
+									),
+									#Constructors
+									(
+										(
+											("dbquery::DBConnection", ("connection",)),
+										),	#One constructor
+									),
+								)
+
+	CONSTRUCTOR_ARGS_CPP =	(
+								#One constructor
+								(
+									("const string &", "connection",),
+								),
+							)
+
+	CONSTRUCTOR_INIT_CPP =	(	#One constructor
+								(
+									("dbquery::DBConnection", ("connection",),),
+								)
+							),
+
 
 	#Schema templates - (ret, functionNametemplate, arguments)
 	SCHEMA_FUNCTION_TEMPLATES =	(
@@ -62,12 +92,21 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return val
 
 
-	# 	Class HPP: functions : (scope, name, argument(s)) 
+	# 	Class HPP: functions : (scope, name, argument(s))
 	def buildSchemaClassHPP(self, className, derivedClass, constructors, functions):
-		ret = self.classNameDefinition(className, derivedClass)
+		ret = self.classNameDefinitionHPP(className, derivedClass)
 		ret += "{\n"
 		ret += self.constructorListHPP(className, constructors)
 		#TODO: Make functions
 		ret += self.templatedTableFunctionListHPP(functions)
+		ret += "}\n"
+		return ret
+
+	# 	Class CPP: functions : (scope, name, argument(s))
+	def buildSchemaClassCPP(self, className, constructors, constructionArgs, functions):
+		ret = "{\n"
+		ret += self.constructorListCPP(className, constructors, constructionArgs)
+		#TODO: Make functions
+		#TODO: Function implementations
 		ret += "}\n"
 		return ret
