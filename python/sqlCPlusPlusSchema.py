@@ -86,9 +86,6 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		for idx, tableObj in enumerate(self.outputObject.tables.values()):
 			val += "//{tableName}\n".format(tableName = tableObj.getName())
 			val += self.templatedNamedFunctionCPP(className, tableObj.getName(), templateFunctions)
-			#val += "\n{"
-			#val += self.templatedFunctionCPP(self.TEMPLATE_SINGLE_TABLE[idx], tableObj.getName())
-			#val += "\n}\n\n"
 		return val
 
 	# 	Class HPP: functions : (scope, name, argument(s))
