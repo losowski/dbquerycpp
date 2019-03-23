@@ -100,9 +100,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 	# 	Class CPP: functions : (scope, name, argument(s))
 	def buildSchemaClassCPP(self, className, constructors, constructionArgs, functions):
-		ret = "{\n"
+		ret = str()
 		ret += self.constructorListCPP(className, constructors, constructionArgs)
 		# Make Function implementations
 		ret += self.templatedTableFunctionListCPP(className, functions)
-		ret += "}\n"
 		return ret
