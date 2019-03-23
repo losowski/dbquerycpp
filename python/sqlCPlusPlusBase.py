@@ -66,8 +66,8 @@ class SQLCPlusPlusBase:
 		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
 
 	#	IMPL
-	def classFunctionTemplateCPP (self, className, ret, functionName, arguments, templateDict = dict()):
-		return "{ret} {className}::{functionName}({arguments})".format(className = className, ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
+	def classFunctionTemplateCPP (self, className, ret, functionName, arguments, implementation, templateDict = dict()):
+		return "{ret} {className}::{functionName}({arguments})\n{{\n{functionContent}\n}}\n\n".format(className = className, ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict), functionContent = implementation.format(**templateDict))
 
 	def classFunctionCPP (self, className, functionDetails):
 		return "{ret} {className}::{functionName}({arguments})".format(ret = functionDetails[0], className= className, functionName = functionDetails[1], arguments = functionArgs(functionDetails[2]) )

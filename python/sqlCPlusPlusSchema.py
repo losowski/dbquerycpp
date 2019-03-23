@@ -18,8 +18,11 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	SCHEMA_FUNCTION_TEMPLATES =	(
 									("p{tableName}", "g{tableName}", (
 																			("int", "primaryKey"),
-																		)
-										),
+																		),
+	"""	shared_ptr<{tableName}> obj(new {tableName}(this, primaryKey) );
+	obj->selectRow();
+	return obj;""",
+									),
 								)
 
 	CONSTRUCTOR_INIT_CPP =	(	#One constructor
@@ -27,12 +30,6 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 									("dbquery::DBConnection", ("connection",),),
 								)
 							),
-
-	TEMPLATE_SINGLE_TABLE	=	\
-	"""
-	shared_ptr<{tableName}> obj(new {tableName}(this, primaryKey) );
-	obj->selectRow();
-	return obj;"""
 
 
 
@@ -80,18 +77,18 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def templatedNamedFunctionCPP (self, className, tableName, templateFunctions):
 		val = str()
 		for functionDetails in templateFunctions:
-			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableName,})
+			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = {self.CONST_TABLENAME : tableName,})
 		return val
 
 	#templateFunctions = (ret, functionNametemplate, arguments)
 	def templatedTableFunctionListCPP(self, className, templateFunctions):
 		val = "//Functions to get single child objects\n"
-		for tableName, tableObj in self.outputObject.tables.iteritems():
+		for idx, tableObj in enumerate(self.outputObject.tables.values()):
 			val += "//{tableName}\n".format(tableName = tableObj.getName())
 			val += self.templatedNamedFunctionCPP(className, tableObj.getName(), templateFunctions)
-			val += "\n{"
-			val += self.templatedFunctionCPP(self.TEMPLATE_SINGLE_TABLE, tableObj.getName())
-			val += "\n}\n\n"
+			#val += "\n{"
+			#val += self.templatedFunctionCPP(self.TEMPLATE_SINGLE_TABLE[idx], tableObj.getName())
+			#val += "\n}\n\n"
 		return val
 
 	# 	Class HPP: functions : (scope, name, argument(s))
