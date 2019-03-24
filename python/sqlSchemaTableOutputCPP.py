@@ -23,7 +23,7 @@ class SQLSchemaTableOutputCPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 		#Code
 		namespaced = str()
 		#Build Class Functions
-		#namespaced += self.buildTableClassCPP(self.schemaName(), self.CONSTRUCTOR_ARGS, self.CONSTRUCTOR_INIT_CPP, self.TABLE_FUNCTION_TEMPLATES)
+		namespaced += self.buildTableClassCPP(self.schemaName())
 		#Make a namespace
 		output += self.defineNamespace(self.schemaName(), namespaced)
 		return output

@@ -78,9 +78,10 @@ class SQLCPlusPlusBase:
 	#List Functions
 	# HEADER
 	#	Constructor
-	def constructorListHPP (self, className, constructors):
+	def constructorListHPP (self, className, constructorsTemplate):
 		val = "\tpublic:\n"
-		for parameters in constructors:
+		for constructor in constructorsTemplate:
+			parameters = constructor[0]
 			val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
 		val += "\t\t~{className} (void);\n".format(className = className)
 		return val
@@ -106,12 +107,17 @@ class SQLCPlusPlusBase:
 		logging.info("constructorBuilder output: %s", ret)
 		return ret
 
-	def constructorListCPP (self, className, constructors, constructionArgs):
+	def constructorListCPP (self, className, constructorsTemplate):
 		val = str()
-		for idx, parameters in enumerate(constructors):
-			logging.info("IDX: %s", idx)
+		#Get Constructor functions
+		for constructor in constructorsTemplate:
+			logging.info("constructorsTemplate constructor: %s", constructor)
+			#Get Arguments for constructor
+			parameters = constructor[0]
+			constructionArgs = constructor[1]
 			logging.info("parameters: %s", parameters)
-			val += "t{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs[idx]))
+			logging.info("constructionArgs: %s", constructionArgs)
+			val += "t{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
 		val += "~{className}::{className} (void)\n{{\n}}\n".format(className = className)
 		return val
 

@@ -11,16 +11,16 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	CONSTRUCTOR_ARGS =	(
 							#One constructor
 							(
-								("const string &", "connection",),
-							),
-						)
-
-
-	CONSTRUCTOR_INIT_CPP =	(	#One constructor
+								#Parameters
+								(
+									("const string &", "connection",),
+								),
+								#Args
 								(
 									("dbquery::DBConnection", ("connection",),),
-								)
+								),
 							),
+						)
 
 	SCHEMA_FUNCTION_TEMPLATES =	(
 									("p{tableName}", "g{tableName}", (
@@ -86,7 +86,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	#templateFunctions = (ret, functionNametemplate, arguments)
 	def templatedTableFunctionListCPP(self, className):
 		val = str()
-		for idx, tableObj in enumerate(self.outputObject.tables.values()):
+		for tableObj in self.outputObject.tables.values():
 			val += "//{tableName}\n".format(tableName = tableObj.getName())
 			val += self.templatedNamedFunctionCPP(className, tableObj.getName(), self.SCHEMA_FUNCTION_TEMPLATES)
 		return val
@@ -104,7 +104,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	# 	Class CPP: functions : (scope, name, argument(s))
 	def buildSchemaClassCPP(self, className):
 		ret = str()
-		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS, self.CONSTRUCTOR_INIT_CPP)
+		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
 		# Make Function implementations
 		ret += self.templatedTableFunctionListCPP(className)
 		return ret

@@ -9,46 +9,58 @@ import sqlCPlusPlusBase
 class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
-							(
-								("dbquery::DBConnection *", "connection",),
-							),	#One constructor
-							(
-								("dbquery::DBConnection *", "connection",),
-								("const int", "primaryKey"),
-							),	#Two constructor
-
-							(
-								("dbquery::DBConnection *", "connection",),
-								("int", "id"),
-								("const string &", "text"),
-							),	#Three constructor
-						)
-
-	CONSTRUCTOR_INIT_CPP =	(	#One constructor
+							(	#One constructor
+								#Parameters
+								(
+									("dbquery::DBConnection *", "connection",),
+								),
+								#Args
 								(
 									("dbquery::DBConnection", ("connection",),),
-								)
+								),
 							),
-
+							(	#Two constructor
+								#Parameters
+								(
+									("dbquery::DBConnection *", "connection",),
+									("const int", "primaryKey"),
+								),
+								#Args
+								(
+									("dbquery::DBConnection", ("connection","primaryKey",),),
+								),
+							),
+							#(	#Three constructor  - Templated
+							#	#Parameters
+							#	),
+							#	#Args
+							#	(
+							#	),
+							#),
+						)
 
 	#Schema templates - (ret, functionNametemplate, arguments)
 	TABLE_FUNCTION_TEMPLATES =	(
 									("void", "selectRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
-																)
+																),
+									"DummySelect"
 									),
 									("void", "deleteRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
 																	("int", "primaryKey"),
-																)
+																),
+									"DummyDelete"
 									),
 									("void", "updateRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
-																)
+																),
+									"DummyUpdate"
 									),
 									("void", "insertRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
-																)
+																),
+									"DummyInsert"
 									),
 								)
 
@@ -110,25 +122,23 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 	# Implementation
 	#	Templated Table Functions
-	def templatedNamedFunctionCPP (self, className, tableName, templateFunctions):
+	def templatedNamedFunctionCPP (self, className, templateFunctions):
 		val = str()
 		for functionDetails in templateFunctions:
-			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = {self.CONST_TABLENAME : tableName,})
+			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = {})
 		return val
 
 	#templateFunctions = (ret, functionNametemplate, arguments)
-	def templatedTableFunctionListCPP(self, className, templateFunctions):
-		val = "//Functions to get single child objects\n"
-		for idx, tableObj in enumerate(self.outputObject.tables.values()):
-			val += "//{tableName}\n".format(tableName = tableObj.getName())
-			val += self.templatedNamedFunctionCPP(className, tableObj.getName(), templateFunctions)
+	def templatedTableFunctionListCPP(self, className):
+		val = str()
+		val += self.templatedNamedFunctionCPP(className, self.TABLE_FUNCTION_TEMPLATES)
 		return val
 
 
 	# 	Class CPP: functions : (scope, name, argument(s))
-	def buildTableClassCPP(self, className, constructors, constructionArgs, functions):
+	def buildTableClassCPP(self, className):
 		ret = str()
-		ret += self.constructorListCPP(className, constructors, constructionArgs)
+		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
 		# Make Function implementations
-		ret += self.templatedTableFunctionListCPP(className, functions)
+		ret += self.templatedTableFunctionListCPP(className)
 		return ret
