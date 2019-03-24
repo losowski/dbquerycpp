@@ -15,6 +15,13 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 							),
 						)
 
+
+	CONSTRUCTOR_INIT_CPP =	(	#One constructor
+								(
+									("dbquery::DBConnection", ("connection",),),
+								)
+							),
+
 	SCHEMA_FUNCTION_TEMPLATES =	(
 									("p{tableName}", "g{tableName}", (
 																			("int", "primaryKey"),
@@ -25,11 +32,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 									),
 								)
 
-	CONSTRUCTOR_INIT_CPP =	(	#One constructor
-								(
-									("dbquery::DBConnection", ("connection",),),
-								)
-							),
+
 
 
 

@@ -24,8 +24,15 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 							),	#Three constructor
 						)
 
+	CONSTRUCTOR_INIT_CPP =	(	#One constructor
+								(
+									("dbquery::DBConnection", ("connection",),),
+								)
+							),
+
+
 	#Schema templates - (ret, functionNametemplate, arguments)
-	CLASS_FUNCTIONS =	(
+	TABLE_FUNCTION_TEMPLATES =	(
 									("void", "selectRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
 																)
@@ -87,15 +94,41 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			val += self.classVariableHPP(variableType = columnObj.getType(), variableName = columnObj.getName())
 		return val
 
-
+	# Header
 	# 	Class HPP: functions : (scope, name, argument(s))
-	def buildClassHPP(self, className, derivedClass):
+	def buildTableClassHPP(self, className, derivedClass):
 		ret = self.classNameDefinitionHPP(className, derivedClass)
 		ret += "{\n"
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		#Functions
-		ret += self.functionListHPP(self.CLASS_FUNCTIONS)
+		ret += self.functionListHPP(self.TABLE_FUNCTION_TEMPLATES)
 		#Variables
 		ret += self.classVariableListHPP()
 		ret += "}\n"
+		return ret
+
+
+	# Implementation
+	#	Templated Table Functions
+	def templatedNamedFunctionCPP (self, className, tableName, templateFunctions):
+		val = str()
+		for functionDetails in templateFunctions:
+			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = {self.CONST_TABLENAME : tableName,})
+		return val
+
+	#templateFunctions = (ret, functionNametemplate, arguments)
+	def templatedTableFunctionListCPP(self, className, templateFunctions):
+		val = "//Functions to get single child objects\n"
+		for idx, tableObj in enumerate(self.outputObject.tables.values()):
+			val += "//{tableName}\n".format(tableName = tableObj.getName())
+			val += self.templatedNamedFunctionCPP(className, tableObj.getName(), templateFunctions)
+		return val
+
+
+	# 	Class CPP: functions : (scope, name, argument(s))
+	def buildTableClassCPP(self, className, constructors, constructionArgs, functions):
+		ret = str()
+		ret += self.constructorListCPP(className, constructors, constructionArgs)
+		# Make Function implementations
+		ret += self.templatedTableFunctionListCPP(className, functions)
 		return ret
