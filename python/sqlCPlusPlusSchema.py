@@ -84,27 +84,27 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return val
 
 	#templateFunctions = (ret, functionNametemplate, arguments)
-	def templatedTableFunctionListCPP(self, className, templateFunctions):
-		val = "//Functions to get single child objects\n"
+	def templatedTableFunctionListCPP(self, className):
+		val = str()
 		for idx, tableObj in enumerate(self.outputObject.tables.values()):
 			val += "//{tableName}\n".format(tableName = tableObj.getName())
-			val += self.templatedNamedFunctionCPP(className, tableObj.getName(), templateFunctions)
+			val += self.templatedNamedFunctionCPP(className, tableObj.getName(), self.SCHEMA_FUNCTION_TEMPLATES)
 		return val
 
 	# 	Class HPP: functions : (scope, name, argument(s))
-	def buildSchemaClassHPP(self, className, derivedClass, constructors, functions):
+	def buildSchemaClassHPP(self, className, derivedClass):
 		ret = self.classNameDefinitionHPP(className, derivedClass)
 		ret += "{\n"
-		ret += self.constructorListHPP(className, constructors)
+		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		# Make functions
-		ret += self.templatedTableFunctionListHPP(functions)
+		ret += self.templatedTableFunctionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
 		ret += "}\n"
 		return ret
 
 	# 	Class CPP: functions : (scope, name, argument(s))
-	def buildSchemaClassCPP(self, className, constructors, constructionArgs, functions):
+	def buildSchemaClassCPP(self, className):
 		ret = str()
-		ret += self.constructorListCPP(className, constructors, constructionArgs)
+		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS, self.CONSTRUCTOR_INIT_CPP)
 		# Make Function implementations
-		ret += self.templatedTableFunctionListCPP(className, functions)
+		ret += self.templatedTableFunctionListCPP(className)
 		return ret

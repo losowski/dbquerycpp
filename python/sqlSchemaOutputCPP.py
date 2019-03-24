@@ -22,7 +22,7 @@ class SQLSchemaOutputCPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 		#Code
 		namespaced = str()
 		#Build Class Functions
-		namespaced += self.buildSchemaClassCPP(self.schemaName(), self.CONSTRUCTOR_ARGS, self.CONSTRUCTOR_INIT_CPP, self.SCHEMA_FUNCTION_TEMPLATES)
+		namespaced += self.buildSchemaClassCPP(self.schemaName())
 		#Make a namespace
 		output += self.defineNamespace(self.schemaName(), namespaced)
 		return output
