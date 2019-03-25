@@ -73,7 +73,14 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 									("void", "updateRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
 																),
-									"DummyUpdate"
+"""
+	pqxx::result res = txn->exec("UPDATE \\
+		{tableName} \\
+	SET \\
+{updateColumnList}\tWHERE \\
+		{primaryKey} = " + txn->quote({primaryKey}) + \\
+	";");
+"""
 									),
 									("void", "insertRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
@@ -143,6 +150,16 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		return "\tAND \\\n".join("\t\t{column} = \" + txn->quote({column}) + \"\\\n".format(column = columnName) for columnName, columnData in self.outputObject.getColumns().iteritems() )
 
+	def updateColumnList(self):
+		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
+		columns = list()
+		logging.debug("getSafeTypeConversion getPrimaryKey: \"%s\"", self.outputObject.getPrimaryKey())
+		for columnName, columnData in self.outputObject.getColumns().iteritems():
+			if columnName != self.outputObject.getPrimaryKey():
+				logging.debug("getSafeTypeConversion column: \"%s\"", columnName)
+				columns.append( "\t\t{column}  = \" + txn->quote({column}) + \"\\\n".format(column = columnName) )
+		return  ",".join(columns)
+
 	def columnList(self):
 		return ", \\\n\t\t".join(self.outputObject.getColumns().keys())
 
@@ -162,6 +179,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			'tableName'				:	self.outputObject.getFullName(),
 			'primaryKey'			:	self.outputObject.getPrimaryKey(),
 			'deleteColumnList'		:	self.deleteColumnList(),
+			'updateColumnList'		:	self.updateColumnList(),
 			'columnList'			:	self.columnList(),
 			'safeDataColumn'		:	self.getSafeTypeConversion(),
 		}
