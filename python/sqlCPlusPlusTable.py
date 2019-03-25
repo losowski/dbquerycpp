@@ -44,7 +44,19 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 									("void", "selectRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
 																),
-									"DummySelect"
+	"""
+	pqxx::result res = txn->exec("SELECT \\
+		{columnList} \\
+	FROM \\
+		{tableName} \\
+	WHERE \\
+		id = " + txn->quote(pk) + ";");
+	// Only get one result line (as we use the Primary Key
+	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
+	{{
+{safeDataColumn}
+	}}"
+	"""
 									),
 									("void", "deleteRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
@@ -121,11 +133,28 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 
 	# Implementation
+	def columnList(self):
+		return ", \\\n\t\t".join(self.outputObject.getColumns().keys())
+
+	def getSafeTypeConversion(self):
+		val = str()
+		for columnName, columnData in self.outputObject.getColumns().iteritems():
+			logging.info("getSafeTypeConversion column: \"%s\" - \"%s\"", columnName, columnData.getType())
+			val += "\t\tdbquery::DBSafeUtils::safeTo{datatype}(&this->{column}, res[i][\"{column}\"]);\n".format(column = columnName, datatype = columnData.getCPPType())
+		return val
+
+
 	#	Templated Table Functions
 	def templatedNamedFunctionCPP (self, className, templateFunctions):
 		val = str()
+		#Build Dict
+		templateDict = {
+			'tableName'			:	self.outputObject.getFullName(),
+			'columnList'		:	self.columnList(),
+			'safeDataColumn'	:	self.getSafeTypeConversion()
+		}
 		for functionDetails in templateFunctions:
-			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = {})
+			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
 		return val
 
 	#templateFunctions = (ret, functionNametemplate, arguments)
