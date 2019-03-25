@@ -55,14 +55,20 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
 {safeDataColumn}
-	}}"
+	}}
 	"""
 									),
 									("void", "deleteRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
 																	("int", "primaryKey"),
 																),
-									"DummyDelete"
+	"""
+	pqxx::result res = txn->exec("DELETE FROM \\
+		{tableName} \\
+	WHERE \\
+{deleteColumnList}
+	";");
+	"""
 									),
 									("void", "updateRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
@@ -133,6 +139,10 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 
 	# Implementation
+	def deleteColumnList(self):
+		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
+		return "\tAND \\\n".join("\t\t{column} = \" + txn->quote({column}) + \"\\\n".format(column = columnName) for columnName, columnData in self.outputObject.getColumns().iteritems() )
+
 	def columnList(self):
 		return ", \\\n\t\t".join(self.outputObject.getColumns().keys())
 
@@ -149,10 +159,11 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		val = str()
 		#Build Dict
 		templateDict = {
-			'tableName'			:	self.outputObject.getFullName(),
-			'primaryKey'		:	self.outputObject.getPrimaryKey(),
-			'columnList'		:	self.columnList(),
-			'safeDataColumn'	:	self.getSafeTypeConversion(),
+			'tableName'				:	self.outputObject.getFullName(),
+			'primaryKey'			:	self.outputObject.getPrimaryKey(),
+			'deleteColumnList'		:	self.deleteColumnList(),
+			'columnList'			:	self.columnList(),
+			'safeDataColumn'		:	self.getSafeTypeConversion(),
 		}
 		for functionDetails in templateFunctions:
 			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
