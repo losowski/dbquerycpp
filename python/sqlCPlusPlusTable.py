@@ -50,7 +50,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	FROM \\
 		{tableName} \\
 	WHERE \\
-		id = " + txn->quote(pk) + ";");
+		{primaryKey} = " + txn->quote(pk) + ";");
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
@@ -150,8 +150,9 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		#Build Dict
 		templateDict = {
 			'tableName'			:	self.outputObject.getFullName(),
+			'primaryKey'		:	self.outputObject.getPrimaryKey(),
 			'columnList'		:	self.columnList(),
-			'safeDataColumn'	:	self.getSafeTypeConversion()
+			'safeDataColumn'	:	self.getSafeTypeConversion(),
 		}
 		for functionDetails in templateFunctions:
 			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )

@@ -39,7 +39,7 @@ class SQLSchemaTableBase:
 		self.primaryKey = primaryKey
 		self.columns[primaryKey].setPrimaryKey(True)
 
-	def getPrimaryKey (self, primaryKey):
+	def getPrimaryKey (self):
 		return self.primaryKey
 
 	#Column and type
