@@ -77,7 +77,8 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	pqxx::result res = txn->exec("UPDATE \\
 		{tableName} \\
 	SET \\
-{updateColumnList}\tWHERE \\
+{updateSetColumnList} \\
+	WHERE \\
 		{primaryKey} = " + txn->quote({primaryKey}) + \\
 	";");
 """
@@ -85,7 +86,17 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 									("void", "insertRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
 																),
-									"DummyInsert"
+"""
+	pqxx::result res = txn->exec("INSERT INTO \\
+	{tableName} \\
+	( \\
+{insertColumnList} \\
+	) \\
+	VALUES (" \\
+{insertValueColumnList} \\
+	")\\
+;");
+"""
 									),
 								)
 
@@ -150,15 +161,28 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		return "\tAND \\\n".join("\t\t{column} = \" + txn->quote({column}) + \"\\\n".format(column = columnName) for columnName, columnData in self.outputObject.getColumns().iteritems() )
 
-	def updateColumnList(self):
+	def updateSetColumnList(self):
 		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		columns = list()
-		logging.debug("getSafeTypeConversion getPrimaryKey: \"%s\"", self.outputObject.getPrimaryKey())
 		for columnName, columnData in self.outputObject.getColumns().iteritems():
 			if columnName != self.outputObject.getPrimaryKey():
-				logging.debug("getSafeTypeConversion column: \"%s\"", columnName)
-				columns.append( "\t\t{column}  = \" + txn->quote({column}) + \"\\\n".format(column = columnName) )
-		return  ",".join(columns)
+				columns.append( "\t\t{column}  = \" + txn->quote({column}) + \"".format(column = columnName) )
+		return  ", \\\n".join(columns)
+
+	def insertColumnList(self):
+		columns = list()
+		for columnName, columnData in self.outputObject.getColumns().iteritems():
+			if columnName != self.outputObject.getPrimaryKey():
+				columns.append( "\t\t{column}".format(column = columnName) )
+		return  ", \\\n".join(columns)
+
+
+	def insertValueColumnList(self):
+		columns = list()
+		for columnName, columnData in self.outputObject.getColumns().iteritems():
+			if columnName != self.outputObject.getPrimaryKey():
+				columns.append( "\t\ttxn->quote({column})".format(column = columnName) )
+		return  " + \",\" \\\n + ".join(columns)
 
 	def columnList(self):
 		return ", \\\n\t\t".join(self.outputObject.getColumns().keys())
@@ -176,12 +200,14 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		val = str()
 		#Build Dict
 		templateDict = {
-			'tableName'				:	self.outputObject.getFullName(),
-			'primaryKey'			:	self.outputObject.getPrimaryKey(),
-			'deleteColumnList'		:	self.deleteColumnList(),
-			'updateColumnList'		:	self.updateColumnList(),
-			'columnList'			:	self.columnList(),
-			'safeDataColumn'		:	self.getSafeTypeConversion(),
+			'tableName'					:	self.outputObject.getFullName(),
+			'primaryKey'				:	self.outputObject.getPrimaryKey(),
+			'deleteColumnList'			:	self.deleteColumnList(),
+			'updateSetColumnList'		:	self.updateSetColumnList(),
+			'insertColumnList'			:	self.insertColumnList(),
+			'insertValueColumnList'		:	self.insertValueColumnList(),
+			'columnList'				:	self.columnList(),
+			'safeDataColumn'			:	self.getSafeTypeConversion(),
 		}
 		for functionDetails in templateFunctions:
 			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
