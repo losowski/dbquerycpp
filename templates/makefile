@@ -65,15 +65,15 @@ CFLAGS = $(TARGET_FLAG) $(COMPILER_OPTIONS) -DVERSION=\"$(VERSION)\" #Other defi
 ###################
 ## PROJECT FILES ##
 ###################
-PROGRAM_NAME=libdbquery.so
+PROGRAM_NAME=$MAKEFILE_PROGRAM_NAME
 #INCLUDES
-#INCLUDES = -I/form
+INCLUDES = -I../libhtml -I../libwebpage
 
 #Libraries
-LDFLAGS = -L/usr/lib/x86_64-linux-gnu
+LDFLAGS = -L../lib -L/usr/lib/x86_64-linux-gnu -lcgicc -lpq -lpqxx -lhtml
 
 #Soures
-SRCS = dbquery_base.cpp # dbquery.cpp dbquery_connection.cpp 
+SRCS = web_site_cms.cpp $MAKEFILE_FILES
 
 ###########
 ## MAGIC ##

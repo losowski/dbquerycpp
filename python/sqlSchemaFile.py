@@ -7,8 +7,6 @@ import re
 import sqlSchemaBase
 import sqlSchemaTable
 import sqlSchemaTableColumn
-import sqlSchemaOutputHPP
-import sqlSchemaOutputCPP
 
 
 class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
@@ -176,11 +174,3 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			schemaName = SchemaSQLMatch.group('schema_name')
 			logging.error("SchemaSQLMatch schemaName: \"%s\"", schemaName)
 			self.setSchema(schemaName)
-
-	def run(self):
-		# Build the schema
-		self.hpp = sqlSchemaOutputHPP.SQLSchemaOutputHPP(self)
-		self.cpp = sqlSchemaOutputCPP.SQLSchemaOutputCPP(self)
-
-	def shutdown(self):
-		pass
