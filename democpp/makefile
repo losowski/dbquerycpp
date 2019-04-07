@@ -65,15 +65,15 @@ CFLAGS = $(TARGET_FLAG) $(COMPILER_OPTIONS) -DVERSION=\"$(VERSION)\" #Other defi
 ###################
 ## PROJECT FILES ##
 ###################
-PROGRAM_NAME=libdbquery.so
+PROGRAM_NAME=libdemo.so
 #INCLUDES
-#INCLUDES = -I/form
+INCLUDES = -I../libdbquery
 
 #Libraries
-LDFLAGS = -L/usr/lib/x86_64-linux-gnu
+LDFLAGS = -L/usr/lib/x86_64-linux-gnu -L../lib -ldbquery
 
 #Soures
-SRCS = dbexception.cpp dbexceptionBadData.cpp dbconnection.cpp dbutils.cpp dbsafeutils.cpp dbresult.cpp tbody.cpp tindividual.cpp neuron_schema.cpp
+SRCS = tbody.cpp tindividual.cpp neuron_schema.cpp
 
 ###########
 ## MAGIC ##
