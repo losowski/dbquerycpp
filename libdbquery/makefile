@@ -65,7 +65,7 @@ CFLAGS = $(TARGET_FLAG) $(COMPILER_OPTIONS) -DVERSION=\"$(VERSION)\" #Other defi
 ###################
 ## PROJECT FILES ##
 ###################
-PROGRAM_NAME=libdbquery.so
+PROGRAM_NAME=../lib/libdbquery.so
 #INCLUDES
 #INCLUDES = -I/form
 
@@ -73,7 +73,7 @@ PROGRAM_NAME=libdbquery.so
 LDFLAGS = -L/usr/lib/x86_64-linux-gnu
 
 #Soures
-SRCS = dbexception.cpp dbexceptionBadData.cpp dbconnection.cpp dbutils.cpp dbsafeutils.cpp dbresult.cpp tbody.cpp tindividual.cpp neuron_schema.cpp
+SRCS = dbexception.cpp dbexceptionBadData.cpp dbconnection.cpp dbutils.cpp dbsafeutils.cpp dbresult.cpp
 
 ###########
 ## MAGIC ##
