@@ -66,7 +66,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	pqxx::result res = txn->exec("DELETE FROM \\
 		{tableName} \\
 	WHERE \\
-{deleteColumnList}
+{deleteColumnList} \\
 	";");
 	"""
 									),
@@ -159,7 +159,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	# Implementation
 	def deleteColumnList(self):
 		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
-		return "\tAND \\\n".join("\t\t{column} = \" + txn->quote({column}) + \"\\\n".format(column = columnName) for columnName, columnData in self.outputObject.getColumns().iteritems() )
+		return "\"\tAND \\\n".join("\t\t{column} = \" + txn->quote({column}) + ".format(column = columnName) for columnName, columnData in self.outputObject.getColumns().iteritems() )
 
 	def updateSetColumnList(self):
 		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
