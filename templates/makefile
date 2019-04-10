@@ -73,7 +73,7 @@ INCLUDES = -Ilibdbquery
 LDFLAGS = -Llib -L/usr/lib/x86_64-linux-gnu -ldbquery
 
 #Soures
-SRCS = $MAKEFILE_FILES
+SRCS = $MAKEFILE_FILES $MAKEFILE_FILEBASE
 
 ###########
 ## MAGIC ##
