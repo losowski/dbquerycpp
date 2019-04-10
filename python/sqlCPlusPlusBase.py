@@ -5,6 +5,12 @@
 import logging
 
 class SQLCPlusPlusBase:
+	#Datatype conversion
+	SQLDATATYPEMAPPING	=	{
+							'bigint'	:	'int',
+							'text'		:	'string',
+							'timestamp'	:	'string',
+						}
 
 	def __init__(self, filename):
 		self.fileName = filename
@@ -130,7 +136,7 @@ class SQLCPlusPlusBase:
 
 	# Variables
 	def classVariableHPP (self, variableType, variableName):
-		return "\t\t{variableType}\t\t\t{variableName};\n".format(variableType = variableType, variableName = variableName)
+		return "\t\t{variableType}\t\t\t{variableName};\n".format(variableType = self.SQLDATATYPEMAPPING.get(variableType,'string'), variableName = variableName)
 
 	#Build the File
 	#Overload this to build the actual file
