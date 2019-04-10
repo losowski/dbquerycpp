@@ -152,7 +152,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += self.functionListHPP(self.TABLE_FUNCTION_TEMPLATES)
 		#Variables
 		ret += self.classVariableListHPP()
-		ret += "}\n"
+		ret += "};\n"
 		return ret
 
 
