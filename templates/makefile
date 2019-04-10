@@ -67,13 +67,13 @@ CFLAGS = $(TARGET_FLAG) $(COMPILER_OPTIONS) -DVERSION=\"$(VERSION)\" #Other defi
 ###################
 PROGRAM_NAME=$MAKEFILE_PROGRAM_NAME
 #INCLUDES
-INCLUDES = -I../libhtml -I../libwebpage
+INCLUDES = -Ilibdbquery
 
 #Libraries
-LDFLAGS = -L../lib -L/usr/lib/x86_64-linux-gnu -lcgicc -lpq -lpqxx -lhtml
+LDFLAGS = -Llib -L/usr/lib/x86_64-linux-gnu -ldbquery
 
 #Soures
-SRCS = web_site_cms.cpp $MAKEFILE_FILES
+SRCS = $MAKEFILE_FILES
 
 ###########
 ## MAGIC ##
