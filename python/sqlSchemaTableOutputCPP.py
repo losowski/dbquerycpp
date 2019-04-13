@@ -15,7 +15,6 @@ class SQLSchemaTableOutputCPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 	def buildContents(self):
 		output = str()
 		#Incldues
-		output += self.fmt_include("dbsafeutils.hpp")
 		output += self.fmt_include(self.tableName() + ".hpp")
 		#Using Namespaces
 		output += self.useNamespace("std")

@@ -16,7 +16,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 								),
 								#Args
 								(
-									("dbquery::DBConnection", ("connection",),),
+									("dbquery::DBResult", ("connection",),),
 								),
 							),
 							(	#Two constructor
@@ -27,7 +27,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 								),
 								#Args
 								(
-									("dbquery::DBConnection", ("connection","primaryKey",),),
+									("dbquery::DBResult", ("connection","primaryKey",),),
 								),
 							),
 							#(	#Three constructor  - Templated
