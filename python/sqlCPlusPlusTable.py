@@ -92,8 +92,8 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	( \\
 {insertColumnList} \\
 	) \\
-	VALUES (" \\
-{insertValueColumnList} \\
+	VALUES (" + \\
+{insertValueColumnList} + \\
 	")\\
 ;");
 """
