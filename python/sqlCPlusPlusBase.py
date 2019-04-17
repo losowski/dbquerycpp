@@ -125,7 +125,7 @@ class SQLCPlusPlusBase:
 			logging.info("parameters: %s", parameters)
 			logging.info("constructionArgs: %s", constructionArgs)
 			val += "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
-		val += "~{className}::{className} (void)\n{{\n}}\n".format(className = className)
+		val += "{className}::~{className} (void)\n{{\n}}\n".format(className = className)
 		return val
 
 	#	Function
