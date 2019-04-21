@@ -130,7 +130,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 					logging.info("Field definition: \"%s\"", fieldData)
 					#Proces Data
 					columnName = columnNameMatch.group('column_name')
-					columnType = columnNameMatch.group('column_type')
+					columnType = columnNameMatch.group('column_type').replace("\"","")
 					logging.debug("columnNameMatch column_name: \"%s\"", columnName)
 					if (columnName != 'CONSTRAINT'):
 						logging.debug("columnNameMatch column_type: \"%s\"", columnType)
