@@ -18,11 +18,12 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	SchemaSQL = re.compile("\s?CREATE\s+SCHEMA\s+IF\s+NOT\s+EXISTS\s+(?P<schema_name>\S+)\s+.*;")
 	#Table Field Definitions
 	TableFieldSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s+\((?P<field_definitions>.*)\).*;")
+	SQLArray = re.compile("ANY\s?\(.*\)")
 	#Get the column names
 	ColumnNameSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+)")
 	#CONSTRAINTS
 	PrimaryKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<primary_key_name>\S+)\s?PRIMARY\s?KEY\s?\((?P<column_name>\S+)\)")
-	ForeignKeyConstraintSQL= re.compile("\s+CONSTRAINT\s?(?P<foreign_key_name>\S+)\s?FOREIGN\s+KEY\s+\((?P<column_name>\S+)\)\s+REFERENCES\s+(?P<referenced_table>\S+)\s+\((?P<referenced_column>\S+)\).*")
+	ForeignKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<foreign_key_name>\S+)\s?FOREIGN\s+KEY\s+\((?P<column_name>\S+)\)\s+REFERENCES\s+(?P<referenced_table>\S+)\s+\((?P<referenced_column>\S+)\).*")
 	# CREATE UNIQUE INDEX pk_body_name ON neuron_schema.tbody USING btree (name COLLATE pg_catalog."default") TABLESPACE pg_default;
 	IndexSQL= re.compile("\s+CREATE\s+(?P<index_type>\S+)\s+INDEX\s+(?P<index_name>\S+)\s+ON\s+(?P<index_table>\S+).*\((?P<index_column>\S+)\).*;")
 
@@ -95,8 +96,11 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			###
 			tableFieldDefinitions = tableFieldMatch.group('field_definitions')
 			logging.debug("tableFieldDefinitions: \"%s\"", tableFieldDefinitions)
+			#Remove the ARRAY
+			CleanedTableFieldDefinitions = self.SQLArray.sub("", tableFieldDefinitions)
+			logging.info("tableFieldDefinitions2: \"%s\"", CleanedTableFieldDefinitions)
 			#field_definitions split by comma
-			for fieldData in tableFieldDefinitions.split(','):	#TODO: Change this split to use proper regex
+			for fieldData in CleanedTableFieldDefinitions.split(','):
 				logging.debug("fieldData: \"%s\"", fieldData)
 				#Run the ReGex for each identity
 				primaryKeyConstraintSQLMatch = self.PrimaryKeyConstraintSQL.match(fieldData)
