@@ -8,7 +8,7 @@ class SQLCPlusPlusBase:
 	#Datatype conversion
 	SQLDATATYPEMAPPING	=	{
 							'bigint'	:	'int',
-							'char'		:	'char',
+							'char'		:	'string',
 							'text'		:	'string',
 							'timestamp'	:	'string',
 						}

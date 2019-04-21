@@ -9,6 +9,8 @@ class SQLSchemaTableColumn (sqlSchemaTableColumnOutput.SQLSchemaTableColumnOutpu
 	#Type converter
 	SQLTYPEMAPPING	=	{
 							'bigint'	:	'Int',
+							'char'		:	'String',
+							'text'		:	'String',
 							'timestamp'	:	'String',
 						}
 
