@@ -96,7 +96,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 			tableFieldDefinitions = tableFieldMatch.group('field_definitions')
 			logging.debug("tableFieldDefinitions: \"%s\"", tableFieldDefinitions)
 			#field_definitions split by comma
-			for fieldData in tableFieldDefinitions.split(','):
+			for fieldData in tableFieldDefinitions.split(','):	#TODO: Change this split to use proper regex
 				logging.debug("fieldData: \"%s\"", fieldData)
 				#Run the ReGex for each identity
 				primaryKeyConstraintSQLMatch = self.PrimaryKeyConstraintSQL.match(fieldData)
