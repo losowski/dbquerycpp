@@ -2,12 +2,13 @@
 
 #import
 import logging
+import sqlSchema
 import sqlSchemaTableColumn
 
-class SQLSchemaTableBase:
+class SQLSchemaTableBase (sqlSchema.SQLSchema):
 
 	def __init__(self, tableName):
-		self.schemaName = self.__buildSchemaName(tableName)
+		sqlSchema.SQLSchema.__init__(self, tableName.split(".")[0])
 		self.tableName = tableName.split(".")[1]
 		self.tableFullName = tableName
 		self.columns = dict()
@@ -16,13 +17,8 @@ class SQLSchemaTableBase:
 		pass
 
 	def __del__(self):
+		sqlSchema.SQLSchema.__del__(self)
 		pass
-
-	def __buildSchemaName(self, tableName):
-		schema = tableName.split(".")[0]
-		schemaName = schema.split("_")[0]
-		schemaName += ''.join( word.title() for word in schema.split("_")[1:])
-		return schemaName
 
 	def getFullName(self):
 		return self.tableFullName

@@ -2,20 +2,22 @@
 
 #import
 import logging
+import sqlSchema
 import sqlSchemaOutputHPP
 import sqlSchemaOutputCPP
 import sqlSchemaOutputMakefile
 
 
-class SQLSchemaBase:
+class SQLSchemaBase (sqlSchema.SQLSchema):
 	def __init__(self):
+		sqlSchema.SQLSchema.__init__(self)
 		self.tables = dict()	#	tableName - TableObj
-		self.schema = "schema"
 		self.hpp = None
 		self.cpp = None
 		self.makefile = None
 
 	def __del__(self):
+		sqlSchema.SQLSchema.__del__(self)
 		self.hpp = None
 		self.cpp = None
 		self.makefile = None
@@ -28,12 +30,6 @@ class SQLSchemaBase:
 
 	def getTables(self):
 		return self.tables
-
-	def setSchema(self, schema):
-		self.schema = schema
-
-	def getSchema(self):
-		return self.schema
 
 	def build(self):
 		#Build Makefile - buildContents not build (template, not a complete file builder)

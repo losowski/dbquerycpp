@@ -38,7 +38,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 
 	def __init__(self, outputObject, extension):
-		filename = outputObject.getSchema() + extension
+		filename = outputObject.getSchemaName() + extension
 		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, filename)
 		self.outputObject = outputObject
 
@@ -48,7 +48,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		self.outputObject = None
 
 	def schemaName(self):
-		return self.outputObject.getSchema().capitalize()
+		return self.outputObject.getSchemaName()
 
 	def buildContents(self):
 		return str()
@@ -98,7 +98,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		# Make functions
 		ret += self.templatedTableFunctionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
-		ret += "}\n"
+		ret += "};\n"
 		return ret
 
 	# 	Class CPP: functions : (scope, name, argument(s))

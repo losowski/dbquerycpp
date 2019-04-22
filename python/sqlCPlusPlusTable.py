@@ -122,7 +122,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return self.outputObject.getName()
 
 	def schemaName(self):
-		return self.outputObject.schemaName
+		return self.outputObject.getSchemaName()
 
 	def buildContents(self):
 		return str()

@@ -14,7 +14,7 @@ class SQLCPlusPlusBase:
 						}
 
 	def __init__(self, filename):
-		self.fileName = filename
+		self.fileName = filename.lower()
 		pass
 
 	def __del__(self):
