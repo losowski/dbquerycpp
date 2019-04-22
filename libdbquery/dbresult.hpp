@@ -36,5 +36,7 @@ class DBResult
 		dbquery::DBConnection *		m_connection;
 };
 
+typedef shared_ptr<DBResult> ptDBResult;
+
 }
 #endif //DBRESULT_HPP

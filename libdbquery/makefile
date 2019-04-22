@@ -73,7 +73,7 @@ PROGRAM_NAME=../lib/libdbquery.so
 LDFLAGS = -L/usr/lib/x86_64-linux-gnu
 
 #Soures
-SRCS = dbexception.cpp dbexceptionBadData.cpp dbconnection.cpp dbutils.cpp dbsafeutils.cpp dbresult.cpp
+SRCS = dbexception.cpp dbexceptionBadData.cpp dbconnection.cpp dbutils.cpp dbsafeutils.cpp dbresult.cpp dbtransaction.cpp
 
 ###########
 ## MAGIC ##
