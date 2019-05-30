@@ -69,11 +69,18 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return val
 
 	#templateFunctions = (ret, functionNametemplate, arguments)
+	#TODO: Make this function more generic (currently we assume all API functions are public, and this not an exhaustive list)
 	def templatedTableFunctionListHPP(self, templateFunctions):
 		val = "\tpublic:\n\t\t//Get single child objects\n"
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			val += "\t\t" + self.templatedNamedFunctionHPP(tableObj.getName(), templateFunctions) + ";\n"
 		return val
+
+	# Storage objects to implement object caching
+	#TODO: Implement means to generate storage objects
+	#TODO: Add functions to retrieve via the stored object (and not just generate new objects) - header and implementation
+
+
 
 	# Implementation
 	#	Templated Table Functions
@@ -98,6 +105,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		# Make functions
 		ret += self.templatedTableFunctionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
+		# Add Scoped variables
+		ret += self.classScopeVariableHPP()
 		ret += "};\n"
 		return ret
 

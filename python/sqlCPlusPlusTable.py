@@ -146,6 +146,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		#Functions
 		ret += self.functionListHPP(self.TABLE_FUNCTION_TEMPLATES)
 		#Variables
+		##TODO: Remove this and use the generic classScopeVariableHPP instead (with type swaps upfront)
 		ret += self.classVariableListHPP()
 		ret += "};\n"
 		return ret

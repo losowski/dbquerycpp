@@ -12,9 +12,13 @@ class SQLCPlusPlusBase:
 							'text'		:	'string',
 							'timestamp'	:	'string',
 						}
+	PRIVATE		=	"private"
+	PROTECTED	=	"protected"
+	PUBLIC		=	"public"
 
 	def __init__(self, filename):
 		self.fileName = filename.lower()
+		self.classVariables = dict() # dict(scope : dict(variable, type))
 		pass
 
 	def __del__(self):
@@ -71,6 +75,24 @@ class SQLCPlusPlusBase:
 
 	def classFunctionHPP (self, ret, functionName, arguments, templateDict = dict()):
 		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
+
+
+	# Allow addition of class variables with scopes
+	def addClassScopeVariable(self, variableScope, variableType, variableName):
+		scoped = self.classVariables.setdefault(variableScope, dict())
+		scoped[variableName] = variableType
+
+	def classScopeVariableHPP(self):
+		#TODO: Properly implement this with class scopes
+		retVal = str()
+		for variableScope, variableList in self.classVariables.iteritems():
+			retVal += "\t{scope}:\n".format(scope = variableScope)
+			for variableName, variableType  in variableList.iteritems():
+				retVal += "\t\t{vType}\t\t\t{vName};\n".format(vType = variableType, vName = variableName)
+		return retVal
+
+	def classVariableHPP (self, variableType, variableName):
+		return "\t\t{variableType}\t\t\t{variableName};\n".format(variableType = self.SQLDATATYPEMAPPING.get(variableType,'string'), variableName = variableName)
 
 	#	IMPL
 	def classFunctionTemplateCPP (self, className, ret, functionName, arguments, implementation, templateDict = dict()):
@@ -134,10 +156,6 @@ class SQLCPlusPlusBase:
 		for functionDetails in functions:
 			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2])
 		return val
-
-	# Variables
-	def classVariableHPP (self, variableType, variableName):
-		return "\t\t{variableType}\t\t\t{variableName};\n".format(variableType = self.SQLDATATYPEMAPPING.get(variableType,'string'), variableName = variableName)
 
 	#Build the File
 	#Overload this to build the actual file

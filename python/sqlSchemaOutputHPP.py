@@ -8,6 +8,8 @@ import sqlCPlusPlusSchema
 class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 	def __init__(self, outputObject):
 		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__init__(self, outputObject, ".hpp")
+		#Build the object constants
+		self.addClassScopeVariable(self.PUBLIC, "DBTransaction", "transaction") #public: DBTransaction		transaction;
 
 	def __del__(self):
 		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__del__(self)
@@ -18,6 +20,7 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 		output += self.fmt_define(self.schemaName())
 		#Incldues
 		output += self.fmt_include("dbconnection.hpp")
+		output += self.fmt_include("dbtransaction.hpp")
 		output += self.getTableIncludes()
 		#Using Namespaces
 		output += self.useNamespace("std")
