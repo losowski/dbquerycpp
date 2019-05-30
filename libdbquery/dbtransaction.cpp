@@ -23,25 +23,48 @@ DBTransaction::~DBTransaction(void)
 	// Destroy the transaction object
 	transaction.reset();
 	// Destroy the objects we hold
-	for (vector < ptDBResult >::iterator it = txnObjects.begin(); it != txnObjects.end(); it++)
+	// Insert
+	for (vector < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
+	{
+		it->reset();
+	}
+	// Update
+	for (vector < ptDBResult >::iterator it = updateTxnObjects.begin(); it != updateTxnObjects.end(); it++)
+	{
+		it->reset();
+	}
+	// Delete
+	for (vector < ptDBResult >::iterator it = deleteTxnObjects.begin(); it != deleteTxnObjects.end(); it++)
 	{
 		it->reset();
 	}
 }
 
 // Transaction oriented commands
-void DBTransaction::newTransaction(void)
+shared_ptr<pqxx::work> DBTransaction::newTransaction(void)
 {
 	transaction.reset();
 	transaction = m_connection->getTransaction();
+	return transaction;
 }
 
 //	Processing data
-void DBTransaction::bulkUpdate(void)
+void DBTransaction::saveTransaction(void)
 {
-	for (vector < ptDBResult >::iterator it = txnObjects.begin(); it != txnObjects.end(); it++)
+	// Insert
+	for (vector < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
+	{
+		(*it)->insertRowSQL(transaction);
+	}
+	// Update
+	for (vector < ptDBResult >::iterator it = updateTxnObjects.begin(); it != updateTxnObjects.end(); it++)
 	{
 		(*it)->updateRowSQL(transaction);
+	}
+	// Delete
+	for (vector < ptDBResult >::iterator it = deleteTxnObjects.begin(); it != deleteTxnObjects.end(); it++)
+	{
+		(*it)->deleteRowSQL(transaction);
 	}
 }
 
@@ -57,9 +80,24 @@ void DBTransaction::abortTransaction(void)
 }
 
 // Data oriented commands - abort or commit will purge queue
-void DBTransaction::addElement (ptDBResult object)
+void DBTransaction::addInsertElement (ptDBResult object)
 {
-	txnObjects.push_back(object);
+	insertTxnObjects.push_back(object);
 }
+
+void DBTransaction::addUpdateElement (ptDBResult object)
+{
+	updateTxnObjects.push_back(object);
+}
+
+void DBTransaction::addDeleteElement (ptDBResult object)
+{
+	//TODO: Check if the insert has a delete action
+	//	- If yes, remove the insert
+	//TODO: Check if the update has a delete action
+	//	- If yes, remove the update
+	deleteTxnObjects.push_back(object);
+}
+
 
 }

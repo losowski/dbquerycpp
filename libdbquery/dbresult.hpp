@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "dbconnection.hpp"
+#include "dbexceptionNoData.hpp"
 
 using namespace std;
 
@@ -19,11 +20,11 @@ class DBResult
 		~DBResult(void);
 	public:
 		//SELECT
-		void selectRow(void);
+		bool selectRow(void);
 		virtual void selectRowSQL(shared_ptr<pqxx::work> txn) = 0;
 		//DELETE
-		void deleteRow(int primaryKey);
-		virtual void deleteRowSQL(shared_ptr<pqxx::work> txn, int primaryKey) = 0;
+		void deleteRow(void);
+		virtual void deleteRowSQL(shared_ptr<pqxx::work> txn) = 0;
 		//UPDATE
 		void updateRow(void);
 		virtual void updateRowSQL(shared_ptr<pqxx::work> txn) = 0;

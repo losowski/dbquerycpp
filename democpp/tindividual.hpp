@@ -1,6 +1,9 @@
 #ifndef NEURON_SCHEMA_TINDIVIDUAL_HPP
 #define NEURON_SCHEMA_TINDIVIDUAL_HPP
 
+#include <memory>
+#include <vector>
+
 #include "dbresult.hpp"
 #include "dbsafeutils.hpp"
 
@@ -20,6 +23,8 @@ typedef shared_ptr < aptIndividual>  paptIndividual;
 class tIndividual : public DBResult
 {
 	public:
+		static const string SQL_SELECT;
+	public:
 		tIndividual(dbquery::DBConnection * connection);
 		tIndividual(dbquery::DBConnection * connection, const int primaryKey);
 		tIndividual(dbquery::DBConnection * connection, int id, int body_id, string & name);
@@ -28,7 +33,7 @@ class tIndividual : public DBResult
 		//SELECT
 		void selectRowSQL(shared_ptr<pqxx::work> txn);
 		//DELETE
-		void deleteRowSQL(shared_ptr<pqxx::work> txn, int primaryKey);
+		void deleteRowSQL(shared_ptr<pqxx::work> txn);
 		//UPDATE
 		void updateRowSQL(shared_ptr<pqxx::work> txn);
 		//INSERT

@@ -1,6 +1,9 @@
 #ifndef NEURON_SCHEMA_TBODY_HPP
 #define NEURON_SCHEMA_TBODY_HPP
 
+#include <memory>
+#include <vector>
+
 #include "dbresult.hpp"
 #include "dbsafeutils.hpp"
 
@@ -19,6 +22,8 @@ typedef shared_ptr < aptBody>  paptBody;
 class tBody : public DBResult
 {
 	public:
+		static const string SQL_SELECT;
+	public:
 		tBody(dbquery::DBConnection * connection);
 		tBody(dbquery::DBConnection * connection, const int primaryKey);
 		tBody(dbquery::DBConnection * connection, int id, const string & text);
@@ -27,7 +32,7 @@ class tBody : public DBResult
 		//SELECT
 		void selectRowSQL(shared_ptr<pqxx::work> txn);
 		//DELETE
-		void deleteRowSQL(shared_ptr<pqxx::work> txn, int primaryKey);
+		void deleteRowSQL(shared_ptr<pqxx::work> txn);
 		//UPDATE
 		void updateRowSQL(shared_ptr<pqxx::work> txn);
 		//INSERT

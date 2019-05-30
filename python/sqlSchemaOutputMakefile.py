@@ -11,7 +11,7 @@ class SQLSchemaOutputMakefile (outputTemplate.OutputTemplate):
 		self.outputObject = outputObject
 
 	def __del__(self):
-		outputTemplate.OutputTemplate.__init__(self, filename).__del__(self)
+		outputTemplate.OutputTemplate.__del__(self)
 		self.outputObject = None
 
 	def getBuildFiles(self):

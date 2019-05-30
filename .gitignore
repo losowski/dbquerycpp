@@ -1,0 +1,6 @@
+#Python files
+*.pyc
+#Objects
+*.o
+#Library
+*.so

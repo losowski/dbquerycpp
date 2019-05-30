@@ -2,6 +2,7 @@
 #define DBQUERY_TRANSACTION_HPP
 
 #include <vector>
+#include <memory>
 
 #include "dbresult.hpp"
 #include "dbconnection.hpp"
@@ -18,6 +19,8 @@ namespace dbquery {
 
 class DBTransaction;
 
+//TODO: Create method to identify errors for review
+
 class DBTransaction
 {
 	public:
@@ -26,18 +29,25 @@ class DBTransaction
 		~DBTransaction(void);
 	public:
 		// Transaction oriented commands
-		void newTransaction(void);
+		shared_ptr<pqxx::work> newTransaction(void);
 		//	Processing data
-		void bulkUpdate(void);
+		void saveTransaction(void);
 		//	commitTransaction and abortTransaction purge the commit queue
 		void commitTransaction(void);
 		void abortTransaction(void);
 		// Data oriented commands - abort or commit will purge queue
-		void addElement (ptDBResult object);
+		void addInsertElement (ptDBResult object);
+		void addUpdateElement (ptDBResult object);
+		void addDeleteElement (ptDBResult object);
 	private:
 		dbquery::DBConnection *				m_connection;
 		shared_ptr<pqxx::work>				transaction;
-		vector < ptDBResult > 				txnObjects;
+		//Transaction Lists
+		vector < ptDBResult > 				insertTxnObjects;
+		vector < ptDBResult > 				updateTxnObjects;
+		vector < ptDBResult > 				deleteTxnObjects;
 };
+
+
 }
 #endif //DBQUERY_TRANSACTION_HPP

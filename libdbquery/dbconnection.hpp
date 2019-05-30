@@ -1,6 +1,7 @@
 #ifndef DBQUERY_CONNECTION_HPP
 #define DBQUERY_CONNECTION_HPP
 
+#include <memory>
 #include <string>
 #include <iostream>
 //Libpxx

@@ -7,6 +7,14 @@ using namespace dbquery;
 
 namespace neuronSchema {
 
+const string tIndividual::SQL_SELECT ("SELECT \
+		id, \
+		body_id, \
+		name, \
+	FROM \
+		neuron_schema.tIndividual \
+	WHERE \n");
+
 tIndividual::tIndividual(dbquery::DBConnection * connection):
 	dbquery::DBResult(connection)
 {
@@ -32,14 +40,8 @@ tIndividual::~tIndividual(void)
 //SELECT
 void tIndividual::selectRowSQL(shared_ptr<pqxx::work> txn)
 {
-	pqxx::result res = txn->exec("SELECT \
-		id, \
-		body_id, \
-		name, \
-	FROM \
-		neuron_schema.tIndividual \
-	WHERE \
-		id = " + txn->quote(pk) + ";");
+	pqxx::result res = txn->exec(tIndividual::SQL_SELECT +
+		"id = " + txn->quote(pk) + ";");
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
@@ -50,16 +52,12 @@ void tIndividual::selectRowSQL(shared_ptr<pqxx::work> txn)
 }
 
 //DELETE
-void tIndividual::deleteRowSQL(shared_ptr<pqxx::work> txn, int primaryKey)
+void tIndividual::deleteRowSQL(shared_ptr<pqxx::work> txn)
 {
 	pqxx::result res = txn->exec("DELETE FROM \
 		neuron_schema.tIndividual \
 	WHERE \
-		id = " + txn->quote(id) + "\
-	AND \
-		body_id = " + txn->quote(body_id) + "\
-	AND \
-		name = " + txn->quote(name) + ";");
+		id = " + txn->quote(id) + ";");
 }
 
 //UPDATE
@@ -78,11 +76,12 @@ void tIndividual::updateRowSQL(shared_ptr<pqxx::work> txn)
 //INSERT
 void tIndividual::insertRowSQL(shared_ptr<pqxx::work> txn)
 {
-	pqxx::result res = txn->exec("INSERT INTO \
-		neuron_schema.tIndividual \
-	(id, body_id, name) \
-	VALUES (" +\
-		txn->quote(id) + " + " + txn->quote(body_id) + " + " + txn->quote(name) + ");");
+	pqxx::result res = txn->parameterized("neuron_schema.pInstIndividual")(txn->quote(body_id))(txn->quote(name)).exec();
+	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
+	{
+		dbquery::DBSafeUtils::safeToInt(&this->id, res[i]["neuron_schema.pInstIndividual"]);
+	}
+	pk = id;
 }
 
 //Schema Functions

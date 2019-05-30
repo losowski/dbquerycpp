@@ -60,13 +60,12 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 									),
 									("void", "deleteRowSQL",	(
 																	("shared_ptr<pqxx::work>", "txn"),
-																	("int", "primaryKey"),
 																),
 	"""
 	pqxx::result res = txn->exec("DELETE FROM \\
 		{tableName} \\
 	WHERE \\
-{deleteColumnList} \\
+		{primaryKey} = " + txn->quote({primaryKey}) + \\
 	";");
 	"""
 									),
@@ -87,15 +86,12 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 																	("shared_ptr<pqxx::work>", "txn"),
 																),
 """
-	pqxx::result res = txn->exec("INSERT INTO \\
-	{tableName} \\
-	( \\
-{insertColumnList} \\
-	) \\
-	VALUES (" + \\
-{insertValueColumnList} + \\
-	")\\
-;");
+	pqxx::result res = txn->parameterized(\"{insertStoredProc}\"){insertStoredProcParams}.exec();
+	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
+	{{
+		dbquery::DBSafeUtils::safeToInt(&this->id, res[i][\"{insertStoredProc}\"]);
+	}}
+	pk = id;
 """
 									),
 								)
@@ -157,10 +153,6 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 
 	# Implementation
-	def deleteColumnList(self):
-		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
-		return "\"\tAND \\\n".join("\t\t{column} = \" + txn->quote({column}) + ".format(column = columnName) for columnName, columnData in self.outputObject.getColumns().iteritems() )
-
 	def updateSetColumnList(self):
 		#("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		columns = list()
@@ -168,21 +160,6 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			if columnName != self.outputObject.getPrimaryKey():
 				columns.append( "\t\t{column}  = \" + txn->quote({column}) + \"".format(column = columnName) )
 		return  ", \\\n".join(columns)
-
-	def insertColumnList(self):
-		columns = list()
-		for columnName, columnData in self.outputObject.getColumns().iteritems():
-			if columnName != self.outputObject.getPrimaryKey():
-				columns.append( "\t\t{column}".format(column = columnName) )
-		return  ", \\\n".join(columns)
-
-
-	def insertValueColumnList(self):
-		columns = list()
-		for columnName, columnData in self.outputObject.getColumns().iteritems():
-			if columnName != self.outputObject.getPrimaryKey():
-				columns.append( "\t\ttxn->quote({column})".format(column = columnName) )
-		return  " + \",\" \\\n + ".join(columns)
 
 	def columnList(self):
 		return ", \\\n\t\t".join(self.outputObject.getColumns().keys())
@@ -194,6 +171,17 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			val += "\t\tdbquery::DBSafeUtils::safeTo{datatype}(&this->{column}, res[i][\"{column}\"]);\n".format(column = columnName, datatype = columnData.getCPPType())
 		return val
 
+	#INSERT SQL statements
+	#	TODO: Add a specific PK key (asssumes id at present)
+	def insertStoredProc(self):
+		return "{schemaName}.pIns{tableName}".format(schemaName = self.outputObject.getSchemaName(), tableName = self.outputObject.getName())
+
+	def insertStoredProcParams(self):
+		columns = list()
+		for columnName, columnData in self.outputObject.getColumns().iteritems():
+			if columnName != self.outputObject.getPrimaryKey():
+				columns.append( "(txn->quote({column}))".format(column = columnName) )
+		return  "".join(columns)
 
 	#	Templated Table Functions
 	def templatedNamedFunctionCPP (self, className, templateFunctions):
@@ -201,11 +189,10 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		#Build Dict
 		templateDict = {
 			'tableName'					:	self.outputObject.getFullName(),
+			'insertStoredProc'			:	self.insertStoredProc(),
+			'insertStoredProcParams'	:	self.insertStoredProcParams(),
 			'primaryKey'				:	self.outputObject.getPrimaryKey(),
-			'deleteColumnList'			:	self.deleteColumnList(),
 			'updateSetColumnList'		:	self.updateSetColumnList(),
-			'insertColumnList'			:	self.insertColumnList(),
-			'insertValueColumnList'		:	self.insertValueColumnList(),
 			'columnList'				:	self.columnList(),
 			'safeDataColumn'			:	self.getSafeTypeConversion(),
 		}

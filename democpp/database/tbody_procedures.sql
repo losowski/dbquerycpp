@@ -1,11 +1,19 @@
 -- Insert
 CREATE OR REPLACE FUNCTION neuron_schema.pInstBody(
-	IN	p_id				neuron_schema.tBody.id%TYPE default NULL,
 	IN	p_name				neuron_schema.tBody.name%TYPE default NULL
 	) RETURNS bigint AS $$
 DECLARE
 	v_id					neuron_schema.tBody.id%TYPE := NULL;
 BEGIN
+	-- Get ID
+	SELECT
+		*
+	INTO
+		v_id
+	FROM
+		LASTVAL()
+	;
+	-- Insert
 	INSERT INTO
 		neuron_schema.tBody
 		(
@@ -14,18 +22,11 @@ BEGIN
 		)
 	VALUES
 		(
-			p_id,
+			v_id,
 			p_name
 		)
 	;
-	-- Return ID
-	SELECT
-		*
-	INTO
-		v_id
-	FROM
-		LASTVAL()
-	;
+
 -- Return ID
 	RETURN v_id;
 END;

@@ -1,24 +1,9 @@
 TODO List
 ---------
-+ Split out file reader into own repo
 + Move base classes into own repo (build into debian)
 	+ Move db* files into their own library
-	+ Make library for base classes of demodb
-+ Split out the file reader into its own repo. This allows code reuse for building web pages automatically 
-+ Use a cstruct to build the menu (universal file for cms)
-+ Web pagess should be built with a scc script from style templates specifications (in db)
-+ Make caching work on db for quick behaviour 
-+ Make query objects accessible from schema class and parent classes
-+ schema to implement all the class processing for parent and children (avoids looped dependencies)
-+ Sub table primary key
-+ Sub table secondary key (indexes!)
-+ Sub table foreign key
-+ Vector of shared pointers of row data? (Do these get cleared up? )- owned by parent table?
-+ Store child data as an array of stored pointers
-+ Template functions to get specifix values from an array (is this possible? )
-+ Implement the update delete insert queries
-+ Include a locking mechanism in database
 + Utilise a stored procedure for insert and update statements
++ Include a locking mechanism in database
 + Build a transaction object
 	- Takes in Shared Pointer "result" clases
 	- Processes each as one transaction
@@ -26,8 +11,50 @@ TODO List
 	- can add results to the process
 	- generates a new transaction object for the next commit
 	- i.e Groups all actions into one save transaction
+	+ Vector of shared pointers of row data? (Do these get cleared up? )- owned by parent table?
++ Build a sorting tool to get relevant data by various indexes
+	+ Template functions to get specific values from an array (is this possible? )
++ Functions to create objects using the right queue
++ Three queues (submitted as one transaction):
+	+	INSERT
+	+	UPDATE
+	+	DELETE
++ Filter on queues:
+	- If DELETE and INSERT (remove from both, and destroy object)
 
-DONE
++ When data is requested it gets put into the commit queue
++ Timed objects to store the data
+	- This is the pointer that owns the object
+	- All other uses are weak references
++ Add SELECT FOR UPDATE to SELECT statements for locking (Maybe?)
++ New Objects entered into insert Queue
++ Functions to group objects (for ease of reference)
+	- Part of caching idea
++ Schema has a lookup/cache function
+	- Owns the objects that it requests
+	- Can purge these lists
++ Created objects get inserted into the lookup list
++ If a parent object is requested we first check the lookup list (to ensure the same object is used)
++ Children can look up parent objects by foreign key
+
+---- Python TODO ----
+- Add foreign key lookup
+- Add caching ability
+- Add cache functions
+- Add transaction queue functionality
+- SELECT statement to be a static string (not an anonymous string)
+
+
+==== DONE ====
 + Add regex to parse DB inputs to make sure they are safe
 + Create type specific regex templates
 + For string inputs allow free-text regex from the child library
++ schema to implement all the class processing for parent and children (avoids looped dependencies)
++ Sub table primary key
++ Sub table secondary key (indexes!)
++ Sub table foreign key
++ Make library for base classes of demodb
++ Make caching work on db for quick behaviour
++ Store child data as an array of stored pointers
++ Implement the update delete insert queries
++ Make query objects accessible from schema class and parent classes
