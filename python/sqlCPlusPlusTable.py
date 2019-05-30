@@ -89,9 +89,8 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	pqxx::result res = txn->parameterized(\"{insertStoredProc}\"){insertStoredProcParams}.exec();
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
-		dbquery::DBSafeUtils::safeToInt(&this->id, res[i][\"{insertStoredProc}\"]);
+		dbquery::DBSafeUtils::safeToInt(&this->pk, res[i][\"{insertStoredProc}\"]);
 	}}
-	pk = id;
 """
 									),
 								)
