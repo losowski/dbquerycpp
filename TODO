@@ -1,5 +1,7 @@
 TODO List
 ---------
++ Add DBTransaction to schema (Public)
++ Add maps of the subtables (to allow multiple rows)
 + Move base classes into own repo (build into debian)
 	+ Move db* files into their own library
 + Utilise a stored procedure for insert and update statements
@@ -36,6 +38,7 @@ TODO List
 + Created objects get inserted into the lookup list
 + If a parent object is requested we first check the lookup list (to ensure the same object is used)
 + Children can look up parent objects by foreign key
++ Add a means to make a dbresult update/delete/insert request be automatically queued
 
 ---- Python TODO ----
 - Add foreign key lookup

@@ -4,3 +4,21 @@ README
 BUILD DEPENDENCIES
 ==================
 libboost-dev
+
+DESIGN: libdbquery
+===================
+- DBConnection
+	- One instance per executable
+	- Wraps around the connection process
+	- Spawns objects that share the connection
+		- DBResult (actual objects)
+
+- DBResult
+	- One single row in a single table
+	- Data can be stored in DB using a DB transaction
+
+
+- DBTransaction
+	- Constructed with the connection object
+	- Should be used to construct data specific objects
+	- Uses DB Transactions
