@@ -76,19 +76,19 @@ class SQLCPlusPlusBase:
 	def classFunctionHPP (self, ret, functionName, arguments, templateDict = dict()):
 		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
 
-
+	# Build the HPP variables list
 	# Allow addition of class variables with scopes
 	def addClassScopeVariable(self, variableScope, variableType, variableName):
 		scoped = self.classVariables.setdefault(variableScope, dict())
 		scoped[variableName] = variableType
 
+	# Engine function to add the variables
 	def classScopeVariableHPP(self):
-		#TODO: Properly implement this with class scopes
 		retVal = str()
 		for variableScope, variableList in self.classVariables.iteritems():
 			retVal += "\t{scope}:\n".format(scope = variableScope)
 			for variableName, variableType  in variableList.iteritems():
-				retVal += "\t\t{vType}\t\t\t{vName};\n".format(vType = variableType, vName = variableName)
+				retVal += "\t\t{vType}\t\t\t\t\t{vName};\n".format(vType = variableType, vName = variableName)
 		return retVal
 
 	def classVariableHPP (self, variableType, variableName):

@@ -22,14 +22,28 @@ class SQLSchemaBase (sqlSchema.SQLSchema):
 		self.cpp = None
 		self.makefile = None
 
-	def initialise(self):
-		pass
-
-	def run(self):
+	def loadData(self):
+		# Called from the reader to build the data
 		pass
 
 	def getTables(self):
 		return self.tables
+
+	def initialise(self):
+		# Build Makefile
+		self.makefile = sqlSchemaOutputMakefile.SQLSchemaOutputMakefile(self)
+		# Build the schema
+		self.hpp = sqlSchemaOutputHPP.SQLSchemaOutputHPP(self)
+		self.cpp = sqlSchemaOutputCPP.SQLSchemaOutputCPP(self)
+		pass
+
+	def initialiseDataStructures(self):
+		#Builds the internal data structures
+		#Initialise Schema files
+		self.hpp.initialiseDataStructures()
+		self.cpp.initialiseDataStructures()
+		#TODO - Build the table level internal data structures
+		pass
 
 	def build(self):
 		#Build Makefile - buildContents not build (template, not a complete file builder)
@@ -40,14 +54,7 @@ class SQLSchemaBase (sqlSchema.SQLSchema):
 		#Build Table files
 		for tableName, tableObj in self.tables.iteritems():
 			tableObj.build()
-			pass
-
-	def run(self):
-		# Build Makefile
-		self.makefile = sqlSchemaOutputMakefile.SQLSchemaOutputMakefile(self)
-		# Build the schema
-		self.hpp = sqlSchemaOutputHPP.SQLSchemaOutputHPP(self)
-		self.cpp = sqlSchemaOutputCPP.SQLSchemaOutputCPP(self)
+			pass		
 
 	def shutdown(self):
 		pass

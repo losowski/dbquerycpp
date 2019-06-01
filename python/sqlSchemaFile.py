@@ -39,7 +39,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		sqlSchemaBase.SQLSchemaBase.__del__(self)
 		pass
 
-	def initialise(self):
+	def loadData(self):
 		# Open file
 		self.schemaFile = open(self.fileName, 'r')
 		# Read in contents

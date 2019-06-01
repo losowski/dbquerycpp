@@ -11,8 +11,9 @@ def main():
 	print ("Autogenerator for DataBase CPP v0.01")
 	logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', filename='/tmp/buildDBcpp.log',level=logging.INFO)
 	sqlSchema = sqlSchemaFile.SQLSchemaFile('database.sql')
+	sqlSchema.loadData()
 	sqlSchema.initialise()
-	sqlSchema.run()
+	sqlSchema.initialiseDataStructures()
 	sqlSchema.build()
 	#Signal handler needed here to wait before exiting
 	#sigset = [signal.SIGINT, signal.SIGTERM]

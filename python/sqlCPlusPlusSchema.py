@@ -50,8 +50,32 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def schemaName(self):
 		return self.outputObject.getSchemaName()
 
+
+	#Complex Data structure Builder
+	def schemaInitialiseDataStructures(self):
+		# Override this class
+		logging.error("schemaInitialiseDataStructures not overridden")
+		pass
+
+	def tableInitialiseDataStructures(self, tableName, tableObj):
+		#Table specific building
+		# Override this class
+		logging.error("tableInitialiseDataStructures not overridden")
+		pass
+
+	def initialiseDataStructures(self):
+		#Initialse the schema data
+		self.schemaInitialiseDataStructures()
+		#Use to build the internal structures for building using an engine
+		for tableName, tableObj in self.outputObject.tables.iteritems():
+			self.tableInitialiseDataStructures(tableName, tableObj)
+		pass
+
+
+	# Overridden class for building
 	def buildContents(self):
 		return str()
+
 
 	#Get Table Includes
 	def getTableIncludes(self):
