@@ -26,9 +26,31 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 									("p{tableName}", "g{tableName}", (
 																			("int", "primaryKey"),
 																		),
-	"""	shared_ptr<{tableName}> obj(new {tableName}(this, primaryKey) );
-	obj->selectRow();
-	return obj;""",
+	"""//Attempt to find the object
+	map{tableName}::iterator it = {tableName}Map.find(primaryKey);
+	p{tableName} ptr_{tableName};
+	// If cannot be found in cache, create a new object
+	if (it == {tableName}Map.end())
+	{{
+		p{tableName} obj(new {tableName}(this, primaryKey) );
+		//Check data exists
+		if (obj->selectRow() == true)
+		{{
+			obj->selectRow();
+			//Store Object by Primary key
+			{tableName}Map[obj->pk] = obj;
+			//Copy pointer to return
+			ptr_{tableName} = obj;
+		}}
+	}}
+	//Found object, return that
+	//TODO: What if data does not exist in DB?
+	else
+	{{
+		//Set return value as second
+		ptr_{tableName} = it->second;
+	}}
+	return ptr_{tableName};""",
 									),
 								)
 
@@ -129,6 +151,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		# Make functions
 		ret += self.templatedTableFunctionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
+		#TODO: Add function generator for new rows (not primary key driven)
 		# Add Scoped variables
 		ret += self.classScopeVariableHPP()
 		ret += "};\n"

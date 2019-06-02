@@ -31,7 +31,7 @@ class DBResult
 		//INSERT
 		void insertRow(void);
 		virtual void insertRowSQL(shared_ptr<pqxx::work> txn) = 0;
-	protected:
+	public:
 		int									pk;
 	protected:
 		dbquery::DBConnection *		m_connection;

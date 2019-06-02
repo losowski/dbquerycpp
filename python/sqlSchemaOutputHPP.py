@@ -6,6 +6,7 @@ import logging
 import sqlCPlusPlusSchema
 
 class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
+	TNAME = "tName"
 	def __init__(self, outputObject):
 		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__init__(self, outputObject, ".hpp")
 
@@ -21,9 +22,9 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 
 	def tableInitialiseDataStructures(self, tableName, tableObj):
 		#Build the object constants
-		#TODO: Add per-table calls to self.addClassScopeVariable(self.PRIVATE, map<tableName>, <tableName>Map)
 		self.addClassScopeVariable(self.PRIVATE, "map{tName}".format(tName = tableObj.getName()), "{tName}Map".format(tName = tableObj.getName()))
-		pass
+		# Add the missing calls to addTypedefFormat - typedef	map < int , ptIndividual > maptIndividual;
+		self.addTypedefFormat("map < int , p{tName} >", "map{tName}", {self.TNAME : tableObj.getName(),} )
 		
 
 	def buildContents(self):
@@ -39,6 +40,8 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 		output += self.useNamespace("dbquery")
 		#Code
 		namespaced = str()
+		#Build typedefs
+		namespaced += self.buildTypedefs()
 		#Build Class Functions
 		namespaced += self.buildSchemaClassHPP(self.schemaName(), "dbquery::DBConnection")
 		#Make a namespace

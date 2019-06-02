@@ -19,6 +19,7 @@ class SQLCPlusPlusBase:
 	def __init__(self, filename):
 		self.fileName = filename.lower()
 		self.classVariables = dict() # dict(scope : dict(variable, type))
+		self.typedefs = list() # (knownType, customType)
 		pass
 
 	def __del__(self):
@@ -54,6 +55,20 @@ class SQLCPlusPlusBase:
 	#Typedef
 	def fmt_typedef (self, knownType, customType):
 		return "typedef {knownType} {customType};\n".format(knownType = knownType, customType = customType)
+
+	def addTypedef (self, knownType, customType):
+		self.typedefs.append( (knownType, customType) )
+
+	def addTypedefFormat(self, knownTypeFormat, customTypeFormat, formatDict):
+		knownType = knownTypeFormat.format(**formatDict)
+		customType = customTypeFormat.format(**formatDict)
+		self.addTypedef(knownType, customType)
+
+	def buildTypedefs (self):
+		ret = str()
+		for knownType, customType in self.typedefs:
+			ret += self.fmt_typedef(knownType, customType)
+		return ret
 
 	#Function Parameters = list (type name)
 	def functionArgs (self, parameters, templateDict = dict()):

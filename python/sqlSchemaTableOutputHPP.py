@@ -25,8 +25,8 @@ class SQLSchemaTableOutputHPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 		namespaced = str()
 		#Class Forward Definition
 		namespaced += self.className(self.tableName())
+		#TODO: Replace this typedef with a new version
 		namespaced += self.typedefListHPP(self.tableName())
-		#TODO: Add typedefs
 		#Build Class Functions
 		namespaced += self.buildTableClassHPP(self.tableName(), "dbquery::DBResult")
 		output += self.defineNamespace(self.schemaName(), namespaced)
