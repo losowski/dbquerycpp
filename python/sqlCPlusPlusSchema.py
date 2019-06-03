@@ -134,8 +134,11 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	# Header
 	# Table Column Expander
 	def getTableColumsFunctionHPP(self, tableObject):
-		#TODO: implement this to return the list of table objects as a tuple
-		pass
+		#TODO: implement this to return the list of table objects as a list
+		ret = list()
+		for columnName, columnObject in tableObject.getColumns().iteritems():
+			ret.append(columnObject.getType(), columnObject.getName())
+		return ret
 
 
 	#	Templated Table Functions
@@ -156,8 +159,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return val
 
 	# Templated function List
-	def templatedTableFunctionListHPP_v2(self, templateFunctions):
-		val = str()
+	def templatedTableFunctionListHPP_2(self, templateFunctions):
+		val = "\tpublic:\n\t\t//Get single child objects\n"
 		#1: Iterate over functions
 		for functionDetails in templateFunctions:
 			ret = functionDetails[0]
@@ -165,7 +168,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			#2: Iterate over tables
 			for tableName, tableObj in self.outputObject.tables.iteritems():
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
-				if (CONST_TABLEVARS == functionDetails[2][0]):
+				if (self.CONST_TABLEVARS == functionDetails[2][0]):
 					#Expand the arguments to the table parameters
 					arguments = self.getTableColumsFunctionHPP()
 				else:
