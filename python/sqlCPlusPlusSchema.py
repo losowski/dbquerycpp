@@ -7,6 +7,7 @@ import sqlCPlusPlusBase
 
 class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	CONST_TABLENAME = 'tableName'
+	CONST_TABLEVARS	= 'TABLEVARS'
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							#One constructor
@@ -52,12 +53,36 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	}}
 	return ptr_{tableName};""",
 									),
+									("p{tableName}", "g{tableName}", (
+																			(CONST_TABLEVARS, ""),
+																		),
+	"""//Get objects to return
+	paptBody objects;
+	//Get new transaction
+	shared_ptr<pqxx::work> txn = transaction.newTransaction();
+	//Build the SQL statement
+	string sql = tBody::SQL_SELECT + " name = " + txn->quote(name) + ";";
+	// Run the query
+	pqxx::result res = txn->exec(sql);
+	//Build the objects
+	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
+	{{
+		//Local variables for the data
+		int id = 0;
+		string name;
+		//Set the data
+		dbquery::DBSafeUtils::safeToInt(&id, res[i]["id"]);
+		dbquery::DBSafeUtils::safeToString(&name, res[i]["name"]);
+		//Build the actual object
+		ptBody ptr_tbody = gtBody( id, name);
+		//Store in returned list
+		objects->push_back(ptr_tbody);
+
+	}}
+	//Return objects
+	return objects;""",
+									),
 								)
-
-
-
-
-
 
 	def __init__(self, outputObject, extension):
 		filename = outputObject.getSchemaName() + extension
