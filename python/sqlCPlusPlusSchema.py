@@ -137,7 +137,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		#TODO: implement this to return the list of table objects as a list
 		ret = list()
 		for columnName, columnObject in tableObject.getColumns().iteritems():
-			ret.append(columnObject.getType(), columnObject.getName())
+			logging.debug("getTableColumsFunctionHPP columnName %s", columnName)
+			ret.append( (columnObject.getType(), columnObject.getName()) )
 		return ret
 
 
@@ -165,15 +166,17 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		for functionDetails in templateFunctions:
 			ret = functionDetails[0]
 			functionName = functionDetails[1]
+			arguments = (())
 			#2: Iterate over tables
 			for tableName, tableObj in self.outputObject.tables.iteritems():
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
-				if (self.CONST_TABLEVARS == functionDetails[2][0]):
+				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
+				if (self.CONST_TABLEVARS == functionDetails[2][0][0]):
 					#Expand the arguments to the table parameters
-					arguments = self.getTableColumsFunctionHPP()
-					logging.info("Arguments %s", arguments)
+					arguments = self.getTableColumsFunctionHPP(tableObj)
 				else:
 					arguments = functionDetails[2]
+				logging.info("Arguments %s", arguments)
 				#3: Build templated stuff sensibly
 				#Process the actual functions
 				val += self.classFunctionTemplateHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableObj.getName(),})
