@@ -138,7 +138,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret = list()
 		for columnName, columnObject in tableObject.getColumns().iteritems():
 			logging.debug("getTableColumsFunctionHPP columnName %s", columnName)
-			ret.append( (columnObject.getType(), columnObject.getName()) )
+			argType = self.SQLDATATYPEMAPPING.get(columnObject.getType(),'string')
+			ret.append( (argType, columnObject.getName()) )
 		return ret
 
 
