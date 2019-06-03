@@ -29,6 +29,16 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 	def getColumns (self):
 		return self.columns
 
+	def getNonPrimaryKeyColums(self):
+		output = dict()
+		for columnName, columnObject in self.columns.iteritems():
+			if (columnName != self.primaryKey):
+				output[columnName] = columnObject
+		return output
+
+	def getNonPKColumnList(self):
+		return ", ".join("{column}".format(column = columnName) for columnName, columnObject in self.getNonPrimaryKeyColums().iteritems())
+
 	#Primary Key
 	# NOTE: Only support single column primary key (i.e the first index)
 	def setPrimaryKey(self, primaryKey):

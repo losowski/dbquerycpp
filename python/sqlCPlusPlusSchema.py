@@ -54,7 +54,19 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	return ptr_{tableName};""",
 									),
 									("p{tableName}", "g{tableName}", (
-																			(CONST_TABLEVARS, ""),
+																			(CONST_TABLEVARS, ""), #TODO: Run inserts inline
+																		),
+	"""	p{tableName} obj(new {tableName}(this, {NonPKColumns}) );
+	//Store Object by Primary key
+	{tableName}Map[obj->id] = obj;
+	// Add object to insert Queue
+	//TODO: figure out if we can insert this object!
+	transaction.addInsertElement(obj);
+	//Return object
+	return obj;""",
+									),
+									("p{tableName}", "g{tableName}", (
+																			("TODO: get by Field", ""),
 																		),
 	"""//Get objects to return
 	pap{tableName} objects;
@@ -139,12 +151,11 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def getTableColumsFunctionArguments(self, tableObject):
 		#TODO: implement this to return the list of table objects as a list
 		ret = list()
-		for columnName, columnObject in tableObject.getColumns().iteritems():
+		for columnName, columnObject in tableObject.getNonPrimaryKeyColums().iteritems():
 			logging.debug("getTableColumsFunctionArguments columnName %s", columnName)
 			argType = self.SQLDATATYPEMAPPING.get(columnObject.getType(),'string')
 			ret.append( (argType, columnObject.getName()) )
 		return ret
-
 
 	#	Templated Table Functions
 	# Templated HPP function List
@@ -166,7 +177,10 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 				else:
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
-				templateDict = {self.CONST_TABLENAME : tableObj.getName(),}
+				templateDict =	{
+									self.CONST_TABLENAME	:	tableObj.getName(),
+									"NonPKColumns" 			:	tableObj.getNonPKColumnList(),
+								}
 				#3: Build templated stuff sensibly
 				#Process the actual functions
 				val += self.classFunctionTemplateHPP(returnValue, functionName, arguments, templateDict)
@@ -208,7 +222,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
 				templateDict =	{
-									self.CONST_TABLENAME : tableObj.getName(),
+									self.CONST_TABLENAME	:	tableObj.getName(),
+									"NonPKColumns" 			:	tableObj.getNonPKColumnList(),
 								}
 				#3: Build templated stuff sensibly
 				#Process the actual functions
