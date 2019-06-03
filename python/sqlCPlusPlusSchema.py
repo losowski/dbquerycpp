@@ -168,13 +168,6 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 				val += self.classFunctionTemplateHPP(returnValue, functionName, arguments, templateDict)
 		return val
 
-
-	# Storage objects to implement object caching
-	#TODO: Implement means to generate storage objects
-	#TODO: Add functions to retrieve via the stored object (and not just generate new objects) - header and implementation
-
-
-
 	# Implementation
 	#	Templated Table Functions
 	def templatedNamedFunctionCPP (self, className, tableName, templateFunctions):
