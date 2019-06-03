@@ -152,8 +152,29 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def templatedTableFunctionListHPP(self, templateFunctions):
 		val = "\tpublic:\n\t\t//Get single child objects\n"
 		for tableName, tableObj in self.outputObject.tables.iteritems():
-			val += "\t\t" + self.templatedNamedFunctionHPP(tableObj.getName(), templateFunctions) + ";\n"
+			val += self.templatedNamedFunctionHPP(tableObj.getName(), templateFunctions)
 		return val
+
+	# Templated function List
+	def templatedTableFunctionListHPP_v2(self, templateFunctions):
+		val = str()
+		#1: Iterate over functions
+		for functionDetails in templateFunctions:
+			ret = functionDetails[0]
+			functionName = functionDetails[1]
+			#2: Iterate over tables
+			for tableName, tableObj in self.outputObject.tables.iteritems():
+				# Handle special arguments (first parameter is the CONST_TABLEVARS)
+				if (CONST_TABLEVARS == functionDetails[2][0]):
+					#Expand the arguments to the table parameters
+					arguments = self.getTableColumsFunctionHPP()
+				else:
+					arguments = functionDetails[2]
+				#Process the actual functions
+				#TODO write the output
+		#3: Build templated stuff sensibly
+		return val
+
 
 	# Storage objects to implement object caching
 	#TODO: Implement means to generate storage objects
