@@ -132,12 +132,20 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return ret
 
 	# Header
+	# Table Column Expander
+	def getTableColumsFunctionHPP(self, tableObject):
+		#TODO: implement this to return the list of table objects as a tuple
+		pass
+
+
 	#	Templated Table Functions
 	def templatedNamedFunctionHPP (self, tableName, templateFunctions):
 		val = str()
 		for functionDetails in templateFunctions:
 			val += self.classFunctionTemplateHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableName,})
 		return val
+
+
 
 	#templateFunctions = (ret, functionNametemplate, arguments)
 	#TODO: Make this function more generic (currently we assume all API functions are public, and this not an exhaustive list)
