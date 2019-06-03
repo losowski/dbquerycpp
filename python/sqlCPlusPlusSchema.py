@@ -164,9 +164,10 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		val = "\tpublic:\n\t\t//Get single child objects\n"
 		#1: Iterate over functions
 		for functionDetails in templateFunctions:
-			ret = functionDetails[0]
+			returnValue = functionDetails[0]
 			functionName = functionDetails[1]
-			arguments = (())
+			args = (())
+
 			#2: Iterate over tables
 			for tableName, tableObj in self.outputObject.tables.iteritems():
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
@@ -177,9 +178,10 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 				else:
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
+				templateDict = {self.CONST_TABLENAME : tableObj.getName(),}
 				#3: Build templated stuff sensibly
 				#Process the actual functions
-				val += self.classFunctionTemplateHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableObj.getName(),})
+				val += self.classFunctionTemplateHPP(returnValue, functionName, arguments, templateDict)
 		return val
 
 
