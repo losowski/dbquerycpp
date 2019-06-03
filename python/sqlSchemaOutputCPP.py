@@ -12,6 +12,14 @@ class SQLSchemaOutputCPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 	def __del__(self):
 		sqlCPlusPlusSchema.SQLCPlusPlusSchema.__del__(self)
 
+	def schemaInitialiseDataStructures(self):
+		pass
+
+
+	def tableInitialiseDataStructures(self, tableName, tableObj):
+		pass
+
+
 	def buildContents(self):
 		output = str()
 		#Incldues

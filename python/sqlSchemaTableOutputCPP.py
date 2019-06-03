@@ -12,6 +12,8 @@ class SQLSchemaTableOutputCPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 	def __del__(self):
 		sqlCPlusPlusTable.SQLCPlusPlusTable.__del__(self)
 
+	#TODO: Add the class specific constant string
+
 	def buildContents(self):
 		output = str()
 		#Incldues

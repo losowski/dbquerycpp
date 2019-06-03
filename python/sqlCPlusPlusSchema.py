@@ -57,11 +57,11 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 																			(CONST_TABLEVARS, ""),
 																		),
 	"""//Get objects to return
-	paptBody objects;
+	pap{tableName} objects;
 	//Get new transaction
 	shared_ptr<pqxx::work> txn = transaction.newTransaction();
 	//Build the SQL statement
-	string sql = tBody::SQL_SELECT + " name = " + txn->quote(name) + ";";
+	string sql = {tableName}::SQL_SELECT + " name = " + txn->quote(name) + ";";
 	// Run the query
 	pqxx::result res = txn->exec(sql);
 	//Build the objects
@@ -74,9 +74,9 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		dbquery::DBSafeUtils::safeToInt(&id, res[i]["id"]);
 		dbquery::DBSafeUtils::safeToString(&name, res[i]["name"]);
 		//Build the actual object
-		ptBody ptr_tbody = gtBody( id, name);
+		p{tableName} ptr_{tableName} = g{tableName}( id, name);
 		//Store in returned list
-		objects->push_back(ptr_tbody);
+		objects->push_back(ptr_{tableName});
 
 	}}
 	//Return objects
@@ -131,20 +131,23 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			ret += self.fmt_include(tableObj.getName() + ".hpp")
 		return ret
 
-	# Header
+	#TODO: Generate a object creation function - using the object initialiser
+	#TODO: Generate functions for each column independently - fetches the rows(s) of data with that parameter (requires the constant SQL query prefix)
+
+	# ---- Header ----
 	# Table Column Expander
-	def getTableColumsFunctionHPP(self, tableObject):
+	def getTableColumsFunctionArguments(self, tableObject):
 		#TODO: implement this to return the list of table objects as a list
 		ret = list()
 		for columnName, columnObject in tableObject.getColumns().iteritems():
-			logging.debug("getTableColumsFunctionHPP columnName %s", columnName)
+			logging.debug("getTableColumsFunctionArguments columnName %s", columnName)
 			argType = self.SQLDATATYPEMAPPING.get(columnObject.getType(),'string')
 			ret.append( (argType, columnObject.getName()) )
 		return ret
 
 
 	#	Templated Table Functions
-	# Templated function List
+	# Templated HPP function List
 	def templatedTableFunctionListHPP(self, templateFunctions):
 		val = "\tpublic:\n\t\t//Get single child objects\n"
 		#1: Iterate over functions
@@ -159,7 +162,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
 				if (self.CONST_TABLEVARS == functionDetails[2][0][0]):
 					#Expand the arguments to the table parameters
-					arguments = self.getTableColumsFunctionHPP(tableObj)
+					arguments = self.getTableColumsFunctionArguments(tableObj)
 				else:
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
@@ -167,22 +170,6 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 				#3: Build templated stuff sensibly
 				#Process the actual functions
 				val += self.classFunctionTemplateHPP(returnValue, functionName, arguments, templateDict)
-		return val
-
-	# Implementation
-	#	Templated Table Functions
-	def templatedNamedFunctionCPP (self, className, tableName, templateFunctions):
-		val = str()
-		for functionDetails in templateFunctions:
-			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = {self.CONST_TABLENAME : tableName,})
-		return val
-
-	#templateFunctions = (ret, functionNametemplate, arguments)
-	def templatedTableFunctionListCPP(self, className):
-		val = str()
-		for tableObj in self.outputObject.tables.values():
-			val += "//{tableName}\n".format(tableName = tableObj.getName())
-			val += self.templatedNamedFunctionCPP(className, tableObj.getName(), self.SCHEMA_FUNCTION_TEMPLATES)
 		return val
 
 	# 	Class HPP: functions : (scope, name, argument(s))
@@ -198,10 +185,40 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += "};\n"
 		return ret
 
+	# ---- Implementation ----
+	# Templated CHPP function List
+	#TODO: Implement column conversions for "dbquery::DBSafeUtils::safeToInt(&id, res[i]["id"]);"
+	#TODO: Implement usage of the table specific select statement (requires constant string)
+	def templatedTableFunctionListCPP(self, className, templateFunctions):
+		val = str()
+		#1: Iterate over functions
+		for functionDetails in templateFunctions:
+			returnValue = functionDetails[0]
+			functionName = functionDetails[1]
+			args = (())
+			implementation = functionDetails[3]
+			#2: Iterate over tables
+			for tableName, tableObj in self.outputObject.tables.iteritems():
+				# Handle special arguments (first parameter is the CONST_TABLEVARS)
+				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
+				if (self.CONST_TABLEVARS == functionDetails[2][0][0]):
+					#Expand the arguments to the table parameters
+					arguments = self.getTableColumsFunctionArguments(tableObj)
+				else:
+					arguments = functionDetails[2]
+				logging.info("Arguments %s", arguments)
+				templateDict =	{
+									self.CONST_TABLENAME : tableObj.getName(),
+								}
+				#3: Build templated stuff sensibly
+				#Process the actual functions
+				val += self.classFunctionTemplateCPP(className, returnValue, functionName, arguments, implementation, templateDict)
+		return val
+
 	# 	Class CPP: functions : (scope, name, argument(s))
 	def buildSchemaClassCPP(self, className):
 		ret = str()
 		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
 		# Make Function implementations
-		ret += self.templatedTableFunctionListCPP(className)
+		ret += self.templatedTableFunctionListCPP(className, self.SCHEMA_FUNCTION_TEMPLATES)
 		return ret
