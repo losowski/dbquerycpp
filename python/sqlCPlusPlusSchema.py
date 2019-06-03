@@ -152,14 +152,14 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 	#templateFunctions = (ret, functionNametemplate, arguments)
 	#TODO: Make this function more generic (currently we assume all API functions are public, and this not an exhaustive list)
-	def templatedTableFunctionListHPP(self, templateFunctions):
+	def templatedTableFunctionListHPP_old(self, templateFunctions):
 		val = "\tpublic:\n\t\t//Get single child objects\n"
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			val += self.templatedNamedFunctionHPP(tableObj.getName(), templateFunctions)
 		return val
 
 	# Templated function List
-	def templatedTableFunctionListHPP_2(self, templateFunctions):
+	def templatedTableFunctionListHPP(self, templateFunctions):
 		val = "\tpublic:\n\t\t//Get single child objects\n"
 		#1: Iterate over functions
 		for functionDetails in templateFunctions:
@@ -171,11 +171,12 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 				if (self.CONST_TABLEVARS == functionDetails[2][0]):
 					#Expand the arguments to the table parameters
 					arguments = self.getTableColumsFunctionHPP()
+					logging.info("Arguments %s", arguments)
 				else:
 					arguments = functionDetails[2]
+				#3: Build templated stuff sensibly
 				#Process the actual functions
-				#TODO write the output
-		#3: Build templated stuff sensibly
+				val += self.classFunctionTemplateHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = {self.CONST_TABLENAME : tableObj.getName(),})
 		return val
 
 
