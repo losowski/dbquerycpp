@@ -85,8 +85,9 @@ class SQLCPlusPlusBase:
 		return "class {className} : public {derivedClass}\n".format(className = className, derivedClass = derivedClass)
 
 	#	Header
+	## Header Functions
 	def classFunctionTemplateHPP (self, ret, functionName, arguments, templateDict = dict()):
-		return "{ret} {functionName}({arguments})".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
+		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
 
 	def classFunctionHPP (self, ret, functionName, arguments, templateDict = dict()):
 		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
