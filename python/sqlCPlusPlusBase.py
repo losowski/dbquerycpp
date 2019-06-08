@@ -20,6 +20,7 @@ class SQLCPlusPlusBase:
 		self.fileName = filename.lower()
 		self.classVariables = dict() # dict(scope : dict(variable, type))
 		self.typedefs = list() # (knownType, customType)
+		self.staticVariable = list() #  varType, variableName, value
 		pass
 
 	def __del__(self):
@@ -69,6 +70,19 @@ class SQLCPlusPlusBase:
 		for knownType, customType in self.typedefs:
 			ret += self.fmt_typedef(knownType, customType)
 		return ret
+
+	#Static Variable (static const)
+	def addStaticVariable(self, varType, variableName, value):
+		#TODO implement add feature
+		pass
+
+	def staticVariableHPP(self):
+		#TODO implement HPP output
+		pass
+
+	def staticVariableCPP(self):
+		#TODO implement CPP output
+		pass
 
 	#Function Parameters = list (type name)
 	def functionArgs (self, parameters, templateDict = dict()):
