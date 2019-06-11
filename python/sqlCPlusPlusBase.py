@@ -20,7 +20,8 @@ class SQLCPlusPlusBase:
 		self.fileName = filename.lower()
 		self.classVariables = dict() # dict(scope : dict(variable, type))
 		self.typedefs = list() # (knownType, customType)
-		self.staticVariable = list() #  varType, variableName, value
+		self.staticVariable = dict() #  scope : dict[variableName] = list (varType, value)
+
 		pass
 
 	def __del__(self):
@@ -71,19 +72,6 @@ class SQLCPlusPlusBase:
 			ret += self.fmt_typedef(knownType, customType)
 		return ret
 
-	#Static Variable (static const)
-	def addStaticVariable(self, varType, variableName, value):
-		#TODO implement add feature
-		pass
-
-	def staticVariableHPP(self):
-		#TODO implement HPP output
-		pass
-
-	def staticVariableCPP(self):
-		#TODO implement CPP output
-		pass
-
 	#Function Parameters = list (type name)
 	def functionArgs (self, parameters, templateDict = dict()):
 		ret = str()
@@ -106,13 +94,14 @@ class SQLCPlusPlusBase:
 	def classFunctionHPP (self, ret, functionName, arguments, templateDict = dict()):
 		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
 
-	# Build the HPP variables list
+	# Class variables list
 	# Allow addition of class variables with scopes
 	def addClassScopeVariable(self, variableScope, variableType, variableName):
 		scoped = self.classVariables.setdefault(variableScope, dict())
 		scoped[variableName] = variableType
 
-	# Engine function to add the variables
+
+# Engine function to add the variables
 	def classScopeVariableHPP(self):
 		retVal = str()
 		for variableScope, variableList in self.classVariables.iteritems():
@@ -123,6 +112,33 @@ class SQLCPlusPlusBase:
 
 	def classVariableHPP (self, variableType, variableName):
 		return "\t\t{variableType}\t\t\t{variableName};\n".format(variableType = self.SQLDATATYPEMAPPING.get(variableType,'string'), variableName = variableName)
+
+	#Static Variable (static const)
+	def addStaticVariable(self, scope, varType, variableName, value):
+		scoped = self.staticVariable.setdefault(variableScope, dict())
+		scoped[variableName] = (variableType, value)
+		pass
+
+	def staticVariableHPP(self):
+		retVal = str()
+		for variableScope, variableList in self.staticVariable.iteritems():
+			retVal += "\t{scope}:\n".format(scope = variableScope)
+			for variableName, variableDetails  in variableList.iteritems():
+				variableType, variableValue = variableDetails
+				retVal += "\t\tstatic const {vType}\t{vName};\n".format(vType = variableType, vName = variableName, vValue = variableValue)
+		return retVal
+
+	#	IMPL
+	def staticVariableCPP(self, className):
+		retVal = str()
+		for variableScope, variableList in self.staticVariable.iteritems():
+			retVal += "\t{scope}:\n".format(scope = variableScope)
+			for variableName, variableDetails  in variableList.iteritems():
+				variableType, variableValue = variableDetails
+				retVal += "const {vType}\t{vClass}::{vName} ({vValue})\n".format(vType = variableType, vName = variableName, vValue = variableValue, vClass = className)
+		return retVal
+
+
 
 	#	IMPL
 	def classFunctionTemplateCPP (self, className, ret, functionName, arguments, implementation, templateDict = dict()):

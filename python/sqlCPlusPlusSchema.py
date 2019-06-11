@@ -6,8 +6,11 @@ import logging
 import sqlCPlusPlusBase
 
 class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
-	CONST_TABLENAME = 'tableName'
-	CONST_TABLEVARS	= 'TABLEVARS'
+	#Dictionary helper definition
+	CONST_TABLENAME 		= 'tableName'
+	#Special codes for use in functions to use a table generator function
+	CONST_INSERTCOLUMNS		= 'CONST_INSERTCOLUMNS'
+	CONST_NONPKTABLEVARS	= 'NONPKTABLEVARS'
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							#One constructor
@@ -23,6 +26,12 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 							),
 						)
 
+	# Functions:
+	#	1	-	Primary Key lookup (DONE - primaryKey)
+	#	2	-	Insertion function (uses all elements that are not PK) (DONE - CONST_INSERTCOLUMNS)
+	#	3	-	Generic WHERE lookup function (data agnostic)
+	#	4	-	For each foreign Key -
+	#				Lookup function by key
 	SCHEMA_FUNCTION_TEMPLATES =	(
 									("p{tableName}", "g{tableName}", (
 																			("int", "primaryKey"),
@@ -54,7 +63,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	return ptr_{tableName};""",
 									),
 									("p{tableName}", "g{tableName}", (
-																			(CONST_TABLEVARS, ""), #TODO: Run inserts inline
+																			(CONST_INSERTCOLUMNS, ""), #TODO: Run selects inline
 																		),
 	"""	p{tableName} obj(new {tableName}(this, {NonPKColumns}) );
 	//Store Object by Primary key
@@ -66,7 +75,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	return obj;""",
 									),
 									("p{tableName}", "g{tableName}", (
-																			("TODO: get by Field", ""),
+																			(CONST_NONPKTABLEVARS, ""),
 																		),
 	"""//Get objects to return
 	pap{tableName} objects;
@@ -161,26 +170,25 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	# Templated HPP function List
 	def templatedTableFunctionListHPP(self, templateFunctions):
 		val = "\tpublic:\n\t\t//Get single child objects\n"
-		#1: Iterate over functions
-		for functionDetails in templateFunctions:
-			returnValue = functionDetails[0]
-			functionName = functionDetails[1]
-			args = (())
-
-			#2: Iterate over tables
-			for tableName, tableObj in self.outputObject.tables.iteritems():
+		#1: Iterate over tables
+		for tableName, tableObj in self.outputObject.tables.iteritems():
+			templateDict =	{
+					self.CONST_TABLENAME	:	tableObj.getName(),
+					"NonPKColumns" 			:	tableObj.getNonPKColumnList(),
+				}
+			#2: Iterate over functions
+			for functionDetails in templateFunctions:
+				returnValue = functionDetails[0]
+				functionName = functionDetails[1]
+				args = (())
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
 				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
-				if (self.CONST_TABLEVARS == functionDetails[2][0][0]):
-					#Expand the arguments to the table parameters
+				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
+					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableColumsFunctionArguments(tableObj)
 				else:
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
-				templateDict =	{
-									self.CONST_TABLENAME	:	tableObj.getName(),
-									"NonPKColumns" 			:	tableObj.getNonPKColumnList(),
-								}
 				#3: Build templated stuff sensibly
 				#Process the actual functions
 				val += self.classFunctionTemplateHPP(returnValue, functionName, arguments, templateDict)
@@ -200,31 +208,31 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return ret
 
 	# ---- Implementation ----
-	# Templated CHPP function List
+	# Templated CPP function List
 	#TODO: Implement column conversions for "dbquery::DBSafeUtils::safeToInt(&id, res[i]["id"]);"
 	#TODO: Implement usage of the table specific select statement (requires constant string)
 	def templatedTableFunctionListCPP(self, className, templateFunctions):
 		val = str()
-		#1: Iterate over functions
-		for functionDetails in templateFunctions:
-			returnValue = functionDetails[0]
-			functionName = functionDetails[1]
-			args = (())
-			implementation = functionDetails[3]
-			#2: Iterate over tables
-			for tableName, tableObj in self.outputObject.tables.iteritems():
+		#1: Iterate over tables
+		for tableName, tableObj in self.outputObject.tables.iteritems():
+			templateDict =	{
+								self.CONST_TABLENAME	:	tableObj.getName(),
+								"NonPKColumns" 			:	tableObj.getNonPKColumnList(),
+							}
+			#2: Iterate over functions
+			for functionDetails in templateFunctions:
+				returnValue = functionDetails[0]
+				functionName = functionDetails[1]
+				args = (())
+				implementation = functionDetails[3]
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
 				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
-				if (self.CONST_TABLEVARS == functionDetails[2][0][0]):
-					#Expand the arguments to the table parameters
+				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
+					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableColumsFunctionArguments(tableObj)
 				else:
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
-				templateDict =	{
-									self.CONST_TABLENAME	:	tableObj.getName(),
-									"NonPKColumns" 			:	tableObj.getNonPKColumnList(),
-								}
 				#3: Build templated stuff sensibly
 				#Process the actual functions
 				val += self.classFunctionTemplateCPP(className, returnValue, functionName, arguments, implementation, templateDict)
