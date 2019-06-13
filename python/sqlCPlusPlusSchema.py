@@ -199,6 +199,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret = self.classNameDefinitionHPP(className, derivedClass)
 		ret += "{\n"
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
+		ret += self.destructorListHPP(className)
 		# Make functions
 		ret += self.templatedTableFunctionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
 		#TODO: Add function generator for new rows (not primary key driven)

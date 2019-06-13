@@ -164,7 +164,14 @@ class SQLCPlusPlusBase:
 		for constructor in constructorsTemplate:
 			parameters = constructor[0]
 			val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
-		val += "\t\t~{className} (void);\n".format(className = className)
+		#TODO: Add constructor for same type
+		return val
+
+
+	#Destructor to follow constructor
+	def destructorListHPP (self, className):
+		val = "\tpublic:\n"
+		val += "\t\t~{className} (void);\n\n".format(className = className)
 		return val
 
 

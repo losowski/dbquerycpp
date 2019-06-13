@@ -143,6 +143,8 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret = self.classNameDefinitionHPP(className, derivedClass)
 		ret += "{\n"
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
+		#TODO: Add constructor for non-PK columns
+		ret += self.destructorListHPP(className)
 		#Functions
 		ret += self.functionListHPP(self.TABLE_FUNCTION_TEMPLATES)
 		#Variables
