@@ -75,7 +75,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	return obj;""",
 									),
 									("p{tableName}", "g{tableName}", (
-																			(CONST_NONPKTABLEVARS, ""),
+																			(CONST_NONPKTABLEVARS, ""), #TODO: Fix this function  to use NonPKColumns
 																		),
 	"""//Get objects to return
 	pap{tableName} objects;
@@ -162,7 +162,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret = list()
 		for columnName, columnObject in tableObject.getNonPrimaryKeyColums().iteritems():
 			logging.debug("getTableColumsFunctionArguments columnName %s", columnName)
-			argType = self.SQLDATATYPEMAPPING.get(columnObject.getType(),'string')
+			argType = self.SQLDATATYPEMAPPING.get(columnObject.getType(), self.SQLDATATYPEDEFAULT)
 			ret.append( (argType, columnObject.getName()) )
 		return ret
 
@@ -243,6 +243,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildSchemaClassCPP(self, className):
 		ret = str()
 		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
+		ret += self.destructorListCPP(className)
 		# Make Function implementations
 		ret += self.templatedTableFunctionListCPP(className, self.SCHEMA_FUNCTION_TEMPLATES)
 		return ret

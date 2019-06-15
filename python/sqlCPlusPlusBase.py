@@ -6,6 +6,7 @@ import logging
 
 class SQLCPlusPlusBase:
 	#Datatype conversion
+	SQLDATATYPEDEFAULT	=	"string"
 	SQLDATATYPEMAPPING	=	{
 							'bigint'	:	'int',
 							'char'		:	'string',
@@ -111,7 +112,7 @@ class SQLCPlusPlusBase:
 		return retVal
 
 	def classVariableHPP (self, variableType, variableName):
-		return "\t\t{variableType}\t\t\t{variableName};\n".format(variableType = self.SQLDATATYPEMAPPING.get(variableType,'string'), variableName = variableName)
+		return "\t\t{variableType}\t\t\t{variableName};\n".format(variableType = self.SQLDATATYPEMAPPING.get(variableType, self.SQLDATATYPEDEFAULT), variableName = variableName)
 
 	#Static Variable (static const)
 	def addStaticVariable(self, scope, varType, variableName, value):
@@ -174,7 +175,6 @@ class SQLCPlusPlusBase:
 		val += "\t\t~{className} (void);\n\n".format(className = className)
 		return val
 
-
 	#Constructor List
 	def parameterList (self, parameterList):
 		logging.debug("parameterList: %s", parameterList)
@@ -185,15 +185,16 @@ class SQLCPlusPlusBase:
 
 	def constructorBuilder(self, classConstructors):
 		logging.debug("classConstructors: %s", classConstructors)
-		ret = str()
+		buildObjects = list()
+		#Construct the build objects
 		for construct in classConstructors:
 			objectName = construct[0]
 			logging.debug("objectName construct: %s", objectName)
 			initArgs = construct[1]
 			logging.debug("initArgs construct: %s", initArgs)
-			ret += "{objectName} ({initArgs})".format(objectName = objectName, initArgs = self.parameterList(initArgs) )
-		logging.info("constructorBuilder output: %s", ret)
-		return ret
+			buildObjects.append ( (objectName, initArgs) )
+		#	ret += ", ".join ("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
+		return ",\n\t".join("{objectName} ({initArgs})".format(objectName = objectName, initArgs = self.parameterList(initArgs) ) for (objectName, initArgs) in  buildObjects)
 
 	def constructorListCPP (self, className, constructorsTemplate):
 		val = str()
@@ -206,8 +207,10 @@ class SQLCPlusPlusBase:
 			logging.info("parameters: %s", parameters)
 			logging.info("constructionArgs: %s", constructionArgs)
 			val += "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
-		val += "{className}::~{className} (void)\n{{\n}}\n".format(className = className)
 		return val
+
+	def destructorListCPP (self, className):
+		return "{className}::~{className} (void)\n{{\n}}\n\n".format(className = className)
 
 	#	Function
 	def functionListHPP(self, functions):

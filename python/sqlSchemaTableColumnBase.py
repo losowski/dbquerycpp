@@ -23,7 +23,6 @@ class SQLSchemaTableColumnBase:
 		return self.columnType
 
 	#Primary Key
-	#Primary Key
 	def setPrimaryKey(self, primaryKey):
 		self.primaryKey = primaryKey
 

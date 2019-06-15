@@ -24,3 +24,6 @@ class SQLSchemaTableColumn (sqlSchemaTableColumnOutput.SQLSchemaTableColumnOutpu
 
 	def getCPPType(self):
 		return self.SQLTYPEMAPPING.get(self.columnType, 'String')
+
+	def getCPPRefernceType(self):
+		return self.SQLTYPEMAPPING.get(self.columnType, 'String')
