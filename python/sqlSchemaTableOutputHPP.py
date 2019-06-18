@@ -14,10 +14,6 @@ class SQLSchemaTableOutputHPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 		sqlCPlusPlusTable.SQLCPlusPlusTable.__del__(self)
 
 
-	def initialiseDataStructures(self):
-		pass
-
-
 	def buildContents(self):
 		output = str()
 		output += self.fmt_ifndefine(self.tableFullName())
