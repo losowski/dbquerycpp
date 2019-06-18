@@ -42,8 +42,9 @@ class SQLSchemaBase (sqlSchema.SQLSchema):
 		#Initialise Schema files
 		self.hpp.initialiseDataStructures()
 		self.cpp.initialiseDataStructures()
-		#TODO - Build the table level internal data structures
-		pass
+		#Build Table files
+		for tableName, tableObj in self.tables.iteritems():
+			tableObj.initialiseDataStructuresTable()
 
 	def build(self):
 		#Build Makefile - buildContents not build (template, not a complete file builder)
@@ -54,7 +55,6 @@ class SQLSchemaBase (sqlSchema.SQLSchema):
 		#Build Table files
 		for tableName, tableObj in self.tables.iteritems():
 			tableObj.build()
-			pass		
 
 	def shutdown(self):
 		pass

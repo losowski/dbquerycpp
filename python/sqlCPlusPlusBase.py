@@ -101,7 +101,6 @@ class SQLCPlusPlusBase:
 		scoped = self.classVariables.setdefault(variableScope, dict())
 		scoped[variableName] = variableType
 
-
 	# Engine function to add the variables
 	def classScopeVariableHPP(self):
 		retVal = str()
@@ -116,8 +115,8 @@ class SQLCPlusPlusBase:
 
 	#Static Variable (static const)
 	def addStaticVariable(self, scope, varType, variableName, value):
-		scoped = self.staticVariable.setdefault(variableScope, dict())
-		scoped[variableName] = (variableType, value)
+		scoped = self.staticVariable.setdefault(scope, dict())
+		scoped[variableName] = (varType, value)
 		pass
 
 	def staticVariableHPP(self):
@@ -136,7 +135,7 @@ class SQLCPlusPlusBase:
 			retVal += "\t{scope}:\n".format(scope = variableScope)
 			for variableName, variableDetails  in variableList.iteritems():
 				variableType, variableValue = variableDetails
-				retVal += "const {vType}\t{vClass}::{vName} ({vValue})\n".format(vType = variableType, vName = variableName, vValue = variableValue, vClass = className)
+				retVal += "const {vType}\t{vClass}::{vName} ({vValue});\n\n".format(vType = variableType, vName = variableName, vValue = variableValue, vClass = className)
 		return retVal
 
 

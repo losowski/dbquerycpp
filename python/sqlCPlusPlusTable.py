@@ -133,7 +133,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildContents(self):
 		return str()
 
-	def initialiseDataStructures(self):
+	def initialiseDataStructuresTable(self):
 		#Default placeholder for initialising the data
 		self.addStaticVariable(self.PUBLIC, "string", "SQL_SELECT", "#TODO") # Add the class specific constant string
 		pass

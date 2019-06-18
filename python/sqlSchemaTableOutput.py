@@ -22,9 +22,9 @@ class SQLSchemaTableOutput (sqlSchemaTableBase.SQLSchemaTableBase):
 		self.sql = None
 
 
-	def initialiseDataStructures(self):
-		self.hpp.initialiseDataStructures()
-		self.cpp.initialiseDataStructures()
+	def initialiseDataStructuresTable(self):
+		self.hpp.initialiseDataStructuresTable()
+		self.cpp.initialiseDataStructuresTable()
 		#self.sql.initialiseDataStructures() #Unused as uses a different base class
 
 
