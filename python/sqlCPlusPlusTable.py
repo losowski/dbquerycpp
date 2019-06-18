@@ -169,6 +169,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildTableClassHPP(self, className, derivedClass):
 		ret = self.classNameDefinitionHPP(className, derivedClass)
 		ret += "{\n"
+		ret += self.staticVariableHPP()
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		ret += self.tableConstructorHPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS)
 		ret += self.destructorListHPP(className)
@@ -180,7 +181,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += "};\n"
 		return ret
 
-
+	# -----------------------------------
 	# Implementation
 	def tableConstructorCPP (self, className, templatedFunctions):
 		parameters = list() # (type, value)
@@ -257,6 +258,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	# 	Class CPP: functions : (scope, name, argument(s))
 	def buildTableClassCPP(self, className):
 		ret = str()
+		ret += self.staticVariableCPP(className)
 		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
 		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS)
 		ret += self.destructorListCPP(className)

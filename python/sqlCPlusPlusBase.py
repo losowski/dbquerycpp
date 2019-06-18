@@ -102,7 +102,7 @@ class SQLCPlusPlusBase:
 		scoped[variableName] = variableType
 
 
-# Engine function to add the variables
+	# Engine function to add the variables
 	def classScopeVariableHPP(self):
 		retVal = str()
 		for variableScope, variableList in self.classVariables.iteritems():

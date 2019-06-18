@@ -75,25 +75,23 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	return obj;""",
 									),
 									("p{tableName}", "g{tableName}", (
-																			(CONST_NONPKTABLEVARS, ""), #TODO: Fix this function  to use NonPKColumns
+																			("string", "sqlWhereClause"),
 																		),
 	"""//Get objects to return
 	pap{tableName} objects;
 	//Get new transaction
 	shared_ptr<pqxx::work> txn = transaction.newTransaction();
 	//Build the SQL statement
-	string sql = {tableName}::SQL_SELECT + " name = " + txn->quote(name) + ";";
+	string sql = {tableName}::SQL_SELECT << sqlWhereClause << ";";
 	// Run the query
 	pqxx::result res = txn->exec(sql);
 	//Build the objects
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
 		//Local variables for the data
-		int id = 0;
-		string name;
+		{DBSafeUtilsColumnVariables}
 		//Set the data
-		dbquery::DBSafeUtils::safeToInt(&id, res[i]["id"]);
-		dbquery::DBSafeUtils::safeToString(&name, res[i]["name"]);
+		{DBSafeUtilsColumns}
 		//Build the actual object
 		p{tableName} ptr_{tableName} = g{tableName}( id, name);
 		//Store in returned list
@@ -217,8 +215,10 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		#1: Iterate over tables
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			templateDict =	{
-								self.CONST_TABLENAME	:	tableObj.getName(),
-								"NonPKColumns" 			:	tableObj.getNonPKColumnList(),
+								self.CONST_TABLENAME			:	tableObj.getName(),
+								"NonPKColumns" 					:	tableObj.getNonPKColumnList(),
+								"DBSafeUtilsColumns" 			:	"//TODO: DBSafeUtilsColumns",
+								"DBSafeUtilsColumnVariables" 	:	"//TODO: DBSafeUtilsColumnVariables",
 							}
 			#2: Iterate over functions
 			for functionDetails in templateFunctions:
