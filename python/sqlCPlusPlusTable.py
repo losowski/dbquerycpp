@@ -133,9 +133,15 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildContents(self):
 		return str()
 
+	SQL_SELECT = """\"SELECT {columNames} FROM {tableName} WHERE\""""
+
 	def initialiseDataStructuresTable(self):
+		dataDict = 	{
+						"columNames"	:	"TODO",
+						"tableName"		:	self.tableFullName(),
+					}
 		#Default placeholder for initialising the data
-		self.addStaticVariable(self.PUBLIC, "string", "SQL_SELECT", "#TODO") # Add the class specific constant string
+		self.addStaticVariable(self.PUBLIC, "string", "SQL_SELECT", self.SQL_SELECT.format(**dataDict)) # Add the class specific constant string
 		pass
 
 	#Typedef
