@@ -133,6 +133,9 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def buildContents(self):
 		return str()
 
+	def initialiseDataStructures(self):
+		#Default placeholder for initialising the data
+		pass
 
 	#Typedef
 	def typedefListHPP(self, className):

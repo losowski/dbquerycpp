@@ -8,6 +8,7 @@ import sqlSchemaTableOutputCPP
 import sqlSchemaOutputSQL
 
 class SQLSchemaTableOutput (sqlSchemaTableBase.SQLSchemaTableBase):
+
 	def __init__(self, tableName):
 		sqlSchemaTableBase.SQLSchemaTableBase.__init__(self, tableName)
 		self.hpp =  sqlSchemaTableOutputHPP.SQLSchemaTableOutputHPP(self)
@@ -19,6 +20,13 @@ class SQLSchemaTableOutput (sqlSchemaTableBase.SQLSchemaTableBase):
 		self.hpp = None
 		self.cpp = None
 		self.sql = None
+
+
+	def initialiseDataStructures(self):
+		self.hpp.initialiseDataStructures()
+		self.cpp.initialiseDataStructures()
+		#self.sql.initialiseDataStructures() #Unused as uses a different base class
+
 
 	def build(self):
 		self.hpp.build()

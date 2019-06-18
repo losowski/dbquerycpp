@@ -12,7 +12,12 @@ class SQLSchemaTableOutputCPP (sqlCPlusPlusTable.SQLCPlusPlusTable):
 	def __del__(self):
 		sqlCPlusPlusTable.SQLCPlusPlusTable.__del__(self)
 
-	#TODO: Add the class specific constant string
+
+
+	def initialiseDataStructures(self):
+		self.addStaticVariable(self.PUBLIC, "string", "SQL_SELECT", "#TODO")	# Add the class specific constant string
+		pass
+
 
 	def buildContents(self):
 		output = str()
