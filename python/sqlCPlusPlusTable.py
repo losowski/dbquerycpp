@@ -137,7 +137,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 	def initialiseDataStructuresTable(self):
 		dataDict = 	{
-						"columNames"	:	"TODO",
+						"columNames"	:	", ".join("{column}".format(column = columnName) for columnName, columnObj in self.outputObject.getColumns().iteritems()),
 						"tableName"		:	self.tableFullName(),
 					}
 		#Default placeholder for initialising the data
