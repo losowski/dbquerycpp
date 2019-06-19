@@ -176,7 +176,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			parameters.append( (self.SQLDATATYPEMAPPING.get(columnObj.getType(), self.SQLDATATYPEDEFAULT)+ " &", columnName) )
 		#Output the Complete string
 		val = str()
-		val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
+		val += self.constructorHPP(className, parameters)
 		return val
 
 
@@ -221,7 +221,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			constructionArgs.append( (columnName, (columnName,),) )
 		#Output the Complete string
 		val = str()
-		val += "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
+		val += self.constructorCPP(className, parameters, constructionArgs)
 		return val
 
 	def updateSetColumnList(self):
