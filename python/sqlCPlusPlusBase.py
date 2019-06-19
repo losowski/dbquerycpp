@@ -162,6 +162,7 @@ class SQLCPlusPlusBase:
 		val = "\tpublic:\n"
 		for constructor in constructorsTemplate:
 			parameters = constructor[0]
+			#TODO: Build out the string producing code into a engine function
 			val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
 		#TODO: Add constructor for same type
 		return val
@@ -204,6 +205,7 @@ class SQLCPlusPlusBase:
 			constructionArgs = constructor[1]
 			logging.info("parameters: %s", parameters)
 			logging.info("constructionArgs: %s", constructionArgs)
+			#TODO: Build out the string producing code into a engine function
 			val += "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
 		return val
 
