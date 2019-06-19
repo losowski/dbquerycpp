@@ -162,7 +162,7 @@ class SQLCPlusPlusBase:
 		val = "\tpublic:\n"
 		for constructor in constructorsTemplate:
 			parameters = constructor[0]
-			val +=  self.constructorHPP(className, parameters)
+			val += self.constructorHPP(className, parameters)
 		#TODO: Add constructor for same type
 		return val
 
