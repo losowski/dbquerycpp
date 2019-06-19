@@ -169,7 +169,7 @@ class SQLCPlusPlusBase:
 
 
 	#Destructor to follow constructor
-	def destructorListHPP (self, className):
+	def destructorHPP (self, className):
 		val = "\tpublic:\n"
 		val += "\t\t~{className} (void);\n\n".format(className = className)
 		return val

@@ -189,7 +189,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		ret += self.tableConstructorHPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, True)
 		ret += self.tableConstructorHPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, False)
-		ret += self.destructorListHPP(className)
+		ret += self.destructorHPP(className)
 		#Functions
 		ret += self.functionListHPP(self.TABLE_FUNCTION_TEMPLATES)
 		#Variables
