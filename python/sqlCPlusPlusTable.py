@@ -175,7 +175,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			#TODO: Move this SQL->CPP type conversion into a different place (i.e in columns)
 			parameters.append( (self.SQLDATATYPEMAPPING.get(columnObj.getType(), self.SQLDATATYPEDEFAULT)+ " &", columnName) )
 		#Output the Complete string
-		val = "\tpublic:\n"
+		val = str()
 		val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
 		return val
 
