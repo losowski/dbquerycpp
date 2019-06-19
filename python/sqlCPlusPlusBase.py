@@ -162,11 +162,12 @@ class SQLCPlusPlusBase:
 		val = "\tpublic:\n"
 		for constructor in constructorsTemplate:
 			parameters = constructor[0]
-			#TODO: Build out the string producing code into a engine function
-			val += "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
+			val +=  self.constructorHPP(className, parameters)
 		#TODO: Add constructor for same type
 		return val
 
+	def constructorHPP (self, className, parameters):
+		return "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
 
 	#Destructor to follow constructor
 	def destructorHPP (self, className):
