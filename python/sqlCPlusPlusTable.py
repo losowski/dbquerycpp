@@ -159,13 +159,19 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return val
 
 	# Header
-	def tableConstructorHPP (self, className, templatedFunctions):
+	def tableConstructorHPP (self, className, templatedFunctions, usePrimaryKey):
 		parameters = list() # (type, value)
 		#Build a list using the constructors defined
 		for params in templatedFunctions[0]:
 			parameters.append(params)
+		#Setup dictionary to use
+		columnDictionary = None
+		if (True == usePrimaryKey):
+			columnDictionary = self.outputObject.getNonPrimaryKeyColums()
+		else:
+			columnDictionary = self.outputObject.getColumns()
 		#Add in the table columns
-		for columnName, columnObj in self.outputObject.getNonPrimaryKeyColums().iteritems():
+		for columnName, columnObj in columnDictionary.iteritems():
 			#TODO: Move this SQL->CPP type conversion into a different place (i.e in columns)
 			parameters.append( (self.SQLDATATYPEMAPPING.get(columnObj.getType(), self.SQLDATATYPEDEFAULT)+ " &", columnName) )
 		#Output the Complete string
@@ -181,7 +187,8 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += "{\n"
 		ret += self.staticVariableHPP()
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
-		ret += self.tableConstructorHPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS)
+		ret += self.tableConstructorHPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, True)
+		ret += self.tableConstructorHPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, False)
 		ret += self.destructorListHPP(className)
 		#Functions
 		ret += self.functionListHPP(self.TABLE_FUNCTION_TEMPLATES)
@@ -193,7 +200,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 	# -----------------------------------
 	# Implementation
-	def tableConstructorCPP (self, className, templatedFunctions):
+	def tableConstructorCPP (self, className, templatedFunctions, usePrimaryKey):
 		parameters = list() # (type, value)
 		constructionArgs = list() # (variable, (value,),)
 		#Build a list using the constructors defined
@@ -201,8 +208,14 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			parameters.append( params )
 		for construction in templatedFunctions[1]:
 			constructionArgs.append( construction )
+		#Setup dictionary to use
+		columnDictionary = None
+		if (True == usePrimaryKey):
+			columnDictionary = self.outputObject.getNonPrimaryKeyColums()
+		else:
+			columnDictionary = self.outputObject.getColumns()
 		#Add in the table columns
-		for columnName, columnObj in self.outputObject.getNonPrimaryKeyColums().iteritems():
+		for columnName, columnObj in columnDictionary.iteritems():
 			#TODO: Move this SQL->CPP type conversion into a different place (i.e in columns)
 			parameters.append( (self.SQLDATATYPEMAPPING.get(columnObj.getType(), self.SQLDATATYPEDEFAULT)+ " &", columnName) )
 			constructionArgs.append( (columnName, (columnName,),) )
@@ -270,7 +283,8 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret = str()
 		ret += self.staticVariableCPP(className)
 		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
-		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS)
+		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, True)
+		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, False)
 		ret += self.destructorListCPP(className)
 		# Make Function implementations
 		ret += self.templatedTableFunctionListCPP(className)
