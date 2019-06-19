@@ -205,9 +205,11 @@ class SQLCPlusPlusBase:
 			constructionArgs = constructor[1]
 			logging.info("parameters: %s", parameters)
 			logging.info("constructionArgs: %s", constructionArgs)
-			#TODO: Build out the string producing code into a engine function
-			val += "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
+			val += self.constructorCPP(className, parameters, constructionArgs)
 		return val
+
+	def constructorCPP (self, className, parameters, constructionArgs):
+		return "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
 
 	def destructorListCPP (self, className):
 		return "{className}::~{className} (void)\n{{\n}}\n\n".format(className = className)
