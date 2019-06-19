@@ -132,7 +132,6 @@ class SQLCPlusPlusBase:
 	def staticVariableCPP(self, className):
 		retVal = str()
 		for variableScope, variableList in self.staticVariable.iteritems():
-			retVal += "\t{scope}:\n".format(scope = variableScope)
 			for variableName, variableDetails  in variableList.iteritems():
 				variableType, variableValue = variableDetails
 				retVal += "const {vType}\t{vClass}::{vName} ({vValue});\n\n".format(vType = variableType, vName = variableName, vValue = variableValue, vClass = className)
