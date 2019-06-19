@@ -285,7 +285,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
 		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, True)
 		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, False)
-		ret += self.destructorListCPP(className)
+		ret += self.destructorCPP(className)
 		# Make Function implementations
 		ret += self.templatedTableFunctionListCPP(className)
 		return ret

@@ -211,7 +211,7 @@ class SQLCPlusPlusBase:
 	def constructorCPP (self, className, parameters, constructionArgs):
 		return "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
 
-	def destructorListCPP (self, className):
+	def destructorCPP (self, className):
 		return "{className}::~{className} (void)\n{{\n}}\n\n".format(className = className)
 
 	#	Function
