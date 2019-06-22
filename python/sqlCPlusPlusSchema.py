@@ -3,9 +3,9 @@
 
 #import
 import logging
-import sqlCPlusPlusBase
+import sqlCPlusPlusCommon
 
-class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
+class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#Dictionary helper definition
 	CONST_TABLENAME 		= 'tableName'
 	#Special codes for use in functions to use a table generator function
@@ -62,7 +62,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	}}
 	return ptr_{tableName};""",
 									),
-									("p{tableName}", "g{tableName}", (
+									("p{tableName}", "insert{tableName}", (
 																			(CONST_INSERTCOLUMNS, ""), #TODO: Run selects inline
 																		),
 	"""	p{tableName} obj(new {tableName}(this, {NonPKColumns}) );
@@ -74,8 +74,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	//Return object
 	return obj;""",
 									),
-									("p{tableName}", "g{tableName}", (
-																			("string", "sqlWhereClause"),
+									("p{tableName}", "getMultiple{tableName}", (
+																			("string &", "sqlWhereClause"),
 																		),
 	"""//Get objects to return
 	pap{tableName} objects;
@@ -89,9 +89,9 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
 		//Local variables for the data
-		{DBSafeUtilsColumnVariables}
+{DBSafeUtilsColumnVariables}
 		//Set the data
-		{DBSafeUtilsColumns}
+{DBSafeUtilsColumns}
 		//Build the actual object
 		p{tableName} ptr_{tableName} = g{tableName}( id, name);
 		//Store in returned list
@@ -105,13 +105,12 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 
 	def __init__(self, outputObject, extension):
 		filename = outputObject.getSchemaName() + extension
-		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, filename)
-		self.outputObject = outputObject
+		sqlCPlusPlusCommon.SQLCPlusPlusCommon.__init__(self, outputObject, filename)
 
 
 	def __del__(self):
-		sqlCPlusPlusBase.SQLCPlusPlusBase.__del__(self)
-		self.outputObject = None
+		sqlCPlusPlusCommon.SQLCPlusPlusCommon.__del__(self)
+
 
 	def schemaName(self):
 		return self.outputObject.getSchemaName()
@@ -207,9 +206,14 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 		return ret
 
 	# ---- Implementation ----
+	def getSafeTypeVariables(self, tableObject):
+		val = str()
+		for columnName, columnData in tableObject.getColumns().iteritems():
+			logging.debug("getSafeTypeVariables column: \"%s\" - \"%s\"", columnName, columnData.getType())
+			val += "\t\t{datatype} {column};\n".format(column = columnName, datatype = columnData.getCPPReferenceType())
+		return val
+
 	# Templated CPP function List
-	#TODO: Implement column conversions for "dbquery::DBSafeUtils::safeToInt(&id, res[i]["id"]);"
-	#TODO: Implement usage of the table specific select statement (requires constant string)
 	def templatedTableFunctionListCPP(self, className, templateFunctions):
 		val = str()
 		#1: Iterate over tables
@@ -217,8 +221,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			templateDict =	{
 								self.CONST_TABLENAME			:	tableObj.getName(),
 								"NonPKColumns" 					:	tableObj.getNonPKColumnList(),
-								"DBSafeUtilsColumns" 			:	"//TODO: DBSafeUtilsColumns",
-								"DBSafeUtilsColumnVariables" 	:	"//TODO: DBSafeUtilsColumnVariables",
+								'DBSafeUtilsColumns'			:	self.getSafeTypeConversion(tableObj),
+								"DBSafeUtilsColumnVariables" 	:	self.getSafeTypeVariables(tableObj),
 							}
 			#2: Iterate over functions
 			for functionDetails in templateFunctions:

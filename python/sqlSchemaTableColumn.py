@@ -7,7 +7,7 @@ import sqlSchemaTableColumnOutput
 class SQLSchemaTableColumn (sqlSchemaTableColumnOutput.SQLSchemaTableColumnOutput):
 
 	#Type converter
-	SQLTYPEMAPPING	=	{
+	SQLSAFETYPEMAPPING	=	{
 							'bigint'	:	'Int',
 							'char'		:	'String',
 							'text'		:	'String',
@@ -22,8 +22,8 @@ class SQLSchemaTableColumn (sqlSchemaTableColumnOutput.SQLSchemaTableColumnOutpu
 		sqlSchemaTableColumnOutput.SQLSchemaTableColumnOutput.__del__(self)
 
 
-	def getCPPType(self):
-		return self.SQLTYPEMAPPING.get(self.columnType, 'String')
+	def getCPPSafeType(self):
+		return self.SQLSAFETYPEMAPPING.get(self.columnType, 'String')
 
-	def getCPPRefernceType(self):
-		return self.SQLTYPEMAPPING.get(self.columnType, 'String')
+	def getCPPReferenceType(self):
+		return self.SQLSAFETYPEMAPPING.get(self.columnType, 'String').lower()

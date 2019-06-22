@@ -4,9 +4,9 @@
 
 #import
 import logging
-import sqlCPlusPlusBase
+import sqlCPlusPlusCommon
 
-class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
+class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							(	#One constructor
@@ -65,7 +65,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
-{safeDataColumn}
+{DBSafeUtilsColumns}
 	}}
 	"""
 									),
@@ -113,13 +113,12 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 				)
 
 	def __init__(self, outputObject, filename):
-		sqlCPlusPlusBase.SQLCPlusPlusBase.__init__(self, filename)
-		self.outputObject = outputObject
+		sqlCPlusPlusCommon.SQLCPlusPlusCommon.__init__(self, outputObject, filename)
 
 
 	def __del__(self):
-		sqlCPlusPlusBase.SQLCPlusPlusBase.__del__(self)
-		self.outputObject = None
+		sqlCPlusPlusCommon.SQLCPlusPlusCommon.__del__(self)
+
 
 	def tableFullName(self):
 		return self.outputObject.getFullName()
@@ -235,13 +234,6 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def columnList(self):
 		return ", \\\n\t\t".join(self.outputObject.getColumns().keys())
 
-	def getSafeTypeConversion(self):
-		val = str()
-		for columnName, columnData in self.outputObject.getColumns().iteritems():
-			logging.info("getSafeTypeConversion column: \"%s\" - \"%s\"", columnName, columnData.getType())
-			val += "\t\tdbquery::DBSafeUtils::safeTo{datatype}(&this->{column}, res[i][\"{column}\"]);\n".format(column = columnName, datatype = columnData.getCPPType())
-		return val
-
 	#INSERT SQL statements
 	#	TODO: Add a specific PK key (asssumes id at present)
 	def insertStoredProc(self):
@@ -265,7 +257,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			'primaryKey'				:	self.outputObject.getPrimaryKey(),
 			'updateSetColumnList'		:	self.updateSetColumnList(),
 			'columnList'				:	self.columnList(),
-			'safeDataColumn'			:	self.getSafeTypeConversion(),
+			'DBSafeUtilsColumns'		:	self.getSafeTypeConversion(self.outputObject),
 		}
 		for functionDetails in templateFunctions:
 			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
