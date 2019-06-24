@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "dbresult.hpp"
-#include "dbconnection.hpp"
 
 //Libpxx
 #include <pqxx/pqxx>

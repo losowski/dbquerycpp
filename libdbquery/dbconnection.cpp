@@ -6,8 +6,9 @@ using namespace std;
 namespace dbquery {
 
 DBConnection::DBConnection(const string & connection):
+	m_connectionString(connection),
 	m_dbconnection(NULL),
-	m_connection(connection)
+	transaction(m_dbconnection)
 {
 }
 
@@ -25,7 +26,7 @@ void DBConnection::connectDB(void)
 	try
 	{
 		// Connect to the database
-		m_dbconnection = new pqxx::connection(this->m_connection);
+		m_dbconnection = new pqxx::connection(this->m_connectionString);
 	}
 	catch (const pqxx::sql_error &e)
 	{
