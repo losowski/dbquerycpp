@@ -26,6 +26,7 @@ bool DBResult::selectRow(void)
 	bool retvalue = false;
 	try
 	{
+		//TODO: Change to using the pqxx work generator
 		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
 		selectRowSQL(txn);
 		retvalue = true;
@@ -53,6 +54,7 @@ void DBResult::deleteRow(void)
 {
 	try
 	{
+		//TODO: Change to using the pqxx work generator
 		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
 		deleteRowSQL(txn);
 		txn->commit(); //For changes only
@@ -70,6 +72,7 @@ void DBResult::updateRow(void)
 {
 	try
 	{
+		//TODO: Change to using the pqxx work generator
 		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
 		updateRowSQL(txn);
 		txn->commit(); //For changes only
@@ -87,6 +90,7 @@ void DBResult::insertRow(void)
 {
 	try
 	{
+		//TODO: Change to using the pqxx work generator
 		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
 		//pqxx::result res = txn.exec("SELECT \)
 		txn->commit(); //For changes only

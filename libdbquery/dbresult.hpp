@@ -15,6 +15,7 @@ namespace dbquery {
 class DBResult
 {
 	public:
+		//TODO: Change constructors to using the pqxx types
 		DBResult(dbquery::DBConnection * connection);
 		DBResult(dbquery::DBConnection * connection, const int primaryKey);
 		~DBResult(void);
