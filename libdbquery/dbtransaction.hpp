@@ -24,7 +24,7 @@ class DBTransaction;
 class DBTransaction
 {
 	public:
-		DBTransaction(dbquery::DBConnection * connection);
+		DBTransaction(pqxx::connection * connection);
 		//DBTransaction(const DBTransaction & transaction);
 		~DBTransaction(void);
 	public:
@@ -40,7 +40,7 @@ class DBTransaction
 		void addUpdateElement (ptDBResult object);
 		void addDeleteElement (ptDBResult object);
 	private:
-		dbquery::DBConnection *				m_connection;
+		pqxx::connection *					m_connection;
 		shared_ptr<pqxx::work>				transaction;
 		//Transaction Lists
 		vector < ptDBResult > 				insertTxnObjects;

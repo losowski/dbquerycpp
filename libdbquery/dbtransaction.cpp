@@ -5,9 +5,9 @@ using namespace std;
 
 namespace dbquery {
 
-DBTransaction::DBTransaction(dbquery::DBConnection * connection):
+DBTransaction::DBTransaction(pqxx::connection * connection):
 	m_connection(connection),
-	transaction(connection->getTransaction())
+	transaction(new pqxx::work (*connection))
 {
 }
 
@@ -44,7 +44,7 @@ DBTransaction::~DBTransaction(void)
 shared_ptr<pqxx::work> DBTransaction::newTransaction(void)
 {
 	transaction.reset();
-	transaction = m_connection->getTransaction();
+	transaction = shared_ptr<pqxx::work> ( new pqxx::work(*m_connection) );
 	return transaction;
 }
 
