@@ -2,6 +2,8 @@
 
 #import
 import logging
+import collections
+
 import sqlSchema
 import sqlSchemaTableColumn
 
@@ -30,7 +32,7 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 		return self.columns
 
 	def getNonPrimaryKeyColums(self):
-		output = dict()
+		output = collections.OrderedDict()
 		for columnName, columnObject in self.columns.iteritems():
 			if (columnName != self.primaryKey):
 				output[columnName] = columnObject

@@ -167,8 +167,10 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		columnDictionary = None
 		if (True == usePrimaryKey):
 			columnDictionary = self.outputObject.getNonPrimaryKeyColums()
+			logging.debug("tableConstructorHPP columnDictionary use PK: %s", columnDictionary)
 		else:
 			columnDictionary = self.outputObject.getColumns()
+			logging.debug("tableConstructorHPP columnDictionary non PK: %s", columnDictionary)
 		#Add in the table columns
 		for columnName, columnObj in columnDictionary.iteritems():
 			#TODO: Move this SQL->CPP type conversion into a different place (i.e in columns)
