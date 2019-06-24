@@ -17,7 +17,8 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 
 	def schemaInitialiseDataStructures(self):
 		#Build the object constants
-		self.addClassScopeVariable(self.PUBLIC, "DBTransaction", "transaction") #public: DBTransaction		transaction;
+		#self.addClassScopeVariable(self.PUBLIC, "DBTransaction", "transaction") #public: DBTransaction		transaction;
+		pass
 
 
 	def tableInitialiseDataStructures(self, tableName, tableObj):
