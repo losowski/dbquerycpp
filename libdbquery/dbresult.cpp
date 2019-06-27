@@ -4,15 +4,15 @@ using namespace std;
 
 namespace dbquery {
 
-DBResult::DBResult(dbquery::DBConnection * connection):
+DBResult::DBResult(pqxx::connection * connection):
 	pk(0),
-	m_connection(connection)
+	mDBConnection(connection)
 {
 }
 
-DBResult::DBResult(dbquery::DBConnection * connection, const int primaryKey):
+DBResult::DBResult(pqxx::connection * connection, const int primaryKey):
 	pk(primaryKey),
-	m_connection(connection)
+	mDBConnection(connection)
 {
 }
 
@@ -26,8 +26,7 @@ bool DBResult::selectRow(void)
 	bool retvalue = false;
 	try
 	{
-		//TODO: Change to using the pqxx work generator
-		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
+		pqxx::work txn(*mDBConnection);
 		selectRowSQL(txn);
 		retvalue = true;
 		//txn.commit(); //For changes only
@@ -54,10 +53,9 @@ void DBResult::deleteRow(void)
 {
 	try
 	{
-		//TODO: Change to using the pqxx work generator
-		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
+		pqxx::work txn(*mDBConnection);
 		deleteRowSQL(txn);
-		txn->commit(); //For changes only
+		txn.commit(); //For changes only
 	}
 	catch (const pqxx::sql_error & e)
 	{
@@ -72,10 +70,9 @@ void DBResult::updateRow(void)
 {
 	try
 	{
-		//TODO: Change to using the pqxx work generator
-		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
+		pqxx::work txn(*mDBConnection);
 		updateRowSQL(txn);
-		txn->commit(); //For changes only
+		txn.commit(); //For changes only
 	}
 	catch (const pqxx::sql_error & e)
 	{
@@ -90,10 +87,9 @@ void DBResult::insertRow(void)
 {
 	try
 	{
-		//TODO: Change to using the pqxx work generator
-		shared_ptr<pqxx::work> txn = m_connection->getTransaction();
+		pqxx::work txn(*mDBConnection);
 		//pqxx::result res = txn.exec("SELECT \)
-		txn->commit(); //For changes only
+		txn.commit(); //For changes only
 	}
 	catch (const pqxx::sql_error & e)
 	{
