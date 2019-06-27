@@ -41,6 +41,11 @@ void DBConnection::connectDB(void)
 	}
 }
 
+pqxx::connection * DBConnection::getDBConnection(void)
+{
+	return m_dbconnection;
+}
+
 //Transaction Entries
 shared_ptr<pqxx::work> DBConnection::getTransaction(void)
 {

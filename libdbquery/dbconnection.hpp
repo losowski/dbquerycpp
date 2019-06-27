@@ -23,6 +23,7 @@ class DBConnection
 		~DBConnection(void);
 	public:
 		void connectDB(void);
+		pqxx::connection * getDBConnection(void);
 		//Transaction Entries
 		shared_ptr<pqxx::work> getTransaction(void);
 		void commit(shared_ptr<pqxx::work> transaction);
