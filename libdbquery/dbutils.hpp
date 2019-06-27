@@ -4,6 +4,11 @@
 /*
  * Utilities to intepret the DB input
 */
+//Libpxx
+#include <pqxx/pqxx>
+#include <pqxx/cursor>
+#include <pqxx/transaction>
+#include <pqxx/result>
 
 using namespace std;
 
