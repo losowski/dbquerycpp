@@ -56,12 +56,12 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																	("pqxx::work &", "txn"),
 																),
 	"""
-	pqxx::result res = txn->exec("SELECT \\
+	pqxx::result res = txn.exec("SELECT \\
 		{columnList} \\
 	FROM \\
 		{tableName} \\
 	WHERE \\
-		{primaryKey} = " + txn->quote(pk) + ";");
+		{primaryKey} = " + txn.quote(pk) + ";");
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
@@ -73,10 +73,10 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																	("pqxx::work &", "txn"),
 																),
 	"""
-	pqxx::result res = txn->exec("DELETE FROM \\
+	pqxx::result res = txn.exec("DELETE FROM \\
 		{tableName} \\
 	WHERE \\
-		{primaryKey} = " + txn->quote({primaryKey}) + \\
+		{primaryKey} = " + txn.quote({primaryKey}) + \\
 	";");
 	"""
 									),
@@ -84,12 +84,12 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																	("pqxx::work &", "txn"),
 																),
 """
-	pqxx::result res = txn->exec("UPDATE \\
+	pqxx::result res = txn.exec("UPDATE \\
 		{tableName} \\
 	SET \\
 {updateSetColumnList} \\
 	WHERE \\
-		{primaryKey} = " + txn->quote({primaryKey}) + \\
+		{primaryKey} = " + txn.quote({primaryKey}) + \\
 	";");
 """
 									),
@@ -97,7 +97,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																	("pqxx::work &", "txn"),
 																),
 """
-	pqxx::result res = txn->parameterized(\"{insertStoredProc}\"){insertStoredProcParams}.exec();
+	pqxx::result res = txn.parameterized(\"{insertStoredProc}\"){insertStoredProcParams}.exec();
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
 		dbquery::DBSafeUtils::safeToInt(&this->pk, res[i][\"{insertStoredProc}\"]);
@@ -230,7 +230,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		columns = list()
 		for columnName, columnData in self.outputObject.getColumns().iteritems():
 			if columnName != self.outputObject.getPrimaryKey():
-				columns.append( "\t\t{column}  = \" + txn->quote({column}) + \"".format(column = columnName) )
+				columns.append( "\t\t{column}  = \" + txn.quote({column}) + \"".format(column = columnName) )
 		return  ", \\\n".join(columns)
 
 	def columnList(self):
@@ -245,7 +245,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		columns = list()
 		for columnName, columnData in self.outputObject.getColumns().iteritems():
 			if columnName != self.outputObject.getPrimaryKey():
-				columns.append( "(txn->quote({column}))".format(column = columnName) )
+				columns.append( "(txn.quote({column}))".format(column = columnName) )
 		return  "".join(columns)
 
 	#	Templated Table Functions
