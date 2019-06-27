@@ -1,7 +1,7 @@
 #ifndef DBRESULT_HPP
 #define DBRESULT_HPP
 
-#include <ostream>
+#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
