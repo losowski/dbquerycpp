@@ -30,7 +30,7 @@ class SQLSchemaTableOutput (sqlSchemaTableBase.SQLSchemaTableBase):
 
 	def build(self):
 		#TODO: Commented this out to build
-		self.hpp.build()
-		self.cpp.build()
-		self.sql.build()
+		#self.hpp.build()
+		#self.cpp.build()
+		#self.sql.build()
 		pass
