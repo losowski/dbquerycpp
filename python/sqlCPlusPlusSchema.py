@@ -42,7 +42,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	// If cannot be found in cache, create a new object
 	if (it == {tableName}Map.end())
 	{{
-		p{tableName} obj(new {tableName}(this, primaryKey) );
+		p{tableName} obj(new {tableName}(getDBConnection(), primaryKey) );
 		//Check data exists
 		if (obj->selectRow() == true)
 		{{
@@ -65,7 +65,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 									("p{tableName}", "insert{tableName}", (
 																			(CONST_INSERTCOLUMNS, ""), #TODO: Run selects inline
 																		),
-	"""	p{tableName} obj(new {tableName}(this, {NonPKColumns}) );
+	"""	p{tableName} obj(new {tableName}(getDBConnection(), {NonPKColumns}) );
 	//Store Object by Primary key
 	{tableName}Map[obj->id] = obj;
 	// Add object to insert Queue

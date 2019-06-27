@@ -12,7 +12,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 							(	#One constructor
 								#Parameters
 								(
-									("dbquery::DBConnection *", "connection",),
+									("pqxx::connection *", "connection",),
 								),
 								#Args
 								(
@@ -22,7 +22,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 							(	#Two constructor
 								#Parameters
 								(
-									("dbquery::DBConnection *", "connection",),
+									("pqxx::connection *", "connection",),
 									("const int", "primaryKey"),
 								),
 								#Args
@@ -42,7 +42,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	TEMPLATED_CONSTRUCTOR_ARGS	=	(	#Only One constructor
 										#Parameters
 										(
-											("dbquery::DBConnection *", "connection",),
+											("pqxx::connection *", "connection",),
 										),
 										#Args
 										(
@@ -53,7 +53,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#Schema templates - (ret, functionNametemplate, arguments)
 	TABLE_FUNCTION_TEMPLATES =	(
 									("void", "selectRowSQL",	(
-																	("shared_ptr<pqxx::work>", "txn"),
+																	("pqxx::work &", "txn"),
 																),
 	"""
 	pqxx::result res = txn->exec("SELECT \\
@@ -70,7 +70,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	"""
 									),
 									("void", "deleteRowSQL",	(
-																	("shared_ptr<pqxx::work>", "txn"),
+																	("pqxx::work &", "txn"),
 																),
 	"""
 	pqxx::result res = txn->exec("DELETE FROM \\
@@ -81,7 +81,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	"""
 									),
 									("void", "updateRowSQL",	(
-																	("shared_ptr<pqxx::work>", "txn"),
+																	("pqxx::work &", "txn"),
 																),
 """
 	pqxx::result res = txn->exec("UPDATE \\
@@ -94,7 +94,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 """
 									),
 									("void", "insertRowSQL",	(
-																	("shared_ptr<pqxx::work>", "txn"),
+																	("pqxx::work &", "txn"),
 																),
 """
 	pqxx::result res = txn->parameterized(\"{insertStoredProc}\"){insertStoredProcParams}.exec();
