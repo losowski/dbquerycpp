@@ -7,8 +7,6 @@
 */
 #include <regex>
 
-#include "dbconnection.hpp"
-
 #include "dbutils.hpp"
 #include "dbexceptionBadData.hpp"
 

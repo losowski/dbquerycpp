@@ -5,8 +5,6 @@
  * Utilities to intepret the DB input
 */
 
-#include "dbconnection.hpp"
-
 using namespace std;
 
 namespace dbquery {
