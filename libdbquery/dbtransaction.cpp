@@ -6,7 +6,7 @@ using namespace std;
 namespace dbquery {
 
 DBTransaction::DBTransaction(pqxx::connection * connection):
-	m_connection(connection),
+	mDBConnection(connection),
 	transaction(new pqxx::work (*connection))
 {
 }
@@ -44,13 +44,15 @@ DBTransaction::~DBTransaction(void)
 shared_ptr<pqxx::work> DBTransaction::newTransaction(void)
 {
 	transaction.reset();
-	transaction = shared_ptr<pqxx::work> ( new pqxx::work(*m_connection) );
+	transaction = shared_ptr<pqxx::work> ( new pqxx::work(*mDBConnection) );
 	return transaction;
 }
 
 //	Processing data
 void DBTransaction::saveTransaction(void)
 {
+	//Make the transaction
+	pqxx::work transaction(*mDBConnection);
 	// Insert
 	for (vector < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
 	{

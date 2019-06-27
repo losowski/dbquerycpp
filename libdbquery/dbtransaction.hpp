@@ -39,7 +39,7 @@ class DBTransaction
 		void addUpdateElement (ptDBResult object);
 		void addDeleteElement (ptDBResult object);
 	private:
-		pqxx::connection *					m_connection;
+		pqxx::connection *					mDBConnection;
 		shared_ptr<pqxx::work>				transaction;
 		//Transaction Lists
 		vector < ptDBResult > 				insertTxnObjects;
