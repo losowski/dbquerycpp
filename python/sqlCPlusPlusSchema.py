@@ -213,6 +213,13 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			val += "\t\t{datatype} {column};\n".format(column = columnName, datatype = columnData.getCPPReferenceType())
 		return val
 
+	def getSafeTypeConversion(self, tableObject):
+		val = str()
+		for columnName, columnData in tableObject.getColumns().iteritems():
+			logging.info("getSafeTypeConversion column: \"%s\" - \"%s\"", columnName, columnData.getType())
+			val += "\t\tdbquery::DBSafeUtils::safeTo{datatype}(&{column}, res[i][\"{column}\"]);\n".format(column = columnName, datatype = columnData.getCPPSafeType())
+		return val
+
 	# Templated CPP function List
 	def templatedTableFunctionListCPP(self, className, templateFunctions):
 		val = str()
@@ -221,7 +228,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			templateDict =	{
 								self.CONST_TABLENAME			:	tableObj.getName(),
 								"NonPKColumns" 					:	tableObj.getNonPKColumnList(),
-								'DBSafeUtilsColumns'			:	self.getSafeTypeConversion(tableObj),
+								'DBSafeUtilsColumns'			:	self.getSafeTypeConversion(tableObj),	#TODO: Change this to a function that uses the table object
 								"DBSafeUtilsColumnVariables" 	:	self.getSafeTypeVariables(tableObj),
 							}
 			#2: Iterate over functions

@@ -14,10 +14,3 @@ class SQLCPlusPlusCommon (sqlCPlusPlusBase.SQLCPlusPlusBase):
 	def __del__(self):
 		sqlCPlusPlusBase.SQLCPlusPlusBase.__del__(self)
 		self.outputObject = None
-
-	def getSafeTypeConversion(self, tableObject):
-		val = str()
-		for columnName, columnData in tableObject.getColumns().iteritems():
-			logging.info("getSafeTypeConversion column: \"%s\" - \"%s\"", columnName, columnData.getType())
-			val += "\t\tdbquery::DBSafeUtils::safeTo{datatype}(&this->{column}, res[i][\"{column}\"]);\n".format(column = columnName, datatype = columnData.getCPPSafeType())
-		return val
