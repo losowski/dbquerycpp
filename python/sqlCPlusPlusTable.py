@@ -248,13 +248,6 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				columns.append( "(txn.quote({column}))".format(column = columnName) )
 		return  "".join(columns)
 
-	def getSafeTypeConversion(self, tableObject):
-		val = str()
-		for columnName, columnData in tableObject.getColumns().iteritems():
-			logging.info("getSafeTypeConversion column: \"%s\" - \"%s\"", columnName, columnData.getType())
-			val += "\t\tdbquery::DBSafeUtils::safeTo{datatype}(&this->{column}, res[i][\"{column}\"]);\n".format(column = columnName, datatype = columnData.getCPPSafeType())
-		return val
-
 	#	Templated Table Functions
 	def templatedNamedFunctionCPP (self, className, templateFunctions):
 		val = str()
@@ -266,7 +259,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			'primaryKey'				:	self.outputObject.getPrimaryKey(),
 			'updateSetColumnList'		:	self.updateSetColumnList(),
 			'columnList'				:	self.columnList(),
-			'DBSafeUtilsColumns'		:	self.getSafeTypeConversion(self.outputObject),
+			'DBSafeUtilsColumns'		:	self.getSafeTypeConversion(self.outputObject, "this->"),
 		}
 		for functionDetails in templateFunctions:
 			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
