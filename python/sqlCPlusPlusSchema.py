@@ -10,7 +10,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	CONST_TABLENAME 		= 'tableName'
 	#Special codes for use in functions to use a table generator function
 	CONST_INSERTCOLUMNS		= 'CONST_INSERTCOLUMNS'
-	CONST_NONPKTABLEVARS	= 'NONPKTABLEVARS'
+	CONST_ALLCOLUMNS		= 'CONST_ALLCOLUMNS'
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							#One constructor
@@ -34,6 +34,16 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#				Lookup function by key
 	#TODO : Make a function for all fields (including PK)
 	SCHEMA_FUNCTION_TEMPLATES =	(
+									("p{tableName}", "g{tableName}", (
+																			(CONST_ALLCOLUMNS, ""),
+																		),
+	"""	p{tableName} obj(new {tableName}(getDBConnection(), {AllColumns}) );
+	//Store Object by Primary key
+	{tableName}Map[obj->id] = obj;
+	transaction.addInsertElement(obj);
+	//Return object
+	return obj;""",
+									),
 									("p{tableName}", "g{tableName}", (
 																			("int", "primaryKey"),
 																		),
@@ -221,8 +231,9 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			templateDict =	{
 								self.CONST_TABLENAME			:	tableObj.getName(),
+								"AllColumns"					:	tableObj.getColumns(),
 								"NonPKColumns" 					:	tableObj.getNonPKColumnList(),
-								'DBSafeUtilsColumns'			:	self.getSafeTypeConversion(tableObj),
+								"DBSafeUtilsColumns"			:	self.getSafeTypeConversion(tableObj),
 								"DBSafeUtilsColumnVariables" 	:	self.getSafeTypeVariables(tableObj),
 							}
 			#2: Iterate over functions
