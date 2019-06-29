@@ -165,11 +165,19 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 
 	# ---- Header ----
 	# Table Column Expander
-	def getTableColumsFunctionArguments(self, tableObject):
+	def getTableNonPKColumsFunctionArguments(self, tableObject):
 		#TODO: implement this to return the list of table objects as a list
 		ret = list()
 		for columnName, columnObject in tableObject.getNonPrimaryKeyColums().iteritems():
-			logging.debug("getTableColumsFunctionArguments columnName %s", columnName)
+			logging.debug("getTableNonPKColumsFunctionArguments columnName %s", columnName)
+			argType = self.SQLDATATYPEMAPPING.get(columnObject.getType(), self.SQLDATATYPEDEFAULT)
+			ret.append( (argType, columnObject.getName()) )
+		return ret
+
+	#TODO: Merge these
+	def getTableAllColumsFunctionArguments(self, tableObject):
+		ret = list()
+		for columnName, columnObject in tableObject.getColumns().iteritems():
 			argType = self.SQLDATATYPEMAPPING.get(columnObject.getType(), self.SQLDATATYPEDEFAULT)
 			ret.append( (argType, columnObject.getName()) )
 		return ret
@@ -193,7 +201,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
 				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
 					#Expand the arguments to the table parameters to allow insert
-					arguments = self.getTableColumsFunctionArguments(tableObj)
+					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
 				else:
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
@@ -231,7 +239,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			templateDict =	{
 								self.CONST_TABLENAME			:	tableObj.getName(),
-								"AllColumns"					:	tableObj.getColumns(),
+								"AllColumns"					:	tableObj.getColumns(), #TODO Fix this
 								"NonPKColumns" 					:	tableObj.getNonPKColumnList(),
 								"DBSafeUtilsColumns"			:	self.getSafeTypeConversion(tableObj),
 								"DBSafeUtilsColumnVariables" 	:	self.getSafeTypeVariables(tableObj),
@@ -246,7 +254,10 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
 				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
 					#Expand the arguments to the table parameters to allow insert
-					arguments = self.getTableColumsFunctionArguments(tableObj)
+					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
+				elif (self.CONST_ALLCOLUMNS == functionDetails[2][0][0]):
+					#Expand the arguments to the table parameters to all columns
+					arguments = self.getTableAllColumsFunctionArguments(tableObj)
 				else:
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
