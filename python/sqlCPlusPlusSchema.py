@@ -82,7 +82,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	//Get new transaction
 	shared_ptr<pqxx::work> txn = transaction.newTransaction();
 	//Build the SQL statement
-	string sql = {tableName}::SQL_SELECT << sqlWhereClause << ";";
+	string sql = {tableName}::SQL_SELECT + sqlWhereClause + ";";
 	// Run the query
 	pqxx::result res = txn->exec(sql);
 	//Build the objects
