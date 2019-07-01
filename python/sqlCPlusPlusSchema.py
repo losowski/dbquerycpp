@@ -202,6 +202,9 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
 					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
+				elif (self.CONST_ALLCOLUMNS == functionDetails[2][0][0]):
+					#Expand the arguments to the table parameters to all columns
+					arguments = self.getTableAllColumsFunctionArguments(tableObj)
 				else:
 					arguments = functionDetails[2]
 				logging.info("Arguments %s", arguments)
