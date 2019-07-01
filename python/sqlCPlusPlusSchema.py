@@ -100,11 +100,11 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
 		//Local variables for the data
-{DBSafeUtilsColumnVariables}
+{DBSafeUtilsColumnDefinitions}
 		//Set the data
 {DBSafeUtilsColumns}
 		//Build the actual object
-		p{tableName} ptr_{tableName} = get{tableName}( id, name);
+		p{tableName} ptr_{tableName} = get{tableName}({DBSafeUtilsColumnVariables});
 		//Store in returned list
 		objects->push_back(ptr_{tableName});
 
@@ -245,7 +245,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 								"AllColumns"					:	tableObj.getAllColumnList(),
 								"NonPKColumns" 					:	tableObj.getNonPKColumnList(),
 								"DBSafeUtilsColumns"			:	self.getSafeTypeConversion(tableObj),
-								"DBSafeUtilsColumnVariables" 	:	self.getSafeTypeVariables(tableObj),
+								"DBSafeUtilsColumnDefinitions" 	:	self.getSafeTypeVariables(tableObj),
+								"DBSafeUtilsColumnVariables" 	:	tableObj.getAllColumnList(),
 							}
 			#2: Iterate over functions
 			for functionDetails in templateFunctions:
