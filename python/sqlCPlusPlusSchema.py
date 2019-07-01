@@ -78,7 +78,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																		),
 	"""	p{tableName} obj(new {tableName}(getDBConnection(), {NonPKColumns}) );
 	//Store Object by Primary key
-	{tableName}Map[obj->id] = obj;
+	{tableName}Map[obj->id] = obj;	//TODO: Fix this! id is not always the PK
 	// Add object to insert Queue
 	//TODO: figure out if we can insert this object!
 	transaction.addInsertElement(obj);
