@@ -85,7 +85,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	//Return object
 	return obj;""",
 									),
-									("p{tableName}", "getMultiple{tableName}", (
+									("pap{tableName}", "getMultiple{tableName}", (
 																			("string &", "sqlWhereClause"),
 																		),
 	"""//Get objects to return
