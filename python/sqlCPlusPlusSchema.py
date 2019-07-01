@@ -34,7 +34,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#	5	-	For each foreign Key -
 	#				Lookup function by key
 	SCHEMA_FUNCTION_TEMPLATES =	(
-									("p{tableName}", "g{tableName}", (
+									("p{tableName}", "get{tableName}", (
 																			(CONST_ALLCOLUMNS, ""),
 																		),
 	"""	p{tableName} obj(new {tableName}(getDBConnection(), {AllColumns}) );
@@ -104,7 +104,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		//Set the data
 {DBSafeUtilsColumns}
 		//Build the actual object
-		p{tableName} ptr_{tableName} = g{tableName}( id, name);
+		p{tableName} ptr_{tableName} = get{tableName}( id, name);
 		//Store in returned list
 		objects->push_back(ptr_{tableName});
 
