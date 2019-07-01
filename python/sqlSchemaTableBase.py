@@ -38,11 +38,19 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 				output[columnName] = columnObject
 		return output
 
+	# Primary Key Only functions
 	def getNonPKColumnList(self):
 		return ", ".join("{column}".format(column = columnName) for columnName, columnObject in self.getNonPrimaryKeyColums().iteritems())
 
 	def getNonPKColumnTypeList(self):
 		return ", ".join("{colType} {column}".format(column = columnName, colType = columnObject.getType() ) for columnName, columnObject in self.getNonPrimaryKeyColums().iteritems())
+
+	# All colums
+	def getAllColumnList(self):
+		return ", ".join("{column}".format(column = columnName) for columnName, columnObject in self.getColumns().iteritems())
+
+	def getAllColumnTypeList(self):
+		return ", ".join("{colType} {column}".format(column = columnName, colType = columnObject.getType() ) for columnName, columnObject in self.getColumns().iteritems())
 
 	#Primary Key
 	# NOTE: Only support single column primary key (i.e the first index)

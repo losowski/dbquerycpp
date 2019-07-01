@@ -27,12 +27,12 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 						)
 
 	# Functions:
-	#	1	-	Primary Key lookup (DONE - primaryKey)
-	#	2	-	Insertion function (uses all elements that are not PK) (DONE - CONST_INSERTCOLUMNS)
-	#	3	-	Generic WHERE lookup function (data agnostic) (all fields)
-	#	4	-	For each foreign Key -
+	#	1	-	Function for all fields (including PK)
+	#	2	-	Primary Key lookup (DONE - primaryKey)
+	#	3	-	Insertion function (uses all elements that are not PK) (DONE - CONST_INSERTCOLUMNS)
+	#	4	-	Generic WHERE lookup function (data agnostic) (all fields)
+	#	5	-	For each foreign Key -
 	#				Lookup function by key
-	#TODO : Make a function for all fields (including PK)
 	SCHEMA_FUNCTION_TEMPLATES =	(
 									("p{tableName}", "g{tableName}", (
 																			(CONST_ALLCOLUMNS, ""),
@@ -239,7 +239,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			templateDict =	{
 								self.CONST_TABLENAME			:	tableObj.getName(),
-								"AllColumns"					:	tableObj.getColumns(), #TODO Fix this
+								"AllColumns"					:	tableObj.getAllColumnList(),
 								"NonPKColumns" 					:	tableObj.getNonPKColumnList(),
 								"DBSafeUtilsColumns"			:	self.getSafeTypeConversion(tableObj),
 								"DBSafeUtilsColumnVariables" 	:	self.getSafeTypeVariables(tableObj),
