@@ -76,7 +76,8 @@ class SQLCPlusPlusBase:
 	#Function Parameters = list (type name)
 	def functionArgs (self, parameters, templateDict = dict()):
 		ret = str()
-		logging.debug("functionArgs: %s", parameters)
+		logging.debug("functionArgs parameters: %s", parameters)
+		logging.debug("functionArgs templateDict: %s", templateDict)
 		ret += ", ".join ("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		return ret
 

@@ -7,7 +7,7 @@ import sqlCPlusPlusCommon
 
 class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#Dictionary helper definition
-	CONST_PRIMARY_KEY_TYPE	= '{primaryKeyType}'
+	CONST_PRIMARY_KEY_TYPE	= 'primaryKeyType'
 	CONST_TABLENAME 		= 'tableName'
 	#Special codes for use in functions to use a table generator function
 	CONST_INSERTCOLUMNS		= 'CONST_INSERTCOLUMNS'
@@ -46,7 +46,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	return obj;""",
 									),
 									("p{tableName}", "g{tableName}", (
-																			(CONST_PRIMARY_KEY_TYPE, "primaryKey"),
+																			("{primaryKeyType}", "primaryKey"),
 																		),
 	"""//Attempt to find the object
 	map{tableName}::iterator it = {tableName}Map.find(primaryKey);
