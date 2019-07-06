@@ -23,11 +23,11 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 								#Parameters
 								(
 									("pqxx::connection *", "connection",),
-									("const int", "primaryKey"),
+									("const {primaryKeyType}", "{primaryKey}"),
 								),
 								#Args
 								(
-									("dbquery::DBResult", ("connection","primaryKey",),),
+									("dbquery::DBResult", ("connection",),),
 								),
 							),
 							#(	#Three constructor  - Templated
@@ -61,7 +61,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	FROM \\
 		{tableName} \\
 	WHERE \\
-		{primaryKey} = " + txn.quote(pk) + ";");
+		{primaryKey} = " + txn.quote({primaryKey}) + ";");
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
@@ -100,7 +100,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	pqxx::result res = txn.parameterized(\"{insertStoredProc}\"){insertStoredProcParams}.exec();
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
-		dbquery::DBSafeUtils::safeToInt(&this->pk, res[i][\"{insertStoredProc}\"]);
+		dbquery::DBSafeUtils::safeToInt(&this->{primaryKey}, res[i][\"{insertStoredProc}\"]);
 	}}
 """
 									),
@@ -114,6 +114,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 
 	def __init__(self, outputObject, filename):
 		sqlCPlusPlusCommon.SQLCPlusPlusCommon.__init__(self, outputObject, filename)
+		self.dataDict = None
 
 
 	def __del__(self):
@@ -134,13 +135,16 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 
 	SQL_SELECT = """\"SELECT {columNames} FROM {tableName} WHERE\""""
 
+
 	def initialiseDataStructuresTable(self):
-		dataDict = 	{
-						"columNames"	:	", ".join("{column}".format(column = columnName) for columnName, columnObj in self.outputObject.getColumns().iteritems()),
-						"tableName"		:	self.tableFullName(),
+		self.dataDict = 	{
+						"columNames"		:	", ".join("{column}".format(column = columnName) for columnName, columnObj in self.outputObject.getColumns().iteritems()),
+						"tableName"			:	self.tableFullName(),
+						"primaryKey"		:	self.outputObject.getPrimaryKey(),
+						"primaryKeyType" 	:	self.outputObject.getPrimaryKeyType(),
 					}
 		#Default placeholder for initialising the data
-		self.addStaticVariable(self.PUBLIC, "string", "SQL_SELECT", self.SQL_SELECT.format(**dataDict)) # Add the class specific constant string
+		self.addStaticVariable(self.PUBLIC, "string", "SQL_SELECT", self.SQL_SELECT.format(**self.dataDict)) # Add the class specific constant string
 		pass
 
 	#Typedef
@@ -177,7 +181,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			parameters.append( (self.SQLDATATYPEMAPPING.get(columnObj.getType(), self.SQLDATATYPEDEFAULT)+ " &", columnName) )
 		#Output the Complete string
 		val = str()
-		val += self.constructorHPP(className, parameters)
+		val += self.constructorHPP(className, parameters, self.dataDict)
 		return val
 
 
@@ -187,7 +191,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		ret = self.classNameDefinitionHPP(className, derivedClass)
 		ret += "{\n"
 		ret += self.staticVariableHPP()
-		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
+		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS, self.dataDict)
 		ret += self.tableConstructorHPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, True)
 		ret += self.tableConstructorHPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, False)
 		ret += self.destructorHPP(className)
@@ -222,7 +226,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			constructionArgs.append( (columnName, (columnName,),) )
 		#Output the Complete string
 		val = str()
-		val += self.constructorCPP(className, parameters, constructionArgs)
+		val += self.constructorCPP(className, parameters, constructionArgs, self.dataDict)
 		return val
 
 	def updateSetColumnList(self):
@@ -276,7 +280,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	def buildTableClassCPP(self, className):
 		ret = str()
 		ret += self.staticVariableCPP(className)
-		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
+		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS, self.dataDict)
 		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, True)
 		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, False)
 		ret += self.destructorCPP(className)

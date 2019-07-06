@@ -162,16 +162,16 @@ class SQLCPlusPlusBase:
 	#List Functions
 	# HEADER
 	#	Constructor
-	def constructorListHPP (self, className, constructorsTemplate):
+	def constructorListHPP (self, className, constructorsTemplate, templateDict = dict()):
 		val = "\tpublic:\n"
 		for constructor in constructorsTemplate:
 			parameters = constructor[0]
-			val += self.constructorHPP(className, parameters)
+			val += self.constructorHPP(className, parameters, templateDict)
 		#TODO: Add constructor for same type
 		return val
 
-	def constructorHPP (self, className, parameters):
-		return "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters))
+	def constructorHPP (self, className, parameters, templateDict):
+		return "\t\t{className} ({parameters});\n".format(className = className, parameters = self.functionArgs(parameters, templateDict))
 
 	#Destructor to follow constructor
 	def destructorHPP (self, className):
@@ -200,7 +200,7 @@ class SQLCPlusPlusBase:
 		#	ret += ", ".join ("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		return ",\n\t".join("{objectName} ({initArgs})".format(objectName = objectName, initArgs = self.parameterList(initArgs) ) for (objectName, initArgs) in  buildObjects)
 
-	def constructorListCPP (self, className, constructorsTemplate):
+	def constructorListCPP (self, className, constructorsTemplate, templateDict = dict()):
 		val = str()
 		#Get Constructor functions
 		for constructor in constructorsTemplate:
@@ -210,11 +210,13 @@ class SQLCPlusPlusBase:
 			constructionArgs = constructor[1]
 			logging.info("parameters: %s", parameters)
 			logging.info("constructionArgs: %s", constructionArgs)
-			val += self.constructorCPP(className, parameters, constructionArgs)
+			val += self.constructorCPP(className, parameters, constructionArgs, templateDict)
 		return val
 
-	def constructorCPP (self, className, parameters, constructionArgs):
-		return "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(className = className, parameters = self.functionArgs(parameters), init = self.constructorBuilder(constructionArgs))
+	def constructorCPP (self, className, parameters, constructionArgs, templateDict):
+		return "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(	className = className,
+																						parameters = self.functionArgs(parameters, templateDict),
+																						init = self.constructorBuilder(constructionArgs))
 
 	def destructorCPP (self, className):
 		return "{className}::~{className} (void)\n{{\n}}\n\n".format(className = className)
