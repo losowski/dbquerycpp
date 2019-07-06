@@ -74,6 +74,9 @@ class SQLCPlusPlusBase:
 		return ret
 
 	#Function Parameters = list (type name)
+	#HOWTO:
+	#	1)	All typeof, and name should be either a value or a formattable string (i.e either "value" or "{value}")
+	#	2)	All templateDict items should be KEYS (i.e only "key"). If you put in "{key}" it WILL BREAK
 	def functionArgs (self, parameters, templateDict = dict()):
 		ret = str()
 		logging.debug("functionArgs parameters: %s", parameters)
