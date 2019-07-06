@@ -7,11 +7,11 @@ import sqlCPlusPlusCommon
 
 class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#Dictionary helper definition
+	CONST_PRIMARY_KEY_TYPE	= '{primaryKeyType}'
 	CONST_TABLENAME 		= 'tableName'
 	#Special codes for use in functions to use a table generator function
 	CONST_INSERTCOLUMNS		= 'CONST_INSERTCOLUMNS'
 	CONST_ALLCOLUMNS		= 'CONST_ALLCOLUMNS'
-	CONST_COLUMNTYPE		= 'CONST_COLUMN_TYPE'
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							#One constructor
@@ -46,7 +46,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	return obj;""",
 									),
 									("p{tableName}", "g{tableName}", (
-																			(CONST_COLUMNTYPE, "primaryKey"),
+																			(CONST_PRIMARY_KEY_TYPE, "primaryKey"),
 																		),
 	"""//Attempt to find the object
 	map{tableName}::iterator it = {tableName}Map.find(primaryKey);
@@ -190,8 +190,9 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		#1: Iterate over tables
 		for tableName, tableObj in self.outputObject.tables.iteritems():
 			templateDict =	{
-					self.CONST_TABLENAME	:	tableObj.getName(),
-					"NonPKColumns" 			:	tableObj.getNonPKColumnList(),
+					self.CONST_TABLENAME		:	tableObj.getName(),
+					"NonPKColumns" 				:	tableObj.getNonPKColumnList(),
+					self.CONST_PRIMARY_KEY_TYPE	:	tableObj.getPrimaryKeyType(),
 				}
 			#2: Iterate over functions
 			for functionDetails in templateFunctions:
@@ -199,7 +200,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				functionName = functionDetails[1]
 				args = (())
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
-				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
+				logging.debug("functionDetails Argument HPP %s", functionDetails[2][0][0])
 				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
 					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
@@ -249,6 +250,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 								"DBSafeUtilsColumnDefinitions" 	:	self.getSafeTypeVariables(tableObj),
 								"DBSafeUtilsColumnVariables" 	:	tableObj.getAllColumnList(),
 								"primaryKey" 					:	tableObj.getPrimaryKey(),
+								self.CONST_PRIMARY_KEY_TYPE		:	tableObj.getPrimaryKeyType(),
 							}
 			#2: Iterate over functions
 			for functionDetails in templateFunctions:
@@ -257,7 +259,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				args = (())
 				implementation = functionDetails[3]
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
-				logging.debug("functionDetails Argument %s", functionDetails[2][0][0])
+				logging.debug("functionDetails Argument CPP %s", functionDetails[2][0][0])
 				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
 					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
