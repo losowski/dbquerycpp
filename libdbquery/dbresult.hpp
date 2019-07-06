@@ -21,7 +21,6 @@ class DBResult
 	public:
 		//TODO: Change constructors to using the pqxx types
 		DBResult(pqxx::connection * connection);
-		DBResult(pqxx::connection * connection, const int primaryKey);
 		~DBResult(void);
 	public:
 		//SELECT

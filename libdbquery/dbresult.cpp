@@ -5,13 +5,6 @@ using namespace std;
 namespace dbquery {
 
 DBResult::DBResult(pqxx::connection * connection):
-	pk(0),
-	mDBConnection(connection)
-{
-}
-
-DBResult::DBResult(pqxx::connection * connection, const int primaryKey):
-	pk(primaryKey),
 	mDBConnection(connection)
 {
 }
