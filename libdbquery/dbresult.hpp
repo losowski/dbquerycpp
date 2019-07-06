@@ -36,8 +36,6 @@ class DBResult
 		//INSERT
 		void insertRow(void);
 		virtual void insertRowSQL(pqxx::work & txn) = 0;
-	public:
-		int									pk;
 	protected:
 		pqxx::connection *		mDBConnection;
 };

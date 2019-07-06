@@ -11,6 +11,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#Special codes for use in functions to use a table generator function
 	CONST_INSERTCOLUMNS		= 'CONST_INSERTCOLUMNS'
 	CONST_ALLCOLUMNS		= 'CONST_ALLCOLUMNS'
+	CONST_COLUMNTYPE		= 'CONST_COLUMN_TYPE'
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							#One constructor
@@ -45,7 +46,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	return obj;""",
 									),
 									("p{tableName}", "g{tableName}", (
-																			("int", "primaryKey"),
+																			(CONST_COLUMNTYPE, "primaryKey"),
 																		),
 	"""//Attempt to find the object
 	map{tableName}::iterator it = {tableName}Map.find(primaryKey);
