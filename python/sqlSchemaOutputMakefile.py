@@ -19,7 +19,7 @@ class SQLSchemaOutputMakefile (outputTemplate.OutputTemplate):
 
 	def buildContents(self):
 		dataMap = dict()
-		dataMap["MAKEFILE_PROGRAM_NAME"] = "lib" + self.outputObject.getSchemaName().capitalize() + ".so"
+		dataMap["MAKEFILE_PROGRAM_NAME"] = "lib" + self.outputObject.getSchemaName().lower() + ".so"
 		dataMap["MAKEFILE_FILES"] = self.getBuildFiles()
 		dataMap["MAKEFILE_FILEBASE"] = self.outputObject.getSchemaName().lower() + ".cpp"
 		self.loadTemplate()
