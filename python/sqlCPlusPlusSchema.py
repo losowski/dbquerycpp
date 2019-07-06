@@ -40,7 +40,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																		),
 	"""	p{tableName} obj(new {tableName}(getDBConnection(), {AllColumns}) );
 	//Store Object by Primary key
-	{tableName}Map[obj->id] = obj;
+	{tableName}Map[obj->{primaryKey}] = obj;
 	transaction.addInsertElement(obj);
 	//Return object
 	return obj;""",
