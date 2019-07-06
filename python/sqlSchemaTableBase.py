@@ -56,10 +56,14 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 	# NOTE: Only support single column primary key (i.e the first index)
 	def setPrimaryKey(self, primaryKey):
 		self.primaryKey = primaryKey
+		self.primaryKeyType = self.columns[primaryKey].getCPPReferenceType()
 		self.columns[primaryKey].setPrimaryKey(True)
 
 	def getPrimaryKey (self):
 		return self.primaryKey
+
+	def getPrimaryKeyType (self):
+		return self.primaryKeyType
 
 	#Column and type
 	def addColumn(self, columnName, columnType):
