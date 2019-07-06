@@ -60,7 +60,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		{{
 			obj->selectRow();
 			//Store Object by Primary key
-			{tableName}Map[obj->pk] = obj;
+			{tableName}Map[obj->{primaryKey}] = obj;
 			//Copy pointer to return
 			ptr_{tableName} = obj;
 		}}
@@ -248,6 +248,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 								"DBSafeUtilsColumns"			:	self.getSafeTypeConversion(tableObj),
 								"DBSafeUtilsColumnDefinitions" 	:	self.getSafeTypeVariables(tableObj),
 								"DBSafeUtilsColumnVariables" 	:	tableObj.getAllColumnList(),
+								"primaryKey" 					:	tableObj.getPrimaryKey(),
 							}
 			#2: Iterate over functions
 			for functionDetails in templateFunctions:
