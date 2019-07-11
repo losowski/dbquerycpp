@@ -70,7 +70,7 @@ PROGRAM_NAME=../lib/libdbquery.so
 #INCLUDES = -I/form
 
 #Libraries
-LDFLAGS = -L/usr/lib/x86_64-linux-gnu
+LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lpqxx
 
 #Soures
 SRCS = dbexception.cpp dbexceptionBadData.cpp dbexceptionNoData.cpp  dbutils.cpp dbsafeutils.cpp dbresult.cpp dbtransaction.cpp dbconnection.cpp
