@@ -41,7 +41,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	"""	p{tableName} obj(new {tableName}(getDBConnection(), {AllColumns}) );
 	//Store Object by Primary key
 	{tableName}Map[obj->{primaryKey}] = obj;
-	transaction.addInsertElement(obj);
+	m_transaction->addInsertElement(obj);
 	//Return object
 	return obj;""",
 									),
@@ -82,7 +82,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	{tableName}Map[obj->{primaryKey}] = obj;
 	// Add object to insert Queue
 	//TODO: figure out if we can insert this object!
-	transaction.addInsertElement(obj);
+	m_transaction->addInsertElement(obj);
 	//Return object
 	return obj;""",
 									),
@@ -92,7 +92,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	"""//Get objects to return
 	pap{tableName} objects;
 	//Get new transaction
-	shared_ptr<pqxx::work> txn = transaction.newTransaction();
+	shared_ptr<pqxx::work> txn = m_transaction->newTransaction();
 	//Build the SQL statement
 	string sql = {tableName}::SQL_SELECT + sqlWhereClause + ";";
 	// Run the query

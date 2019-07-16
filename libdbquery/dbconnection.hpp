@@ -31,7 +31,7 @@ class DBConnection
 		string						m_connectionString;
 	protected:
 		pqxx::connection *			m_dbconnection;
-		DBTransaction				transaction;
+		shared_ptr<DBTransaction> 	m_transaction;
 
 };
 }

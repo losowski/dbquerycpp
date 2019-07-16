@@ -8,7 +8,7 @@ namespace dbquery {
 DBConnection::DBConnection(const string & connection):
 	m_connectionString(connection),
 	m_dbconnection(NULL),
-	transaction(m_dbconnection)
+	m_transaction(nullptr)
 {
 }
 
@@ -27,6 +27,8 @@ void DBConnection::connectDB(void)
 	{
 		// Connect to the database
 		m_dbconnection = new pqxx::connection(this->m_connectionString);
+		//Setup the transaction
+		m_transaction = shared_ptr<DBTransaction> ( new DBTransaction(m_dbconnection) );		
 	}
 	catch (const pqxx::sql_error &e)
 	{
