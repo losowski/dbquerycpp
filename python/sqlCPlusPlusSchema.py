@@ -56,9 +56,9 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	{{
 		p{tableName} obj(new {tableName}(getDBConnection(), primaryKey) );
 		//Check data exists
-		if (obj->selectRow() == true)
+		bool exists = obj->selectRow();
+		if (true == exists)
 		{{
-			obj->selectRow();
 			//Store Object by Primary key
 			{tableName}Map[obj->{primaryKey}] = obj;
 			//Copy pointer to return
