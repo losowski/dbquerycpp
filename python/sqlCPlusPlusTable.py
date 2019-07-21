@@ -7,6 +7,7 @@ import logging
 import sqlCPlusPlusCommon
 
 class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
+	#TODO: Add safe functions for parsing data BEFORE database entry (rather than setting element directly)
 	#Ordered Dict (typeof, name)
 	CONSTRUCTOR_ARGS =	(
 							(	#One constructor
@@ -264,7 +265,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			'primaryKey'				:	self.outputObject.getPrimaryKey(),
 			'updateSetColumnList'		:	self.updateSetColumnList(),
 			'columnList'				:	self.columnList(),
-			'DBSafeUtilsColumns'		:	self.getSafeTypeConversion(self.outputObject, "this->"),
+			'DBSafeUtilsColumns'		:	self.getTypeConversion(self.outputObject, "this->"),
 		}
 		for functionDetails in templateFunctions:
 			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )

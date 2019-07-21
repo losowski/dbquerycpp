@@ -21,3 +21,10 @@ class SQLCPlusPlusCommon (sqlCPlusPlusBase.SQLCPlusPlusBase):
 			logging.info("getSafeTypeConversion column: \"%s\" - \"%s\"", columnName, columnData.getType())
 			val += "\t\tdbquery::DBSafeUtils::safeTo{datatype}(&{objectRef}{column}, res[i][\"{column}\"]);\n".format(column = columnName, datatype = columnData.getCPPSafeType(), objectRef= objectReference)
 		return val
+
+	def getTypeConversion(self, tableObject, objectReference = str()):
+		val = str()
+		for columnName, columnData in tableObject.getColumns().iteritems():
+			logging.info("getTypeConversion column: \"%s\" - \"%s\"", columnName, columnData.getType())
+			val += "\t\tdbquery::DBUtils::to{datatype}(&{objectRef}{column}, res[i][\"{column}\"]);\n".format(column = columnName, datatype = columnData.getCPPSafeType(), objectRef= objectReference)
+		return val
