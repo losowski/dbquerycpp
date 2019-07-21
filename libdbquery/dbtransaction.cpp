@@ -6,8 +6,7 @@ using namespace std;
 namespace dbquery {
 
 DBTransaction::DBTransaction(pqxx::connection * connection):
-	mDBConnection(connection),
-	transaction(new pqxx::work (*connection))
+	mDBConnection(connection)
 {
 }
 
@@ -20,8 +19,6 @@ DBTransaction(const DBTransaction & transaction)
 
 DBTransaction::~DBTransaction(void)
 {
-	// Destroy the transaction object
-	transaction.reset();
 	// Destroy the objects we hold
 	// Insert
 	for (vector < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
@@ -43,9 +40,7 @@ DBTransaction::~DBTransaction(void)
 // Transaction oriented commands
 shared_ptr<pqxx::work> DBTransaction::newTransaction(void)
 {
-	transaction.reset();
-	transaction = shared_ptr<pqxx::work> ( new pqxx::work(*mDBConnection) );
-	return transaction;
+	return shared_ptr<pqxx::work> ( new pqxx::work(*mDBConnection) );
 }
 
 //	Processing data
@@ -70,16 +65,6 @@ void DBTransaction::saveTransaction(void)
 	}
 }
 
-//	commitTransaction and abortTransaction purge the commit queue
-void DBTransaction::commitTransaction(void)
-{
-	transaction->commit();
-}
-
-void DBTransaction::abortTransaction(void)
-{
-	transaction->abort();
-}
 
 // Data oriented commands - abort or commit will purge queue
 void DBTransaction::addInsertElement (ptDBResult object)
