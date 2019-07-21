@@ -28,6 +28,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 								#Args
 								(
 									("dbquery::DBResult", ("connection",),),
+									("{primaryKeyType}", ("{primaryKey}",),),
 								),
 							),
 							#(	#Three constructor  - Templated
