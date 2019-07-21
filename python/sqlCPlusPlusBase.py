@@ -180,14 +180,14 @@ class SQLCPlusPlusBase:
 		return val
 
 	#Constructor List
-	def parameterList (self, parameterList):
+	def parameterList (self, parameterList, templateDict = dict()):
 		logging.debug("parameterList: %s", parameterList)
-		ret = ", ".join ("{name}".format(name = name) for name in parameterList)
+		ret = ", ".join ("{name}".format(name = name.format(**templateDict)) for name in parameterList)
 		logging.debug("parameterList output: %s", ret)
 		return ret
 
 
-	def constructorBuilder(self, classConstructors):
+	def constructorBuilder(self, classConstructors, templateDict):
 		logging.debug("classConstructors: %s", classConstructors)
 		buildObjects = list()
 		#Construct the build objects
@@ -198,7 +198,7 @@ class SQLCPlusPlusBase:
 			logging.debug("initArgs construct: %s", initArgs)
 			buildObjects.append ( (objectName, initArgs) )
 		#	ret += ", ".join ("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
-		return ",\n\t".join("{objectName} ({initArgs})".format(objectName = objectName, initArgs = self.parameterList(initArgs) ) for (objectName, initArgs) in  buildObjects)
+		return ",\n\t".join("{objectName} ({initArgs})".format(objectName = objectName.format(**templateDict), initArgs = self.parameterList(initArgs, templateDict) ) for (objectName, initArgs) in  buildObjects)
 
 	def constructorListCPP (self, className, constructorsTemplate, templateDict = dict()):
 		val = str()
@@ -216,7 +216,7 @@ class SQLCPlusPlusBase:
 	def constructorCPP (self, className, parameters, constructionArgs, templateDict):
 		return "{className}::{className} ({parameters}):\n\t{init}\n{{\n}}\n\n".format(	className = className,
 																						parameters = self.functionArgs(parameters, templateDict),
-																						init = self.constructorBuilder(constructionArgs))
+																						init = self.constructorBuilder(constructionArgs, templateDict))
 
 	def destructorCPP (self, className):
 		return "{className}::~{className} (void)\n{{\n}}\n\n".format(className = className)
