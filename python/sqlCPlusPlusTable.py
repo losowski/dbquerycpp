@@ -114,6 +114,13 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																),
 	"""	return {columnName};"""
 									),
+									("void", "set{columnNameTitle}",	(
+																	("{columnType}", "{columnName}"),
+																),
+	"""	{columnName} = {columnName};
+	//TODO: Need to add this to the dbTransaction class as an update
+	"""
+									),
 								)
 
 	#Typedef mapping
