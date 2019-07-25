@@ -202,6 +202,20 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		val += self.constructorHPP(className, parameters, self.dataDict)
 		return val
 
+	def templatedColumnFunctionHPP (self, templateFunctions):
+		val = str()
+		#Build Dict
+		for functionDetails in templateFunctions:
+			for columnName, columnData in self.outputObject.getColumns().iteritems():
+				templateDict = {
+					'columnNameTitle'			:	columnName.title(),
+					'columnName'				:	columnName,
+					'columnType'				:	columnData.getCPPReferenceType(),
+					'DBSafeUtilsType'			:	columnData.getCPPSafeType(),
+				}
+				val += self.classFunctionTemplateHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = templateDict )
+		return val
+
 
 
 	# 	Class HPP: functions : (scope, name, argument(s))
@@ -215,6 +229,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		ret += self.destructorHPP(className)
 		#Functions
 		ret += self.functionListHPP(self.TABLE_FUNCTION_TEMPLATES)
+		ret += self.templatedColumnFunctionHPP(self.COLUMN_FUNCTION_TEMPLATES)
 		#Variables
 		##TODO: Remove this and use the generic classScopeVariableHPP instead (with type swaps upfront)
 		ret += self.classVariableListHPP()
@@ -291,22 +306,15 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	def templatedColumnFunctionCPP (self, className, templateFunctions):
 		val = str()
 		#Build Dict
-		for columnName, columnData in self.outputObject.getColumns().iteritems():
-			templateDict = {
-				'columnNameTitle'			:	columnName.title(),
-				'columnName'				:	columnName,
-				'columnType'				:	columnData.getCPPReferenceType(),
-				'DBSafeUtilsType'			:	columnData.getCPPSafeType(),
-			}
-			for functionDetails in templateFunctions:
+		for functionDetails in templateFunctions:
+			for columnName, columnData in self.outputObject.getColumns().iteritems():
+				templateDict = {
+					'columnNameTitle'			:	columnName.title(),
+					'columnName'				:	columnName,
+					'columnType'				:	columnData.getCPPReferenceType(),
+					'DBSafeUtilsType'			:	columnData.getCPPSafeType(),
+				}
 				val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
-		return val
-
-	#templateFunctions = (ret, functionNametemplate, arguments)
-	def templatedTableFunctionListCPP(self, className):
-		val = str()
-		val += self.templatedNamedFunctionCPP(className, self.TABLE_FUNCTION_TEMPLATES)
-		val += self.templatedColumnFunctionCPP(className, self.COLUMN_FUNCTION_TEMPLATES)
 		return val
 
 
@@ -319,5 +327,6 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		ret += self.tableConstructorCPP(className, self.TEMPLATED_CONSTRUCTOR_ARGS, False)
 		ret += self.destructorCPP(className)
 		# Make Function implementations
-		ret += self.templatedTableFunctionListCPP(className)
+		ret += self.templatedNamedFunctionCPP(className, self.TABLE_FUNCTION_TEMPLATES)
+		ret += self.templatedColumnFunctionCPP(className, self.COLUMN_FUNCTION_TEMPLATES)
 		return ret
