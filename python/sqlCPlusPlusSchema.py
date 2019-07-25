@@ -40,7 +40,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																		),
 	"""	p{tableName} obj(new {tableName}(getDBConnection(), {AllColumns}) );
 	//Store Object by Primary key
-	{tableName}Map[obj->{primaryKey}] = obj;
+	{tableName}Map[obj->get{PrimaryKeyAccessor}()] = obj;
 	m_transaction->addInsertElement(obj);
 	//Return object
 	return obj;""",
@@ -60,7 +60,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		if (true == exists)
 		{{
 			//Store Object by Primary key
-			{tableName}Map[obj->{primaryKey}] = obj;
+			{tableName}Map[obj->get{PrimaryKeyAccessor}()] = obj;
 			//Copy pointer to return
 			ptr_{tableName} = obj;
 		}}
@@ -79,7 +79,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																		),
 	"""	p{tableName} obj(new {tableName}(getDBConnection(), {NonPKColumns}) );
 	//Store Object by Primary key
-	{tableName}Map[obj->{primaryKey}] = obj;
+	{tableName}Map[obj->get{PrimaryKeyAccessor}()] = obj;
 	// Add object to insert Queue
 	//TODO: figure out if we can insert this object!
 	m_transaction->addInsertElement(obj);
@@ -250,6 +250,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 								"DBSafeUtilsColumnDefinitions" 	:	self.getSafeTypeVariables(tableObj),
 								"DBSafeUtilsColumnVariables" 	:	tableObj.getAllColumnList(),
 								"primaryKey" 					:	tableObj.getPrimaryKey(),
+								"PrimaryKeyAccessor"			:	tableObj.getPrimaryKey().title(),
 								self.CONST_PRIMARY_KEY_TYPE		:	tableObj.getPrimaryKeyType(),
 							}
 			#2: Iterate over functions
