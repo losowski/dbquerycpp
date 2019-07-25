@@ -107,7 +107,16 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 """
 									),
 								)
+	#Column Functions
+	COLUMN_FUNCTION_TEMPLATES =	(
+									("{columnType}", "get{columnNameTitle}",	(
+																	("void", ""),
+																),
+	"""	return {columnName};"""
+									),
+								)
 
+	#Typedef mapping
 	TYPEDEFS =	(
 					("shared_ptr<{className}>", "p{className}"),
 					("vector < p{className} >", "ap{className}"),
@@ -271,10 +280,26 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
 		return val
 
+	#	Templated Column Functions
+	def templatedColumnFunctionCPP (self, className, templateFunctions):
+		val = str()
+		#Build Dict
+		for columnName, columnData in self.outputObject.getColumns().iteritems():
+			templateDict = {
+				'columnNameTitle'			:	columnName.title(),
+				'columnName'				:	columnName,
+				'columnType'				:	columnData.getCPPReferenceType(),
+				'DBSafeUtilsType'			:	columnData.getCPPSafeType(),
+			}
+			for functionDetails in templateFunctions:
+				val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
+		return val
+
 	#templateFunctions = (ret, functionNametemplate, arguments)
 	def templatedTableFunctionListCPP(self, className):
 		val = str()
 		val += self.templatedNamedFunctionCPP(className, self.TABLE_FUNCTION_TEMPLATES)
+		val += self.templatedColumnFunctionCPP(className, self.COLUMN_FUNCTION_TEMPLATES)
 		return val
 
 
