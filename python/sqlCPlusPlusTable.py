@@ -58,12 +58,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																	("pqxx::work &", "txn"),
 																),
 	"""
-	pqxx::result res = txn.exec("SELECT \\
-		{columnList} \\
-	FROM \\
-		{tableName} \\
-	WHERE \\
-		{primaryKey} = " + txn.quote({primaryKey}) + ";");
+	pqxx::result res = txn.exec(SQL_SELECT + txn.quote({primaryKey}) + ";");
 	// Only get one result line (as we use the Primary Key
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
