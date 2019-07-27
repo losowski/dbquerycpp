@@ -31,6 +31,7 @@ class DBTransaction
 		shared_ptr<pqxx::work> newTransaction(void);
 		//	Processing data
 		void saveTransaction(void);
+		void purgeTransaction(void);
 		//	commitTransaction and abortTransaction purge the commit queue
 		void commitTransaction(void);
 		void abortTransaction(void);

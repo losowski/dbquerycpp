@@ -19,22 +19,8 @@ DBTransaction(const DBTransaction & transaction)
 
 DBTransaction::~DBTransaction(void)
 {
-	// Destroy the objects we hold
-	// Insert
-	for (vector < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
-	{
-		it->reset();
-	}
-	// Update
-	for (vector < ptDBResult >::iterator it = updateTxnObjects.begin(); it != updateTxnObjects.end(); it++)
-	{
-		it->reset();
-	}
-	// Delete
-	for (vector < ptDBResult >::iterator it = deleteTxnObjects.begin(); it != deleteTxnObjects.end(); it++)
-	{
-		it->reset();
-	}
+	//Purge the transaction queue
+	purgeTransaction();
 }
 
 // Transaction oriented commands
@@ -65,6 +51,26 @@ void DBTransaction::saveTransaction(void)
 	}
 }
 
+
+void DBTransaction::purgeTransaction(void)
+{
+		// Destroy the objects we hold
+	// Insert
+	for (vector < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
+	{
+		it->reset();
+	}
+	// Update
+	for (vector < ptDBResult >::iterator it = updateTxnObjects.begin(); it != updateTxnObjects.end(); it++)
+	{
+		it->reset();
+	}
+	// Delete
+	for (vector < ptDBResult >::iterator it = deleteTxnObjects.begin(); it != deleteTxnObjects.end(); it++)
+	{
+		it->reset();
+	}
+}
 
 // Data oriented commands - abort or commit will purge queue
 void DBTransaction::addInsertElement (ptDBResult object)
