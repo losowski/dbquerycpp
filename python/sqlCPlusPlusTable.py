@@ -169,7 +169,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 
 	#Variables
 	def classVariableListHPP(self):
-		val = "\tprivate:\n"
+		val = "\tpublic:\n"
 		for columnName, columnObj in self.outputObject.getColumns().iteritems():
 			val += self.classVariableHPP(variableType = columnObj.getType(), variableName = columnObj.getName())
 		return val
