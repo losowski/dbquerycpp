@@ -1,12 +1,20 @@
-README
-======
+== README ==
+============
 
-BUILD DEPENDENCIES
-==================
+========================
+== BUILD DEPENDENCIES ==
+========================
 libboost-dev
+libxx-dev (includes: libpq-dev)
 
-DESIGN: libdbquery
-===================
+==============
+== COMPILER ==
+==============
++ Capable of building c++11
+
+========================
+== DESIGN: libdbquery ==
+========================
 - DBConnection
 	- One instance per executable
 	- Wraps around the connection process
@@ -22,3 +30,29 @@ DESIGN: libdbquery
 	- Constructed with the connection object
 	- Should be used to construct data specific objects
 	- Uses DB Transactions
+
+==============
+== BUILDING ==
+==============
+1) Replace "database.sql" with your schema design
+
+2) Run buildDBCPP.py to convert the schema into a C++ compliant structure and code
+
+3) build libdbquery
+	cd libdbquery
+	make
+	make install
+	cd ../
+
+	#NOTE: If you are running a test environment run to make the dynamic library linking point to this directory
+		sudo ./create_ldconfig_link.sh
+
+4) Build the schema
+	make
+	make install
+
+5) Build your own application
+	#NOTES:
+		- Link to libdbquery
+		- Link to lib<schema_name> - This is your custom library
+	
