@@ -48,6 +48,18 @@ pqxx::connection * DBConnection::getDBConnection(void)
 	return m_dbconnection;
 }
 
+// Transaction oriented Functionality
+void DBConnection::saveTransactions(void)
+{
+	m_transaction->saveTransaction();
+}
+
+void DBConnection::purgeTransactions(void)
+{
+	m_transaction->purgeTransaction();
+}
+
+
 //Transaction Entries
 shared_ptr<pqxx::work> DBConnection::getTransaction(void)
 {

@@ -24,6 +24,9 @@ class DBConnection
 	public:
 		void connectDB(void);
 		pqxx::connection * getDBConnection(void);
+		// Transaction oriented Functionality
+		void saveTransactions(void);
+		void purgeTransactions(void);
 		//Transaction Entries
 		shared_ptr<pqxx::work> getTransaction(void);
 		void commit(shared_ptr<pqxx::work> transaction);

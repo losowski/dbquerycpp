@@ -32,9 +32,6 @@ class DBTransaction
 		//	Processing data
 		void saveTransaction(void);
 		void purgeTransaction(void);
-		//	commitTransaction and abortTransaction purge the commit queue
-		void commitTransaction(void);
-		void abortTransaction(void);
 		// Data oriented commands - abort or commit will purge queue
 		void addInsertElement (ptDBResult object);
 		void addUpdateElement (ptDBResult object);

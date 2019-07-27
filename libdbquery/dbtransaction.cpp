@@ -33,6 +33,9 @@ shared_ptr<pqxx::work> DBTransaction::newTransaction(void)
 void DBTransaction::saveTransaction(void)
 {
 	//Make the transaction
+	//TODO: Make this tolerate bad changes:
+	//	i.e have a failed transaction register
+	// Or remove good transactions
 	pqxx::work transaction(*mDBConnection);
 	// Insert
 	for (vector < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
@@ -54,7 +57,7 @@ void DBTransaction::saveTransaction(void)
 
 void DBTransaction::purgeTransaction(void)
 {
-		// Destroy the objects we hold
+	// Destroy the objects we hold
 	// Insert
 	for (vector < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
 	{
