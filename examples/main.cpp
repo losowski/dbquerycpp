@@ -19,4 +19,16 @@ int main (int argc, char** argv)
 	ptbody bodypt = sc.gtbody(1);
 	//Print out the data
 	cout << "Body Name: " << bodypt->name << endl;
+	// Perform an Insert
+	ptbody bodyptNew = sc.inserttbody("Earthshine");
+	// Commit the transaction here
+	sc.saveTransactions();
+	// Get the ID
+	cout << "New Body Name: " << bodyptNew->getName() << endl;
+	// Print out the data
+	cout << "New Body ID: " << bodyptNew->getId() << endl;
+	//Fetch a new Identifier
+	ptbody bodyptNew2 = sc.gtbody(bodyptNew->getId());
+	// Make sure we got the right name
+	cout << "New Body ID: " << bodyptNew2->getName() << endl;
 }
