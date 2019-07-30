@@ -22,7 +22,7 @@ BEGIN
 		)
 	VALUES
 		(
-			v_$SQL_PRIMARY_KEY
+			v_$SQL_PRIMARY_KEY,
 			$SQL_VALUES
 		)
 	;

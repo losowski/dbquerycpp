@@ -9,7 +9,7 @@ class sqlSchemaOutputSQL (outputTemplate.OutputTemplate):
 	def __init__(self, outputObject):
 		outputTemplate.OutputTemplate.__init__(self, "procedures.sql" , "database/"+outputObject.tableName+"_procedures.sql")
 		self.outputObject = outputObject
-		self.schemaName = self.outputObject.getSchemaName()
+		self.schemaName = self.outputObject.getSchemaNameSQL()
 		self.tableName = self.outputObject.tableName.lower()
 		self.nonPKColumns = list()
 

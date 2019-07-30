@@ -116,7 +116,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 								)
 
 	def __init__(self, outputObject, extension):
-		filename = outputObject.getSchemaName() + extension
+		filename = outputObject.getSchemaNameCPP() + extension
 		sqlCPlusPlusCommon.SQLCPlusPlusCommon.__init__(self, outputObject, filename)
 
 
@@ -125,7 +125,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 
 
 	def schemaName(self):
-		return self.outputObject.getSchemaName()
+		return self.outputObject.getSchemaNameCPP()
 
 
 	#Complex Data structure Builder
