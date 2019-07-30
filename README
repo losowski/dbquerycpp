@@ -51,8 +51,11 @@ libxx-dev (includes: libpq-dev)
 	make
 	make install
 
-5) Build your own application
+5) Run in the stored procedures from the database folder
+	psql -h localhost -d neurondb -U neuron -W
+	\i <table_name>_procedures.sql
+
+6) Build your own application
 	#NOTES:
 		- Link to libdbquery
 		- Link to lib<schema_name> - This is your custom library
-	
