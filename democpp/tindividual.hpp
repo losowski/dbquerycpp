@@ -1,50 +1,48 @@
 #ifndef NEURON_SCHEMA_TINDIVIDUAL_HPP
 #define NEURON_SCHEMA_TINDIVIDUAL_HPP
-
-#include <memory>
-#include <vector>
-
 #include "dbresult.hpp"
 #include "dbsafeutils.hpp"
-
-#include "tbody.hpp"
-
+#include "dbutils.hpp"
+#include "dbconnection.hpp"
 using namespace std;
 using namespace dbquery;
+namespace neuronSchema
+{
 
-namespace neuronSchema {
+class tindividual;
 
-class tIndividual;
-
-typedef shared_ptr<tIndividual> ptIndividual;
-typedef vector < ptIndividual >  aptIndividual;
-typedef shared_ptr < aptIndividual>  paptIndividual;
-
-class tIndividual : public DBResult
+typedef shared_ptr<tindividual> ptindividual;
+typedef vector < ptindividual > aptindividual;
+typedef shared_ptr < aptindividual> paptindividual;
+class tindividual : public dbquery::DBResult
 {
 	public:
-		static const string SQL_SELECT;
+		static const string	SQL_SELECT;
 	public:
-		tIndividual(dbquery::DBConnection * connection);
-		tIndividual(dbquery::DBConnection * connection, const int primaryKey);
-		tIndividual(dbquery::DBConnection * connection, int id, int body_id, string & name);
-		~tIndividual(void);
+		tindividual (pqxx::connection * connection);
+		tindividual (pqxx::connection * connection, const int id);
+		tindividual (pqxx::connection * connection, int & body_id, string & name);
+		tindividual (pqxx::connection * connection, int & body_id, int & id, string & name);
 	public:
-		//SELECT
-		void selectRowSQL(shared_ptr<pqxx::work> txn);
-		//DELETE
-		void deleteRowSQL(shared_ptr<pqxx::work> txn);
-		//UPDATE
-		void updateRowSQL(shared_ptr<pqxx::work> txn);
-		//INSERT
-		void insertRowSQL(shared_ptr<pqxx::work> txn);
-		//Schema Functions
-		shared_ptr<tBody> gtBody(void);
-		static paptIndividual gtIndividualsFromBody(dbquery::DBConnection * connection, const tBody & body);
+		~tindividual (void);
+
 	public:
-		int 		id;
-		int 		body_id;
-		string		name;
+		void selectRowSQL(pqxx::work & txn);
+		void deleteRowSQL(pqxx::work & txn);
+		void updateRowSQL(pqxx::work & txn);
+		void insertRowSQL(pqxx::work & txn);
+		int getBody_Id(void );
+		int getId(void );
+		string getName(void );
+		void setBody_Id(int body_id);
+		void setId(int id);
+		void setName(string name);
+	public:
+		int			body_id;
+		int			id;
+		string			name;
 };
+
+
 }
 #endif //NEURON_SCHEMA_TINDIVIDUAL_HPP

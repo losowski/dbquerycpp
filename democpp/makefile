@@ -73,7 +73,7 @@ INCLUDES = -I../libdbquery
 LDFLAGS = -L/usr/lib/x86_64-linux-gnu -L../lib -ldbquery
 
 #Soures
-SRCS = tbody.cpp tindividual.cpp neuron_schema.cpp
+SRCS = tbody.cpp tindividual.cpp neuronschema.cpp
 
 ###########
 ## MAGIC ##

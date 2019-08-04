@@ -1,48 +1,45 @@
 #ifndef NEURON_SCHEMA_TBODY_HPP
 #define NEURON_SCHEMA_TBODY_HPP
-
-#include <memory>
-#include <vector>
-
 #include "dbresult.hpp"
 #include "dbsafeutils.hpp"
-
-
+#include "dbutils.hpp"
+#include "dbconnection.hpp"
 using namespace std;
 using namespace dbquery;
+namespace neuronSchema
+{
 
-namespace neuronSchema {
+class tbody;
 
-class tBody;
-
-typedef shared_ptr<tBody> ptBody;
-typedef vector < ptBody >  aptBody;
-typedef shared_ptr < aptBody>  paptBody;
-
-class tBody : public DBResult
+typedef shared_ptr<tbody> ptbody;
+typedef vector < ptbody > aptbody;
+typedef shared_ptr < aptbody> paptbody;
+class tbody : public dbquery::DBResult
 {
 	public:
-		static const string SQL_SELECT;
+		static const string	SQL_SELECT;
 	public:
-		tBody(dbquery::DBConnection * connection);
-		tBody(dbquery::DBConnection * connection, const int primaryKey);
-		tBody(dbquery::DBConnection * connection, int id, const string & text);
-		~tBody(void);
+		tbody (pqxx::connection * connection);
+		tbody (pqxx::connection * connection, const int id);
+		tbody (pqxx::connection * connection, string & name);
+		tbody (pqxx::connection * connection, int & id, string & name);
 	public:
-		//SELECT
-		void selectRowSQL(shared_ptr<pqxx::work> txn);
-		//DELETE
-		void deleteRowSQL(shared_ptr<pqxx::work> txn);
-		//UPDATE
-		void updateRowSQL(shared_ptr<pqxx::work> txn);
-		//INSERT
-		void insertRowSQL(shared_ptr<pqxx::work> txn);
-		//Schema Functions
-		//TODO: Figure out how to implement SQL to go down hierarchy
+		~tbody (void);
+
 	public:
-		int 		id;
-		string		name;
+		void selectRowSQL(pqxx::work & txn);
+		void deleteRowSQL(pqxx::work & txn);
+		void updateRowSQL(pqxx::work & txn);
+		void insertRowSQL(pqxx::work & txn);
+		int getId(void );
+		string getName(void );
+		void setId(int id);
+		void setName(string name);
+	public:
+		int			id;
+		string			name;
 };
+
 
 }
 #endif //NEURON_SCHEMA_TBODY_HPP
