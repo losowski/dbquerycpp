@@ -81,3 +81,12 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 		#TODO: This should create a function same as the foreign key
 		#	Perhaps a set to avoid duplication of columns
 		pass
+
+	#Sequence
+	def getSequencePrimaryKey(self):
+		output = None
+		for columnName, columnObject in self.columns.iteritems():
+			if (True == columnObject.isPrimaryKey()):
+				output = columnObject.getSequence()
+				break
+		return output

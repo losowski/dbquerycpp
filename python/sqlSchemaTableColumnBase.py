@@ -8,6 +8,7 @@ class SQLSchemaTableColumnBase:
 	def __init__(self, columnName, columnType):
 		self.columnName = columnName
 		self.columnType = columnType
+		self.sequenceName = None
 		self.primaryKey	=	False
 		self.referencedTable = None
 		self.referencedColumn = None
@@ -21,6 +22,13 @@ class SQLSchemaTableColumnBase:
 
 	def getType(self):
 		return self.columnType
+
+	#Sequence
+	def setSequence(self, sequence):
+		self.sequenceName = sequence
+
+	def getSequence(self):
+		return self.sequenceName
 
 	#Primary Key
 	def setPrimaryKey(self, primaryKey):

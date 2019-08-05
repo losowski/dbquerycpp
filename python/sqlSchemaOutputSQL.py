@@ -48,13 +48,16 @@ class sqlSchemaOutputSQL (outputTemplate.OutputTemplate):
 		return self.outputObject.getPrimaryKey()
 
 	#	SQL_COLUMNS
-	def buildColums(self):
+	def buildColumns(self):
 		return ",\n\t\t\t".join (self.nonPKColumns)
 
 	#	SQL_VALUES
-	def buildColumValues(self):
+	def buildColumnValues(self):
 		return ",\n\t\t\t".join ("p_{inputParameter}".format(inputParameter = columnName) for columnName in self.nonPKColumns)
 
+	#	SQL_SEQUENCE
+	def sequencePrimaryKey(self):
+		return self.outputObject.getSequencePrimaryKey()
 
 	def build(self):
 		# Functions
@@ -67,8 +70,10 @@ class sqlSchemaOutputSQL (outputTemplate.OutputTemplate):
 		dataMap["SQL_DECLARED_PK"] = self.buildStoredProcDeclared()
 		# TODO: Add SQL column / query definitions
 		dataMap["SQL_PRIMARY_KEY"] = self.buildPrimaryKey()
-		dataMap["SQL_COLUMNS"] = self.buildColums()
-		dataMap["SQL_VALUES"] = self.buildColumValues()
+		dataMap["SQL_COLUMNS"] = self.buildColumns()
+		dataMap["SQL_VALUES"] = self.buildColumnValues()
+		dataMap["SQL_SEQUENCE"] = self.sequencePrimaryKey()
+
 		# Process the template
 		self.loadTemplate()
 		self.generateSourceCode(dataMap)

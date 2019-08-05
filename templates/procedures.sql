@@ -11,7 +11,7 @@ BEGIN
 	INTO
 		v_$SQL_PRIMARY_KEY
 	FROM
-		LASTVAL()
+		nextval($SQL_SEQUENCE)
 	;
 	-- Insert
 	INSERT INTO
