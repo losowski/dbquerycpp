@@ -271,7 +271,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#INSERT SQL statements
 	#	TODO: Add a specific PK key (asssumes id at present)
 	def insertStoredProc(self):
-		return "{schemaName}.pIns{tableName}".format(schemaName = self.outputObject.getSchemaNameSQL(), tableName = self.outputObject.getName())
+		return "{schemaName}.pins{tableName}".format(schemaName = self.outputObject.getSchemaNameSQL(), tableName = self.outputObject.getName())
 
 	def insertStoredProcParams(self):
 		columns = list()
