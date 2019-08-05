@@ -75,10 +75,10 @@ void tbody::updateRowSQL(pqxx::work & txn)
 void tbody::insertRowSQL(pqxx::work & txn)
 {
 
-	pqxx::result res = txn.parameterized("neuron_schema.pInstbody")(txn.quote(name)).exec();
+	pqxx::result res = txn.parameterized("SELECT * FROM neuron_schema.pinstbody")(txn.quote(name)).exec();
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
-		dbquery::DBSafeUtils::safeToInt(&this->id, res[i]["neuron_schema.pInstbody"]);
+		dbquery::DBSafeUtils::safeToInt(&this->id, res[i]["neuron_schema.pinstbody"]);
 	}
 
 }
