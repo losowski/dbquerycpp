@@ -94,7 +94,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																	("pqxx::work &", "txn"),
 																),
 """
-	pqxx::result res = txn.parameterized(\"{insertStoredProc}\"){insertStoredProcParams}.exec();
+	pqxx::result res = txn.parameterized(\"SELECT * FROM {insertStoredProc}\"){insertStoredProcParams}.exec();
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
 		dbquery::DBSafeUtils::safeToInt(&this->{primaryKey}, res[i][\"{insertStoredProc}\"]);
