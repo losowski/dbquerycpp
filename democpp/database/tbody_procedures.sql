@@ -11,7 +11,7 @@ BEGIN
 	INTO
 		v_id
 	FROM
-		LASTVAL()
+		nextval('neuron_schema.tbody_id_seq')
 	;
 	-- Insert
 	INSERT INTO
