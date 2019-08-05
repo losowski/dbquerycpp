@@ -1,7 +1,7 @@
 #ifndef DBQUERY_TRANSACTION_HPP
 #define DBQUERY_TRANSACTION_HPP
 
-#include <vector>
+#include <set>
 #include <memory>
 
 #include "dbresult.hpp"
@@ -39,9 +39,9 @@ class DBTransaction
 	private:
 		pqxx::connection *					mDBConnection;
 		//Transaction Lists
-		vector < ptDBResult > 				insertTxnObjects;
-		vector < ptDBResult > 				updateTxnObjects;
-		vector < ptDBResult > 				deleteTxnObjects;
+		set < ptDBResult > 				insertTxnObjects;
+		set < ptDBResult > 				updateTxnObjects;
+		set < ptDBResult > 				deleteTxnObjects;
 };
 
 
