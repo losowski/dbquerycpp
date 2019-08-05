@@ -24,6 +24,8 @@ class DBConnection
 	public:
 		void connectDB(void);
 		pqxx::connection * getDBConnection(void);
+		// Mark For Update
+		void markForUpdate(ptDBResult object);
 		// Transaction oriented Functionality
 		void saveTransactions(void);
 		void purgeTransactions(void);

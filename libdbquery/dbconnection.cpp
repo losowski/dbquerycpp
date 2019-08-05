@@ -48,6 +48,13 @@ pqxx::connection * DBConnection::getDBConnection(void)
 	return m_dbconnection;
 }
 
+// Mark For Update
+void DBConnection::markForUpdate(ptDBResult object)
+{
+	m_transaction->addUpdateElement(object);
+}
+
+
 // Transaction oriented Functionality
 void DBConnection::saveTransactions(void)
 {
