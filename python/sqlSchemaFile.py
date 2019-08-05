@@ -21,6 +21,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	SQLArray = re.compile("ANY\s?\(.*\)")
 	#Get the column names
 	ColumnNameSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+)")
+	ColumnNameSequenceSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+).*nextval\((?P<column_sequence>\S+)::")
 	#CONSTRAINTS
 	PrimaryKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<primary_key_name>\S+)\s?PRIMARY\s?KEY\s?\((?P<column_name>\S+)\)")
 	ForeignKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<foreign_key_name>\S+)\s?FOREIGN\s+KEY\s+\((?P<column_name>\S+)\)\s+REFERENCES\s+(?P<referenced_table>\S+)\s+\((?P<referenced_column>\S+)\).*")
@@ -106,6 +107,7 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 				primaryKeyConstraintSQLMatch = self.PrimaryKeyConstraintSQL.match(fieldData)
 				ForeignKeyConstraintSQLMatch = self.ForeignKeyConstraintSQL.match(fieldData)
 				columnNameMatch = self.ColumnNameSQL.match(fieldData)
+				columnNameSequenceMatch = self.ColumnNameSequenceSQL.match(fieldData)
 				#Primary Key
 				if (primaryKeyConstraintSQLMatch != None):
 					logging.info("Primary Key Constraint: \"%s\"", fieldData)
@@ -128,6 +130,20 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 					logging.info("ForeignKeyConstraintSQLMatch referencedColumn: \"%s\"", referencedColumn)
 					tableObj.addForeignKey(foreignKeyName, columnName, referencedTable,referencedColumn)
 					continue
+				elif (columnNameSequenceMatch != None):
+					logging.info("Field definition: \"%s\"", fieldData)
+					#Proces Data
+					columnName = columnNameSequenceMatch.group('column_name')
+					columnType = columnNameSequenceMatch.group('column_type').replace("\"","")
+					columnSequence = columnNameSequenceMatch.group('column_sequence')
+					logging.debug("columnNameSequenceMatch column_name: \"%s\"", columnName)
+					logging.debug("columnNameSequenceMatch column_type: \"%s\"", columnType)
+					logging.debug("columnNameSequenceMatch column_sequence: \"%s\"", columnSequence)
+					if (columnName != 'CONSTRAINT'):
+						logging.debug("columnNameMatch column_type: \"%s\"", columnType)
+						tableObj.addColumn(columnName, columnType)
+					else:
+						logging.warning("Skipping column_name: \"%s\"", columnName)
 				#Failing above, check if a simple column definition
 				# 	Matches pretty much everything!
 				elif (columnNameMatch != None):
