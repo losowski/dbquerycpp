@@ -68,7 +68,11 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 	#Column and type
 	def addColumn(self, columnName, columnType):
 		logging.info("Adding column: \"%s\" - \"%s\"", columnName, columnType)
-		self.columns[columnName] = sqlSchemaTableColumn.SQLSchemaTableColumn (columnName, columnType)
+		#Build column object
+		columnObj = sqlSchemaTableColumn.SQLSchemaTableColumn (columnName, columnType)
+		#Add the column object
+		self.columns[columnName] = columnObj
+		return columnObj
 
 	#Foreign Key Links
 	def addForeignKey(self, foreignKeyName, myColumn, referencedTable, referencedColumn):

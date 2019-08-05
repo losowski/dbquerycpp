@@ -141,7 +141,8 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 					logging.debug("columnNameSequenceMatch column_sequence: \"%s\"", columnSequence)
 					if (columnName != 'CONSTRAINT'):
 						logging.debug("columnNameMatch column_type: \"%s\"", columnType)
-						tableObj.addColumn(columnName, columnType)
+						columnObj = tableObj.addColumn(columnName, columnType)
+						columnObj.setSequence(columnSequence)
 					else:
 						logging.warning("Skipping column_name: \"%s\"", columnName)
 				#Failing above, check if a simple column definition
