@@ -65,7 +65,7 @@ CFLAGS = $(TARGET_FLAG) $(COMPILER_OPTIONS) -DVERSION=\"$(VERSION)\" #Other defi
 ###################
 ## PROJECT FILES ##
 ###################
-PROGRAM_NAME=libdemo.so
+PROGRAM_NAME=../lib/libneuronschema.so
 #INCLUDES
 INCLUDES = -I../libdbquery
 

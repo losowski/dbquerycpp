@@ -36,6 +36,11 @@ tindividual::~tindividual (void)
 {
 }
 
+void tindividual::initialise(pqxx::connection * connection)
+{
+	connection->prepare("neuron_schema.pinstindividual", "SELECT * FROM neuron_schema.pinstindividual($1, $2)");
+}
+
 void tindividual::selectRowSQL(pqxx::work & txn)
 {
 
@@ -79,10 +84,10 @@ void tindividual::updateRowSQL(pqxx::work & txn)
 void tindividual::insertRowSQL(pqxx::work & txn)
 {
 
-	pqxx::result res = txn.parameterized("SELECT * FROM neuron_schema.pinstindividual")(txn.quote(body_id))(txn.quote(name)).exec();
+	pqxx::result res = txn.prepared("neuron_schema.pinstindividual")(txn.quote(body_id))(txn.quote(name)).exec();
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
-		dbquery::DBSafeUtils::safeToInt(&this->id, res[i]["neuron_schema.pinstindividual"]);
+		dbquery::DBSafeUtils::safeToInt(&this->id, res[i][0]);
 	}
 
 }

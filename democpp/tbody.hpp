@@ -27,6 +27,8 @@ class tbody : public dbquery::DBResult
 		~tbody (void);
 
 	public:
+		//Prepare Initailise
+		static void initialise(pqxx::connection * connection);
 		void selectRowSQL(pqxx::work & txn);
 		void deleteRowSQL(pqxx::work & txn);
 		void updateRowSQL(pqxx::work & txn);

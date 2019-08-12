@@ -19,6 +19,8 @@ class neuronSchema : public dbquery::DBConnection
 		~neuronSchema (void);
 
 	public:
+		//Prepare Initailise
+		void initialise(void);
 		//Get single child objects
 		ptbody gettbody(int id, string name);
 		ptbody gtbody(int primaryKey);

@@ -54,7 +54,14 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 
 	#Schema templates - (ret, functionNametemplate, arguments)
 	TABLE_FUNCTION_TEMPLATES =	(
-									("void", "selectRowSQL",	(
+								("static", "void", "initialise",	(
+																	("pqxx::connection *", "connection"),
+																),
+	"""
+		connection->prepare("{insertStoredProc}", "SELECT * FROM {insertStoredProc}({insertPlaceholderParams})");
+	"""
+									),
+									(None ,"void", "selectRowSQL",	(
 																	("pqxx::work &", "txn"),
 																),
 	"""
@@ -66,7 +73,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	}}
 	"""
 									),
-									("void", "deleteRowSQL",	(
+									(None ,"void", "deleteRowSQL",	(
 																	("pqxx::work &", "txn"),
 																),
 	"""
@@ -77,7 +84,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	";");
 	"""
 									),
-									("void", "updateRowSQL",	(
+									(None ,"void", "updateRowSQL",	(
 																	("pqxx::work &", "txn"),
 																),
 """
@@ -90,26 +97,26 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	";");
 """
 									),
-									("void", "insertRowSQL",	(
+									(None ,"void", "insertRowSQL",	(
 																	("pqxx::work &", "txn"),
 																),
 """
-	pqxx::result res = txn.parameterized(\"SELECT * FROM {insertStoredProc}\"){insertStoredProcParams}.exec();
+	pqxx::result res = txn.prepared(\"{insertStoredProc}\"){insertStoredProcParams}.exec();
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{
-		dbquery::DBSafeUtils::safeToInt(&this->{primaryKey}, res[i][\"{insertStoredProc}\"]);
+		dbquery::DBSafeUtils::safeToInt(&this->{primaryKey}, res[i][0]);
 	}}
 """
 									),
 								)
 	#Column Functions
 	COLUMN_FUNCTION_TEMPLATES =	(
-									("{columnType}", "get{columnNameTitle}",	(
+									(None ,"{columnType}", "get{columnNameTitle}",	(
 																	("void", ""),
 																),
 	"""	return {columnName};"""
 									),
-									("void", "set{columnNameTitle}",	(
+									(None ,"void", "set{columnNameTitle}",	(
 																	("{columnType}", "{columnName}"),
 																),
 	"""	{columnName} = {columnName};
@@ -208,7 +215,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 					'columnType'				:	columnData.getCPPReferenceType(),
 					'DBSafeUtilsType'			:	columnData.getCPPSafeType(),
 				}
-				val += self.classFunctionTemplateHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], templateDict = templateDict )
+				val += self.classFunctionTemplateHPP(keyword = functionDetails[0], ret = functionDetails[1], functionName = functionDetails[2], arguments = functionDetails[3], templateDict = templateDict )
 		return val
 
 
@@ -280,6 +287,15 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				columns.append( "(txn.quote({column}))".format(column = columnName) )
 		return  "".join(columns)
 
+	def inserPlaceholderParams(self):
+		columns = list()
+		columnCount = 1
+		for columnName, columnData in self.outputObject.getColumns().iteritems():
+			if columnName != self.outputObject.getPrimaryKey():
+				columns.append( "${count}".format(count = columnCount) )
+				columnCount += 1
+		return  ", ".join(columns)
+
 	#	Templated Table Functions
 	def templatedNamedFunctionCPP (self, className, templateFunctions):
 		val = str()
@@ -288,13 +304,14 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			'tableName'					:	self.outputObject.getFullName(),
 			'insertStoredProc'			:	self.insertStoredProc(),
 			'insertStoredProcParams'	:	self.insertStoredProcParams(),
+			'insertPlaceholderParams'	: 	self.inserPlaceholderParams(),
 			'primaryKey'				:	self.outputObject.getPrimaryKey(),
 			'updateSetColumnList'		:	self.updateSetColumnList(),
 			'columnList'				:	self.columnList(),
 			'DBSafeUtilsColumns'		:	self.getTypeConversion(self.outputObject, "this->"),
 		}
 		for functionDetails in templateFunctions:
-			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
+			val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[1], functionName = functionDetails[2], arguments = functionDetails[3], implementation = functionDetails[4], templateDict = templateDict )
 		return val
 
 	#	Templated Column Functions
@@ -309,7 +326,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 					'columnType'				:	columnData.getCPPReferenceType(),
 					'DBSafeUtilsType'			:	columnData.getCPPSafeType(),
 				}
-				val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2], implementation = functionDetails[3], templateDict = templateDict )
+				val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[1], functionName = functionDetails[2], arguments = functionDetails[3], implementation = functionDetails[4], templateDict = templateDict )
 		return val
 
 

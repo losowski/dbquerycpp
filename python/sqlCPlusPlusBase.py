@@ -93,11 +93,15 @@ class SQLCPlusPlusBase:
 
 	#	Header
 	## Header Functions
-	def classFunctionTemplateHPP (self, ret, functionName, arguments, templateDict = dict()):
-		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
+	def classFunctionTemplateHPP (self, keyword, ret, functionName, arguments, templateDict = dict()):
+		if (None == keyword):
+			keyword = ""
+		return "\t\t{keyWord} {ret} {functionName}({arguments});\n".format(keyWord = keyword, ret = ret.format(**templateDict), functionName = functionName.format(**templateDict), arguments = self.functionArgs(arguments, templateDict))
 
-	def classFunctionHPP (self, ret, functionName, arguments, templateDict = dict()):
-		return "\t\t{ret} {functionName}({arguments});\n".format(ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
+	def classFunctionHPP (self, keyword, ret, functionName, arguments, templateDict = dict()):
+		if (None == keyword):
+			keyword = ""
+		return "\t\t{keyWord} {ret} {functionName}({arguments});\n".format(keyWord = keyword, ret = ret, functionName = functionName, arguments = self.functionArgs(arguments))
 
 	# Class variables list
 	# Allow addition of class variables with scopes
@@ -225,7 +229,7 @@ class SQLCPlusPlusBase:
 	def functionListHPP(self, functions):
 		val = "\tpublic:\n"
 		for functionDetails in functions:
-			val += self.classFunctionHPP(ret = functionDetails[0], functionName = functionDetails[1], arguments = functionDetails[2])
+			val += self.classFunctionHPP(keyword = functionDetails[0], ret = functionDetails[1], functionName = functionDetails[2], arguments = functionDetails[3])
 		return val
 
 	#Build the File

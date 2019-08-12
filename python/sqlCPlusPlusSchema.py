@@ -27,6 +27,15 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 							),
 						)
 
+	#TODO: Add a single schema function for initialising
+	SCHEMA_BASIC_FUNCTION_TEMPLATE	=	(
+									(None , "void", "initialise", (
+																			("void", ""),
+																		),
+	"""\n\t{className}::initialise(m_dbconnection);""",
+									),
+
+	)
 	# Functions:
 	#	1	-	Function for all fields (including PK)
 	#	2	-	Primary Key lookup (DONE - primaryKey)
@@ -35,7 +44,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#	5	-	For each foreign Key -
 	#				Lookup function by key
 	SCHEMA_FUNCTION_TEMPLATES =	(
-									("p{tableName}", "get{tableName}", (
+									(None , "p{tableName}", "get{tableName}", (
 																			(CONST_ALLCOLUMNS, ""),
 																		),
 	"""	p{tableName} obj(new {tableName}(getDBConnection(), {AllColumns}) );
@@ -45,7 +54,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	//Return object
 	return obj;""",
 									),
-									("p{tableName}", "g{tableName}", (
+									(None , "p{tableName}", "g{tableName}", (
 																			("{primaryKeyType}", "primaryKey"),
 																		),
 	"""//Attempt to find the object
@@ -74,7 +83,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	}}
 	return ptr_{tableName};""",
 									),
-									("p{tableName}", "insert{tableName}", (
+									(None , "p{tableName}", "insert{tableName}", (
 																			(CONST_INSERTCOLUMNS, ""), #TODO: Run selects inline
 																		),
 	"""	p{tableName} obj(new {tableName}(getDBConnection(), {NonPKColumns}) );
@@ -86,7 +95,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	//Return object
 	return obj;""",
 									),
-									("pap{tableName}", "getMultiple{tableName}", (
+									(None , "pap{tableName}", "getMultiple{tableName}", (
 																			("string &", "sqlWhereClause"),
 																		),
 	"""//Get objects to return
@@ -184,6 +193,23 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		return ret
 
 	#	Templated Table Functions
+	#NOTE: This schema function works differently:
+	#	Make function definition
+	#	Content of function is interpreted as a template (specifically CPP version)
+	def templatedFunctionListHPP(self, templateFunctions):
+		val = "\tpublic:\n\n"
+		#define the template Dictionary
+		templateDict = dict()
+		#1: Iterate over Functions
+		for functionDetails in templateFunctions:
+			keyWord = functionDetails[0]
+			returnValue = functionDetails[1]
+			functionName = functionDetails[2]
+			arguments = functionDetails[3]
+			#Process the actual functions
+			val += self.classFunctionTemplateHPP(keyWord, returnValue, functionName, arguments, templateDict)
+		return val
+
 	# Templated HPP function List
 	def templatedTableFunctionListHPP(self, templateFunctions):
 		val = "\tpublic:\n\t\t//Get single child objects\n"
@@ -196,23 +222,24 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				}
 			#2: Iterate over functions
 			for functionDetails in templateFunctions:
-				returnValue = functionDetails[0]
-				functionName = functionDetails[1]
+				keyWord = functionDetails[0]
+				returnValue = functionDetails[1]
+				functionName = functionDetails[2]
 				args = (())
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
-				logging.debug("functionDetails Argument HPP %s", functionDetails[2][0][0])
-				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
+				logging.debug("functionDetails Argument HPP %s", functionDetails[3][0][0])
+				if (self.CONST_INSERTCOLUMNS == functionDetails[3][0][0]):
 					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
-				elif (self.CONST_ALLCOLUMNS == functionDetails[2][0][0]):
+				elif (self.CONST_ALLCOLUMNS == functionDetails[3][0][0]):
 					#Expand the arguments to the table parameters to all columns
 					arguments = self.getTableAllColumsFunctionArguments(tableObj)
 				else:
-					arguments = functionDetails[2]
+					arguments = functionDetails[3]
 				logging.info("Arguments %s", arguments)
 				#3: Build templated stuff sensibly
 				#Process the actual functions
-				val += self.classFunctionTemplateHPP(returnValue, functionName, arguments, templateDict)
+				val += self.classFunctionTemplateHPP(keyWord, returnValue, functionName, arguments, templateDict)
 		return val
 
 	# 	Class HPP: functions : (scope, name, argument(s))
@@ -222,6 +249,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		ret += self.constructorListHPP(className, self.CONSTRUCTOR_ARGS)
 		ret += self.destructorHPP(className)
 		# Make functions
+		ret += self.templatedFunctionListHPP(self.SCHEMA_BASIC_FUNCTION_TEMPLATE)
 		ret += self.templatedTableFunctionListHPP(self.SCHEMA_FUNCTION_TEMPLATES)
 		#TODO: Add function generator for new rows (not primary key driven)
 		# Add Scoped variables
@@ -235,6 +263,29 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		for columnName, columnData in tableObject.getColumns().iteritems():
 			logging.debug("getSafeTypeVariables column: \"%s\" - \"%s\"", columnName, columnData.getType())
 			val += "\t\t{datatype} {column};\n".format(column = columnName, datatype = columnData.getCPPReferenceType())
+		return val
+
+	# Templated CPP function List
+	#NOTE: This schema function works differently:
+	#	Make function definition
+	#	Content of function is interpreted as a template (specifically CPP version)
+	def templatedFunctionListCPP(self, className, templateFunctions):
+		val = str()
+		templateDict =	dict()
+		#2: Iterate over functions
+		for functionDetails in templateFunctions:
+			#keyWord = functionDetails[0] # UNUSED
+			returnValue = functionDetails[1]
+			functionName = functionDetails[2]
+			arguments = functionDetails[3]
+			impl = functionDetails[4]
+			logging.debug("templatedFunctionListCPP impl\"%s\"", impl)
+			implementation = str()
+			for tableName, tableObj in self.outputObject.tables.iteritems():
+				logging.debug("templatedFunctionListCPP className\"%s\"", tableObj.getName())
+				implementation += impl.format(className = tableObj.getName())
+			#Process the actual functions
+			val += self.classFunctionTemplateCPP(className, returnValue, functionName, arguments, implementation, templateDict)
 		return val
 
 	# Templated CPP function List
@@ -255,20 +306,21 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 							}
 			#2: Iterate over functions
 			for functionDetails in templateFunctions:
-				returnValue = functionDetails[0]
-				functionName = functionDetails[1]
+				#keyWord = functionDetails[0] # UNUSED
+				returnValue = functionDetails[1]
+				functionName = functionDetails[2]
 				args = (())
-				implementation = functionDetails[3]
+				implementation = functionDetails[4]
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
-				logging.debug("functionDetails Argument CPP %s", functionDetails[2][0][0])
-				if (self.CONST_INSERTCOLUMNS == functionDetails[2][0][0]):
+				logging.debug("functionDetails Argument CPP %s", functionDetails[3][0][0])
+				if (self.CONST_INSERTCOLUMNS == functionDetails[3][0][0]):
 					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
-				elif (self.CONST_ALLCOLUMNS == functionDetails[2][0][0]):
+				elif (self.CONST_ALLCOLUMNS == functionDetails[3][0][0]):
 					#Expand the arguments to the table parameters to all columns
 					arguments = self.getTableAllColumsFunctionArguments(tableObj)
 				else:
-					arguments = functionDetails[2]
+					arguments = functionDetails[3]
 				logging.info("Arguments %s", arguments)
 				#3: Build templated stuff sensibly
 				#Process the actual functions
@@ -281,5 +333,6 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		ret += self.constructorListCPP(className, self.CONSTRUCTOR_ARGS)
 		ret += self.destructorCPP(className)
 		# Make Function implementations
+		ret += self.templatedFunctionListCPP(className, self.SCHEMA_BASIC_FUNCTION_TEMPLATE)
 		ret += self.templatedTableFunctionListCPP(className, self.SCHEMA_FUNCTION_TEMPLATES)
 		return ret

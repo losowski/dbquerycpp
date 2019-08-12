@@ -12,6 +12,12 @@ neuronSchema::~neuronSchema (void)
 {
 }
 
+void neuronSchema::initialise(void)
+{
+	tbody::initialise(m_dbconnection);
+	tindividual::initialise(m_dbconnection);
+}
+
 ptbody neuronSchema::gettbody(int id, string name)
 {
 	ptbody obj(new tbody(getDBConnection(), id, name) );

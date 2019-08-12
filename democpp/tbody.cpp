@@ -34,6 +34,11 @@ tbody::~tbody (void)
 {
 }
 
+void tbody::initialise(pqxx::connection * connection)
+{
+	connection->prepare("neuron_schema.pinstbody", "SELECT * FROM neuron_schema.pinstbody($1)");
+}
+
 void tbody::selectRowSQL(pqxx::work & txn)
 {
 
@@ -75,10 +80,10 @@ void tbody::updateRowSQL(pqxx::work & txn)
 void tbody::insertRowSQL(pqxx::work & txn)
 {
 
-	pqxx::result res = txn.parameterized("SELECT * FROM neuron_schema.pinstbody")(txn.quote(name)).exec();
+	pqxx::result res = txn.prepared("neuron_schema.pinstbody")(txn.quote(name)).exec();
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
-		dbquery::DBSafeUtils::safeToInt(&this->id, res[i]["neuron_schema.pinstbody"]);
+		dbquery::DBSafeUtils::safeToInt(&this->id, res[i][0]);
 	}
 
 }
