@@ -18,11 +18,13 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 							(
 								#Parameters
 								(
-									("const string &", "connection",),
+									#DBConnection & connection, DBTransaction * transaction
+									("DBConnection &", "connection",),
+									("DBTransaction *", "transaction",),
 								),
 								#Args
 								(
-									("dbquery::DBConnection", ("connection",),),
+									("dbquery::DBSchemaBase", ("connection", "transaction"),),
 								),
 							),
 						)
@@ -32,7 +34,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 									(None , "void", "initialise", (
 																			("void", ""),
 																		),
-	"""\n\t{className}::initialise(m_dbconnection);""",
+	"""\n\t{className}::initialise(mdbconnection);""",
 									),
 
 	)
@@ -47,10 +49,10 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 									(None , "p{tableName}", "get{tableName}", (
 																			(CONST_ALLCOLUMNS, ""),
 																		),
-	"""	p{tableName} obj(new {tableName}(getDBConnection(), {AllColumns}) );
+	"""	p{tableName} obj(new {tableName}(mdbconnection, {AllColumns}) );
 	//Store Object by Primary key
 	{tableName}Map[obj->get{PrimaryKeyAccessor}()] = obj;
-	m_transaction->addInsertElement(obj);
+	mtransaction->addInsertElement(obj);
 	//Return object
 	return obj;""",
 									),
@@ -63,7 +65,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	// If cannot be found in cache, create a new object
 	if (it == {tableName}Map.end())
 	{{
-		p{tableName} obj(new {tableName}(getDBConnection(), primaryKey) );
+		p{tableName} obj(new {tableName}(mdbconnection, primaryKey) );
 		//Check data exists
 		bool exists = obj->selectRow();
 		if (true == exists)
@@ -86,12 +88,12 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 									(None , "p{tableName}", "insert{tableName}", (
 																			(CONST_INSERTCOLUMNS, ""), #TODO: Run selects inline
 																		),
-	"""	p{tableName} obj(new {tableName}(getDBConnection(), {NonPKColumns}) );
+	"""	p{tableName} obj(new {tableName}(mdbconnection, {NonPKColumns}) );
 	//Store Object by Primary key
 	{tableName}Map[obj->get{PrimaryKeyAccessor}()] = obj;
 	// Add object to insert Queue
 	//TODO: figure out if we can insert this object!
-	m_transaction->addInsertElement(obj);
+	mtransaction->addInsertElement(obj);
 	//Return object
 	return obj;""",
 									),
@@ -101,11 +103,11 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	"""//Get objects to return
 	pap{tableName} objects;
 	//Get new transaction
-	shared_ptr<pqxx::work> txn = m_transaction->newTransaction();
+	pqxx::work txn(*mdbconnection);
 	//Build the SQL statement
 	string sql = {tableName}::SQL_SELECT + sqlWhereClause + ";";
 	// Run the query
-	pqxx::result res = txn->exec(sql);
+	pqxx::result res = txn.exec(sql);
 	//Build the objects
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{{

@@ -1,7 +1,10 @@
 #ifndef NEURONSCHEMA_HPP
 #define NEURONSCHEMA_HPP
-#include "dbconnection.hpp"
+
 #include "dbtransaction.hpp"
+#include "dbconnection.hpp"
+#include "dbschemabase.hpp"
+
 #include "tbody.hpp"
 #include "tindividual.hpp"
 using namespace std;
@@ -11,10 +14,11 @@ namespace neuronSchema
 
 typedef map < int , ptbody > maptbody;
 typedef map < int , ptindividual > maptindividual;
-class neuronSchema : public dbquery::DBConnection
+
+class neuronSchema : public dbquery::DBSchemaBase
 {
 	public:
-		neuronSchema (const string & connection);
+		neuronSchema (DBConnection & connection, DBTransaction * transaction);
 	public:
 		~neuronSchema (void);
 

@@ -4,13 +4,14 @@
 #include <set>
 #include <memory>
 
-#include "dbresult.hpp"
-
 //Libpxx
 #include <pqxx/pqxx>
 #include <pqxx/cursor>
 #include <pqxx/transaction>
 #include <pqxx/result>
+
+#include "dbconnection.hpp"
+#include "dbresult.hpp"
 
 using namespace std;
 
@@ -23,12 +24,10 @@ class DBTransaction;
 class DBTransaction
 {
 	public:
-		DBTransaction(pqxx::connection * connection);
+		DBTransaction(ptDBConnection dbconnection);
 		//DBTransaction(const DBTransaction & transaction);
 		~DBTransaction(void);
 	public:
-		// Transaction oriented commands
-		shared_ptr<pqxx::work> newTransaction(void);
 		//	Processing data
 		void saveTransaction(void);
 		void purgeTransaction(void);
@@ -37,13 +36,14 @@ class DBTransaction
 		void addUpdateElement (ptDBResult object);
 		void addDeleteElement (ptDBResult object);
 	private:
-		pqxx::connection *					mDBConnection;
+		ptDBConnection					mDBConnection;
 		//Transaction Lists
 		set < ptDBResult > 				insertTxnObjects;
 		set < ptDBResult > 				updateTxnObjects;
 		set < ptDBResult > 				deleteTxnObjects;
 };
 
+typedef shared_ptr<DBTransaction> ptDBTransaction;
 
 }
 #endif //DBQUERY_TRANSACTION_HPP

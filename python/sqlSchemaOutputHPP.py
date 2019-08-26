@@ -35,6 +35,7 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 		#Incldues
 		output += self.fmt_include("dbconnection.hpp")
 		output += self.fmt_include("dbtransaction.hpp")
+		output += self.fmt_include("dbschemabase.hpp")
 		output += self.getTableIncludes()
 		#Using Namespaces
 		output += self.useNamespace("std")
@@ -44,7 +45,7 @@ class SQLSchemaOutputHPP (sqlCPlusPlusSchema.SQLCPlusPlusSchema):
 		#Build typedefs
 		namespaced += self.buildTypedefs()
 		#Build Class Functions
-		namespaced += self.buildSchemaClassHPP(self.schemaName(), "dbquery::DBConnection")
+		namespaced += self.buildSchemaClassHPP(self.schemaName(), "dbquery::DBSchemaBase")
 		#Make a namespace
 		output += self.defineNamespace(self.schemaName(), namespaced)
 		output += self.fmt_endifdefine(self.schemaName())

@@ -7,8 +7,7 @@ namespace dbquery {
 
 DBConnection::DBConnection(const string & connection):
 	m_connectionString(connection),
-	m_dbconnection(NULL),
-	m_transaction(nullptr)
+	m_dbconnection(NULL)
 {
 }
 
@@ -27,8 +26,6 @@ void DBConnection::connectDB(void)
 	{
 		// Connect to the database
 		m_dbconnection = new pqxx::connection(this->m_connectionString);
-		//Setup the transaction
-		m_transaction = shared_ptr<DBTransaction> ( new DBTransaction(m_dbconnection) );		
 	}
 	catch (const pqxx::sql_error &e)
 	{
@@ -43,41 +40,9 @@ void DBConnection::connectDB(void)
 	}
 }
 
-pqxx::connection * DBConnection::getDBConnection(void)
+pqxx::connection * DBConnection::getConnection(void)
 {
 	return m_dbconnection;
 }
-
-// Mark For Update
-void DBConnection::markForUpdate(ptDBResult object)
-{
-	m_transaction->addUpdateElement(object);
-}
-
-
-// Transaction oriented Functionality
-void DBConnection::saveTransactions(void)
-{
-	m_transaction->saveTransaction();
-}
-
-void DBConnection::purgeTransactions(void)
-{
-	m_transaction->purgeTransaction();
-}
-
-
-//Transaction Entries
-shared_ptr<pqxx::work> DBConnection::getTransaction(void)
-{
-	shared_ptr<pqxx::work> txn( new pqxx::work (*m_dbconnection) );
-	return txn;
-}
-
-void DBConnection::commit(shared_ptr<pqxx::work> transaction)
-{
-	transaction->commit();
-}
-
 
 }

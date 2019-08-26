@@ -3,8 +3,8 @@ using namespace std;
 namespace neuronSchema
 {
 
-neuronSchema::neuronSchema (const string & connection):
-	dbquery::DBConnection (connection)
+neuronSchema::neuronSchema(DBConnection & connection, DBTransaction * transaction):
+	DBSchemaBase(connection, transaction)
 {
 }
 
@@ -14,16 +14,16 @@ neuronSchema::~neuronSchema (void)
 
 void neuronSchema::initialise(void)
 {
-	tbody::initialise(m_dbconnection);
-	tindividual::initialise(m_dbconnection);
+	tbody::initialise(mdbconnection);
+	tindividual::initialise(mdbconnection);
 }
 
 ptbody neuronSchema::gettbody(int id, string name)
 {
-	ptbody obj(new tbody(getDBConnection(), id, name) );
+	ptbody obj(new tbody(mdbconnection, id, name) );
 	//Store Object by Primary key
 	tbodyMap[obj->getId()] = obj;
-	m_transaction->addInsertElement(obj);
+	mtransaction->addInsertElement(obj);
 	//Return object
 	return obj;
 }
@@ -36,7 +36,7 @@ ptbody neuronSchema::gtbody(int primaryKey)
 	// If cannot be found in cache, create a new object
 	if (it == tbodyMap.end())
 	{
-		ptbody obj(new tbody(getDBConnection(), primaryKey) );
+		ptbody obj(new tbody(mdbconnection, primaryKey) );
 		//Check data exists
 		bool exists = obj->selectRow();
 		if (true == exists)
@@ -59,12 +59,12 @@ ptbody neuronSchema::gtbody(int primaryKey)
 
 ptbody neuronSchema::inserttbody(string name)
 {
-	ptbody obj(new tbody(getDBConnection(), name) );
+	ptbody obj(new tbody(mdbconnection, name) );
 	//Store Object by Primary key
 	tbodyMap[obj->getId()] = obj;
 	// Add object to insert Queue
 	//TODO: figure out if we can insert this object!
-	m_transaction->addInsertElement(obj);
+	mtransaction->addInsertElement(obj);
 	//Return object
 	return obj;
 }
@@ -74,11 +74,11 @@ paptbody neuronSchema::getMultipletbody(string & sqlWhereClause)
 //Get objects to return
 	paptbody objects;
 	//Get new transaction
-	shared_ptr<pqxx::work> txn = m_transaction->newTransaction();
+	pqxx::work txn(*mdbconnection);
 	//Build the SQL statement
 	string sql = tbody::SQL_SELECT + sqlWhereClause + ";";
 	// Run the query
-	pqxx::result res = txn->exec(sql);
+	pqxx::result res = txn.exec(sql);
 	//Build the objects
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{
@@ -102,10 +102,10 @@ paptbody neuronSchema::getMultipletbody(string & sqlWhereClause)
 
 ptindividual neuronSchema::gettindividual(int body_id, int id, string name)
 {
-	ptindividual obj(new tindividual(getDBConnection(), body_id, id, name) );
+	ptindividual obj(new tindividual(mdbconnection, body_id, id, name) );
 	//Store Object by Primary key
 	tindividualMap[obj->getId()] = obj;
-	m_transaction->addInsertElement(obj);
+	mtransaction->addInsertElement(obj);
 	//Return object
 	return obj;
 }
@@ -118,7 +118,7 @@ ptindividual neuronSchema::gtindividual(int primaryKey)
 	// If cannot be found in cache, create a new object
 	if (it == tindividualMap.end())
 	{
-		ptindividual obj(new tindividual(getDBConnection(), primaryKey) );
+		ptindividual obj(new tindividual(mdbconnection, primaryKey) );
 		//Check data exists
 		bool exists = obj->selectRow();
 		if (true == exists)
@@ -141,12 +141,12 @@ ptindividual neuronSchema::gtindividual(int primaryKey)
 
 ptindividual neuronSchema::inserttindividual(int body_id, string name)
 {
-	ptindividual obj(new tindividual(getDBConnection(), body_id, name) );
+	ptindividual obj(new tindividual(mdbconnection, body_id, name) );
 	//Store Object by Primary key
 	tindividualMap[obj->getId()] = obj;
 	// Add object to insert Queue
 	//TODO: figure out if we can insert this object!
-	m_transaction->addInsertElement(obj);
+	mtransaction->addInsertElement(obj);
 	//Return object
 	return obj;
 }
@@ -156,11 +156,11 @@ paptindividual neuronSchema::getMultipletindividual(string & sqlWhereClause)
 //Get objects to return
 	paptindividual objects;
 	//Get new transaction
-	shared_ptr<pqxx::work> txn = m_transaction->newTransaction();
+	pqxx::work txn(*mdbconnection);
 	//Build the SQL statement
 	string sql = tindividual::SQL_SELECT + sqlWhereClause + ";";
 	// Run the query
-	pqxx::result res = txn->exec(sql);
+	pqxx::result res = txn.exec(sql);
 	//Build the objects
 	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
 	{

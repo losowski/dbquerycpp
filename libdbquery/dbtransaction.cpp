@@ -5,8 +5,8 @@ using namespace std;
 
 namespace dbquery {
 
-DBTransaction::DBTransaction(pqxx::connection * connection):
-	mDBConnection(connection)
+DBTransaction::DBTransaction(ptDBConnection dbconnection):
+	mDBConnection(dbconnection)
 {
 }
 
@@ -23,12 +23,6 @@ DBTransaction::~DBTransaction(void)
 	purgeTransaction();
 }
 
-// Transaction oriented commands
-shared_ptr<pqxx::work> DBTransaction::newTransaction(void)
-{
-	return shared_ptr<pqxx::work> ( new pqxx::work(*mDBConnection) );
-}
-
 //	Processing data
 void DBTransaction::saveTransaction(void)
 {
@@ -36,7 +30,7 @@ void DBTransaction::saveTransaction(void)
 	//TODO: Make this tolerate bad changes:
 	//	i.e have a failed transaction register
 	// Or remove good transactions
-	pqxx::work transaction(*mDBConnection);
+	pqxx::work transaction( *mDBConnection->getDBConnection() );
 	// Insert
 	for (set < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
 	{

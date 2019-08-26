@@ -1,0 +1,11 @@
+TODO Actions
+============
+
+-- LibDBQuery --
+== PENDING ==
++ Change DBResult class to use the parent class constructors
++ Store the pointers to the parent classes
++ Constructing with just data should IMPLY insert (make it happen)
++ Constructing from primary key/all data fields should IMPLY update
++ Calling deleteData() should queue this up for deletion
+

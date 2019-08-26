@@ -10,8 +10,6 @@
 #include <pqxx/transaction>
 #include <pqxx/result>
 
-#include "dbtransaction.hpp"
-
 using namespace std;
 
 namespace dbquery {
@@ -23,21 +21,15 @@ class DBConnection
 		~DBConnection(void);
 	public:
 		void connectDB(void);
-		pqxx::connection * getDBConnection(void);
-		// Mark For Update
-		void markForUpdate(ptDBResult object);
-		// Transaction oriented Functionality
-		void saveTransactions(void);
-		void purgeTransactions(void);
-		//Transaction Entries
-		shared_ptr<pqxx::work> getTransaction(void);
-		void commit(shared_ptr<pqxx::work> transaction);
+		pqxx::connection * getConnection(void);
 	private:
 		string						m_connectionString;
 	protected:
 		pqxx::connection *			m_dbconnection;
-		shared_ptr<DBTransaction> 	m_transaction;
 
 };
+
+typedef shared_ptr<DBConnection> ptDBConnection;
+
 }
 #endif //DBQUERY_CONNECTION_HPP
