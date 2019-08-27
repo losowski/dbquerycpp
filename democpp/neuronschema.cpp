@@ -23,7 +23,7 @@ ptbody neuronSchema::gettbody(int id, string name)
 	ptbody obj(new tbody(mdbconnection, id, name) );
 	//Store Object by Primary key
 	tbodyMap[obj->getId()] = obj;
-	mtransaction->addInsertElement(obj);
+	mtransaction->addUpdateElement(obj);
 	//Return object
 	return obj;
 }
@@ -54,6 +54,8 @@ ptbody neuronSchema::gtbody(int primaryKey)
 		//Set return value as second
 		ptr_tbody = it->second;
 	}
+	//Update
+	mtransaction->addUpdateElement(ptr_tbody);
 	return ptr_tbody;
 }
 
@@ -105,7 +107,7 @@ ptindividual neuronSchema::gettindividual(int body_id, int id, string name)
 	ptindividual obj(new tindividual(mdbconnection, body_id, id, name) );
 	//Store Object by Primary key
 	tindividualMap[obj->getId()] = obj;
-	mtransaction->addInsertElement(obj);
+	mtransaction->addUpdateElement(obj);
 	//Return object
 	return obj;
 }
@@ -136,6 +138,8 @@ ptindividual neuronSchema::gtindividual(int primaryKey)
 		//Set return value as second
 		ptr_tindividual = it->second;
 	}
+	//Update
+	mtransaction->addUpdateElement(ptr_tindividual);
 	return ptr_tindividual;
 }
 
