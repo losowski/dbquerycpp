@@ -30,7 +30,7 @@ void DBTransaction::saveTransaction(void)
 	//TODO: Make this tolerate bad changes:
 	//	i.e have a failed transaction register
 	// Or remove good transactions
-	pqxx::work transaction( *mDBConnection->getDBConnection() );
+	pqxx::work transaction( *mDBConnection->getConnection() );
 	// Insert
 	for (set < ptDBResult >::iterator it = insertTxnObjects.begin(); it != insertTxnObjects.end(); it++)
 	{
