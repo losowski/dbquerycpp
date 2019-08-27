@@ -52,7 +52,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	"""	p{tableName} obj(new {tableName}(mdbconnection, {AllColumns}) );
 	//Store Object by Primary key
 	{tableName}Map[obj->get{PrimaryKeyAccessor}()] = obj;
-	mtransaction->addInsertElement(obj);
+	mtransaction->addUpdateElement(obj);
 	//Return object
 	return obj;""",
 									),
@@ -83,6 +83,8 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		//Set return value as second
 		ptr_{tableName} = it->second;
 	}}
+	//Update
+	mtransaction->addUpdateElement(ptr_{tableName});
 	return ptr_{tableName};""",
 									),
 									(None , "p{tableName}", "insert{tableName}", (
