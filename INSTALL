@@ -1,0 +1,10 @@
+========================
+== BUILD DEPENDENCIES ==
+========================
+libboost-dev
+libxx-dev (includes: libpq-dev)
+
+==============
+== COMPILER ==
+==============
++ Capable of building c++11

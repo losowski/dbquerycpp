@@ -1,35 +1,16 @@
 == README ==
 ============
 
-========================
-== BUILD DEPENDENCIES ==
-========================
-libboost-dev
-libxx-dev (includes: libpq-dev)
 
-==============
-== COMPILER ==
-==============
-+ Capable of building c++11
+================
+== INTENTIONS ==
+================
+1) Base class for each row/record
+2) Provide accessors to automatically store/update/insert data dependent on constructor used
+3) Allow bulk transactions to interact with DB via DBTransaction
+4) Provide a means to qualify the data that is stored in the DB (use unsafe version for retrieval)
+5) All actions for a database are removed from the user. Only action is to "SaveData" or "Delete"
 
-========================
-== DESIGN: libdbquery ==
-========================
-- DBConnection
-	- One instance per executable
-	- Wraps around the connection process
-	- Spawns objects that share the connection
-		- DBResult (actual objects)
-
-- DBResult
-	- One single row in a single table
-	- Data can be stored in DB using a DB transaction
-
-
-- DBTransaction
-	- Constructed with the connection object
-	- Should be used to construct data specific objects
-	- Uses DB Transactions
 
 ==============
 == BUILDING ==
@@ -59,3 +40,26 @@ libxx-dev (includes: libpq-dev)
 	#NOTES:
 		- Link to libdbquery
 		- Link to lib<schema_name> - This is your custom library
+
+
+====================
+== CODE STRUCTURE ==
+====================
+//1. Create connection object
+DBConnection dbc(<dbURL>);
+//2. Connect to the database
+dbc.connectDB();
+//3. Build a transaction object
+DBTransaction dbt(dbc);
+//4. Create schema class
+Schema sc(dbc, dbt);
+//5. Initialise schema class
+sc.initialise(dbc);
+//6. Build our objects
+tBody b1 = sc.gettbody(1)
+//7. Modify data
+b1.setName('derek');
+//8. New data
+sc.gtBody('NewElement');
+//9. Commit Changes
+dbt.saveTransaction()
