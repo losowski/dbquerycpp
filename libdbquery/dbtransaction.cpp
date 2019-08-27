@@ -5,7 +5,7 @@ using namespace std;
 
 namespace dbquery {
 
-DBTransaction::DBTransaction(ptDBConnection dbconnection):
+DBTransaction::DBTransaction(DBConnection * dbconnection):
 	mDBConnection(dbconnection)
 {
 }

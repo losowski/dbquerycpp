@@ -24,7 +24,7 @@ class DBTransaction;
 class DBTransaction
 {
 	public:
-		DBTransaction(ptDBConnection dbconnection);
+		DBTransaction(DBConnection * dbconnection);
 		//DBTransaction(const DBTransaction & transaction);
 		~DBTransaction(void);
 	public:
@@ -36,7 +36,7 @@ class DBTransaction
 		void addUpdateElement (ptDBResult object);
 		void addDeleteElement (ptDBResult object);
 	private:
-		ptDBConnection					mDBConnection;
+		DBConnection *					mDBConnection;
 		//Transaction Lists
 		set < ptDBResult > 				insertTxnObjects;
 		set < ptDBResult > 				updateTxnObjects;
