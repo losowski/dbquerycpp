@@ -20,14 +20,16 @@ int main (int argc, char** argv)
 	//2. Connect to the database
 	dbc.connectDB();
 	//3. Build a transaction object
-	DBTransaction dbt(dbc);
+	DBTransaction dbt(&dbc);
 	//4. Create schema class
-	neuronSchema sc(dbc, dbt);
+	neuronSchema::neuronSchema sc(dbc, &dbt);
 	//5. Initialise schema class
 	sc.initialise();
 	//6. Build our objects
 	//Query the database
-	//Print out the data
+	ptbody bodypt = sc.gtbody(1);
+	// Print out the data
+	cout << "New Body ID: " << bodypt->getId() << endl;
 	cout << "Body Name: " << bodypt->name << endl;
 	//7. Modify data
 	//8. New data
@@ -35,12 +37,4 @@ int main (int argc, char** argv)
 	ptbody bodyptNew = sc.inserttbody("Earthshine");
 	//9. Commit Changes
 	dbt.saveTransaction();
-	// Get the ID
-	cout << "New Body Name: " << bodyptNew->getName() << endl;
-	// Print out the data
-	cout << "New Body ID: " << bodyptNew->getId() << endl;
-	//Fetch a new Identifier
-	ptbody bodyptNew2 = sc.gtbody(bodyptNew->getId());
-	// Make sure we got the right name
-	cout << "New Body ID: " << bodyptNew2->getName() << endl;
 }
