@@ -126,6 +126,28 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	//Return objects
 	return objects;""",
 									),
+					(None , "void", "delete{tableName}", (
+																			("{primaryKeyType}", "primaryKey"),
+																		),
+	"""//Retrieve the object
+	map{tableName}::iterator it = {tableName}Map.find(primaryKey);
+	//If found, remove from map
+	if (it != {tableName}Map.end())
+	{{
+		//Add element to the delete queue
+		mtransaction->addDeleteElement(it->second);
+	}}
+	// Else if not found - load for query
+	else if (it == {tableName}Map.end())
+	{{
+		//Load object
+		p{tableName} obj = g{tableName}(primaryKey);
+		//Delete the object
+		mtransaction->addDeleteElement(obj);
+	}}
+	//Remove element from the stored object list
+	{tableName}Map.erase(primaryKey);""",
+									),
 								)
 
 	def __init__(self, outputObject, extension):

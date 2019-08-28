@@ -230,8 +230,6 @@ void neuronSchema::deleteindividual(int primaryKey)
 	}
 	//Remove element from the stored object list
 	tindividualMap.erase(primaryKey);
-
-
 }
 
 
