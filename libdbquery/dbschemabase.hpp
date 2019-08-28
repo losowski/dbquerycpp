@@ -18,7 +18,7 @@ class DBSchemaBase
 	public:
 		pqxx::connection * getConnection(void);
 		//Prepare Initailise
-		virtual void initialise(void);
+		virtual void initialise(void) = 0;
 	protected:
 		DBTransaction *				mtransaction;
 		pqxx::connection *			mdbconnection;
