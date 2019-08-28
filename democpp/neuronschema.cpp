@@ -102,6 +102,28 @@ paptbody neuronSchema::getMultipletbody(string & sqlWhereClause)
 	return objects;
 }
 
+void neuronSchema::deletebody(int primaryKey)
+{
+	//Retrieve the object
+	maptbody::iterator it = tbodyMap.find(primaryKey);
+	//If found, remove from map
+	if (it != tbodyMap.end())
+	{
+		//Add element to the delete queue
+		mtransaction->addDeleteElement(it->second);
+	}
+	// Else if not found - load for query
+	else if (it == tbodyMap.end())
+	{
+		//Load object
+		ptbody obj = neuronSchema::gtbody(primaryKey);
+		//Delete the object
+		mtransaction->addDeleteElement(obj);
+	}
+	//Remove element from the stored object list
+	tbodyMap.erase(primaryKey);
+}
+
 ptindividual neuronSchema::gettindividual(int body_id, int id, string name)
 {
 	ptindividual obj(new tindividual(mdbconnection, body_id, id, name) );
@@ -188,6 +210,29 @@ paptindividual neuronSchema::getMultipletindividual(string & sqlWhereClause)
 	return objects;
 }
 
+void neuronSchema::deleteindividual(int primaryKey)
+{
+	//Retrieve the object
+	maptindividual::iterator it = tindividualMap.find(primaryKey);
+	//If found, remove from map
+	if (it != tindividualMap.end())
+	{
+		//Add element to the delete queue
+		mtransaction->addDeleteElement(it->second);
+	}
+	// Else if not found - load for query
+	else if (it == tindividualMap.end())
+	{
+		//Load object
+		ptindividual obj = neuronSchema::gtindividual(primaryKey);
+		//Delete the object
+		mtransaction->addDeleteElement(obj);
+	}
+	//Remove element from the stored object list
+	tindividualMap.erase(primaryKey);
+
+
+}
 
 
 }

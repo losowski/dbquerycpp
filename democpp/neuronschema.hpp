@@ -30,12 +30,14 @@ class neuronSchema : public dbquery::DBSchemaBase
 		ptbody gtbody(int primaryKey);
 		ptbody inserttbody(string name);
 		paptbody getMultipletbody(string & sqlWhereClause);
+		void deletebody(int primaryKey);
 		ptindividual gettindividual(int body_id, int id, string name);
 		ptindividual gtindividual(int primaryKey);
 		ptindividual inserttindividual(int body_id, string name);
 		paptindividual getMultipletindividual(string & sqlWhereClause);
+		void deleteindividual(int primaryKey);
 	private:
-		maptbody					tbodyMap;
+		maptbody						tbodyMap;
 		maptindividual					tindividualMap;
 };
 
