@@ -39,6 +39,7 @@ TODO List
 + If a parent object is requested we first check the lookup list (to ensure the same object is used)
 + Children can look up parent objects by foreign key
 + Add a means to make a dbresult update/delete/insert request be automatically queued
++ Try,Except handlers for failed query
 
 ---- Python TODO ----
 - Add foreign key lookup
@@ -46,7 +47,7 @@ TODO List
 - Add cache functions
 - Add transaction queue functionality
 - SELECT statement to be a static string (not an anonymous string)
-
+- Add a setup.py file
 
 ==== DONE ====
 + Add regex to parse DB inputs to make sure they are safe
