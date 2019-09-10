@@ -14,9 +14,9 @@ using namespace std;
 
 namespace dbquery {
 
-static const regex REGEX_SIGNED_INT ("^-?[:digit:]+$");
-static const regex REGEX_SIGNED_ALPHANUM ("^[:alnum:]+$");
-static const regex REGEX_SIGNED_BASIC_STRING ("^[[:alnum:]] .,]+");
+static const regex REGEX_SIGNED_INT ("-?[:digit:]+");
+static const regex REGEX_SIGNED_ALPHANUM ("[_[:alnum:]]+");
+static const regex REGEX_BASIC_STRING ("[_.,-[:alnum:][:space:]]+");
 
 class DBSafeUtils : public DBUtils
 {

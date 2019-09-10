@@ -24,7 +24,7 @@ void DBSafeUtils::safeToInt(int * integer, const pqxx::field & fieldValue)
 
 void DBSafeUtils::safeToString(string * str, const pqxx::field & fieldValue)
 {
-	checkValidInput(fieldValue.c_str(), REGEX_SIGNED_BASIC_STRING);
+	checkValidInput(fieldValue.c_str(), REGEX_BASIC_STRING);
 	toString(str, fieldValue);
 }
 
@@ -40,8 +40,8 @@ void DBSafeUtils::safeToString(string * str, const pqxx::field & fieldValue, con
  */
 void DBSafeUtils::checkValidInput(const char * input, const regex & regexExpression)
 {
-	cmatch cm; //Match Object
-	if (regex_match(input, cm, regexExpression, regex_constants::match_default) != true)
+	bool matchResult = regex_match(input, regexExpression);
+	if (matchResult != true)
 	{
 		throw DBExceptionBadData();
 	}
@@ -49,8 +49,8 @@ void DBSafeUtils::checkValidInput(const char * input, const regex & regexExpress
 
 void DBSafeUtils::checkValidInput(const string & input, const regex & regexExpression)
 {
-	smatch sm; //Match Object
-	if (regex_match(input, sm, regexExpression, regex_constants::match_default) != true)
+	bool matchResult = regex_match(input, regexExpression);
+	if (matchResult != true)
 	{
 		throw DBExceptionBadData();
 	}
