@@ -18,6 +18,10 @@ CONCEPT
 + Use a python script to parse the SQL definition file
 + Autogenerate the library
 	- Build a library of classes to handle all the processes
++ Cache results
++ Clear cache on a timer
+	+ Update "modified" time on changing value
+	+ Update "last_write" time on saving to DB
 
 
 Intention
