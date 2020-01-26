@@ -82,6 +82,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	WHERE \\
 		{primaryKey} = " + txn.quote({primaryKey}) + \\
 	";");
+	clockSavedToDB();
 	"""
 									),
 									(None ,"void", "updateRowSQL",	(
@@ -95,6 +96,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	WHERE \\
 		{primaryKey} = " + txn.quote({primaryKey}) + \\
 	";");
+	clockSavedToDB();
 """
 									),
 									(None ,"void", "insertRowSQL",	(
@@ -106,6 +108,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	{{
 		dbquery::DBSafeUtils::safeToInt(&this->{primaryKey}, res[i][0]);
 	}}
+	clockSavedToDB();
 """
 									),
 								)
@@ -120,6 +123,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 																	("{columnType}", "{columnName}"),
 																),
 	"""	{columnName} = {columnName};
+	clockModified();
 	//TODO: Need to add this to the dbTransaction class as an update
 	"""
 									),

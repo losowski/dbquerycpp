@@ -61,6 +61,7 @@ void tbody::deleteRowSQL(pqxx::work & txn)
 	WHERE \
 		id = " + txn.quote(id) + \
 	";");
+	clockSavedToDB();
 	
 }
 
@@ -74,6 +75,7 @@ void tbody::updateRowSQL(pqxx::work & txn)
 	WHERE \
 		id = " + txn.quote(id) + \
 	";");
+	clockSavedToDB();
 
 }
 
@@ -85,6 +87,7 @@ void tbody::insertRowSQL(pqxx::work & txn)
 	{
 		dbquery::DBSafeUtils::safeToInt(&this->id, res[i][0]);
 	}
+	clockSavedToDB();
 
 }
 
@@ -101,6 +104,7 @@ string tbody::getName(void )
 void tbody::setId(int id)
 {
 	id = id;
+	clockModified();
 	//TODO: Need to add this to the dbTransaction class as an update
 	
 }
@@ -108,6 +112,7 @@ void tbody::setId(int id)
 void tbody::setName(string name)
 {
 	name = name;
+	clockModified();
 	//TODO: Need to add this to the dbTransaction class as an update
 	
 }

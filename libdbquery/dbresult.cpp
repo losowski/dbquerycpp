@@ -92,5 +92,26 @@ void DBResult::insertRow(void)
 	}
 }
 
+void DBResult::clockModified(void)
+{
+	mModifiedTime = std::time(nullptr);
+}
+
+void DBResult::clockSavedToDB(void)
+{
+	mLastSavedTime = std::time(nullptr);
+}
+
+bool DBResult::isUnSaved(void)
+{
+	bool returnValue = true;
+	// If saved is bigger than modified, it was saved more recently than modified
+	// Presume there is unsaved work
+	if (mLastSavedTime > mModifiedTime)
+	{
+		returnValue = false;
+	}
+	return returnValue;
+}
 
 }

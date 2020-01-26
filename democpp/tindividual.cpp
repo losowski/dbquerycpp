@@ -64,6 +64,7 @@ void tindividual::deleteRowSQL(pqxx::work & txn)
 	WHERE \
 		id = " + txn.quote(id) + \
 	";");
+	clockSavedToDB();
 	
 }
 
@@ -78,6 +79,7 @@ void tindividual::updateRowSQL(pqxx::work & txn)
 	WHERE \
 		id = " + txn.quote(id) + \
 	";");
+	clockSavedToDB();
 
 }
 
@@ -89,6 +91,7 @@ void tindividual::insertRowSQL(pqxx::work & txn)
 	{
 		dbquery::DBSafeUtils::safeToInt(&this->id, res[i][0]);
 	}
+	clockSavedToDB();
 
 }
 
@@ -110,6 +113,7 @@ string tindividual::getName(void )
 void tindividual::setBody_Id(int body_id)
 {
 	body_id = body_id;
+	clockModified();
 	//TODO: Need to add this to the dbTransaction class as an update
 	
 }
@@ -117,6 +121,7 @@ void tindividual::setBody_Id(int body_id)
 void tindividual::setId(int id)
 {
 	id = id;
+	clockModified();
 	//TODO: Need to add this to the dbTransaction class as an update
 	
 }
@@ -124,6 +129,7 @@ void tindividual::setId(int id)
 void tindividual::setName(string name)
 {
 	name = name;
+	clockModified();
 	//TODO: Need to add this to the dbTransaction class as an update
 	
 }

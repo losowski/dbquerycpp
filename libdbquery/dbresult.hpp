@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <ctime>
 
 //Libpxx
 #include <pqxx/pqxx>
@@ -36,7 +37,14 @@ class DBResult
 		void insertRow(void);
 		virtual void insertRowSQL(pqxx::work & txn) = 0;
 	protected:
+		void clockModified(void);
+		void clockSavedToDB(void);
+		bool isUnSaved(void);
+	protected:
 		pqxx::connection *		mDBConnection;
+	private:
+		time_t					mModifiedTime;
+		time_t					mLastSavedTime;
 };
 
 typedef shared_ptr<DBResult> ptDBResult;
