@@ -120,11 +120,15 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	"""	return {columnName};"""
 									),
 									(None ,"void", "set{columnNameTitle}",	(
-																	("{columnType}", "{columnName}"),
+																	("{columnType}", "i{columnName}"),
 																),
-	"""	{columnName} = {columnName};
-	clockModified();
-	//TODO: Need to add this to the dbTransaction class as an update
+	"""
+	if ({columnName} != i{columnName})
+	{{
+		{columnName} = i{columnName};
+		clockModified();
+		//TODO: Need to add this to the dbTransaction class as an update
+	}}
 	"""
 									),
 								)

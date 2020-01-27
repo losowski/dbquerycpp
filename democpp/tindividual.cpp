@@ -112,26 +112,32 @@ string tindividual::getName(void )
 
 void tindividual::setBody_Id(int body_id)
 {
-	body_id = body_id;
-	clockModified();
-	//TODO: Need to add this to the dbTransaction class as an update
-	
+	if (this->body_id != body_id)
+	{
+		this->body_id = body_id;
+		clockModified();
+		//TODO: Need to add this to the dbTransaction class as an update
+	}
 }
 
 void tindividual::setId(int id)
 {
-	id = id;
-	clockModified();
-	//TODO: Need to add this to the dbTransaction class as an update
-	
+	if (this->id != id)
+	{
+		this->id = id;
+		clockModified();
+		//TODO: Need to add this to the dbTransaction class as an update
+	}
 }
 
 void tindividual::setName(string name)
 {
-	name = name;
-	clockModified();
-	//TODO: Need to add this to the dbTransaction class as an update
-	
+	if (this->name != name)
+	{
+		this->name = name;
+		clockModified();
+		//TODO: Need to add this to the dbTransaction class as an update
+	}
 }
 
 

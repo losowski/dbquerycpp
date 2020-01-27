@@ -50,7 +50,7 @@ void tbody::selectRowSQL(pqxx::work & txn)
 		dbquery::DBUtils::toString(&this->name, res[i]["name"]);
 
 	}
-	
+
 }
 
 void tbody::deleteRowSQL(pqxx::work & txn)
@@ -62,7 +62,7 @@ void tbody::deleteRowSQL(pqxx::work & txn)
 		id = " + txn.quote(id) + \
 	";");
 	clockSavedToDB();
-	
+
 }
 
 void tbody::updateRowSQL(pqxx::work & txn)
@@ -103,18 +103,23 @@ string tbody::getName(void )
 
 void tbody::setId(int id)
 {
-	id = id;
-	clockModified();
-	//TODO: Need to add this to the dbTransaction class as an update
-	
+	if (this->id != id)
+	{
+		this->id = id;
+		clockModified();
+		//TODO: Need to add this to the dbTransaction class as an update
+	}
 }
 
 void tbody::setName(string name)
 {
-	name = name;
-	clockModified();
-	//TODO: Need to add this to the dbTransaction class as an update
-	
+
+	if (this->name != name)
+	{
+		this->name = name;
+		clockModified();
+		//TODO: Need to add this to the dbTransaction class as an update
+	}
 }
 
 
