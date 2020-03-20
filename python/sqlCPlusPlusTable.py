@@ -117,7 +117,10 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 									(None ,"{columnType}", "get{columnNameTitle}",	(
 																	("void", ""),
 																),
-	"""	return {columnName};"""
+	"""
+	accessed();
+	return {columnName};
+	"""
 									),
 									(None ,"void", "set{columnNameTitle}",	(
 																	("{columnType}", "i{columnName}"),

@@ -5,7 +5,10 @@ using namespace std;
 namespace dbquery {
 
 DBResult::DBResult(pqxx::connection * connection):
-	mDBConnection(connection)
+	mDBConnection(connection),
+	mModifiedTime(0),
+	mLastSavedTime(0),
+	mAccessedTime(0)
 {
 }
 
@@ -94,24 +97,42 @@ void DBResult::insertRow(void)
 
 void DBResult::clockModified(void)
 {
-	mModifiedTime = std::time(nullptr);
+	mModifiedTime = clock();
 }
 
 void DBResult::clockSavedToDB(void)
 {
-	mLastSavedTime = std::time(nullptr);
+	mLastSavedTime = clock();
 }
 
 bool DBResult::isUnSaved(void)
 {
 	bool returnValue = true;
 	// If saved is bigger than modified, it was saved more recently than modified
-	// Presume there is unsaved work
-	if (mLastSavedTime > mModifiedTime)
+	// Presume there is unsaved work (i.e modified is after saved)
+	if (mLastSavedTime >= mModifiedTime)
 	{
 		returnValue = false;
 	}
 	return returnValue;
+}
+
+void DBResult::accessed(void)
+{
+	mAccessedTime = clock();
+}
+
+bool DBResult::canPurgeCache(clock_t & purgePastTime)
+{
+	bool val = false;
+	if (false == isUnSaved())
+	{
+		if (purgePastTime >= mAccessedTime)
+		{
+			val = true;
+		}
+	}
+	return val;
 }
 
 }

@@ -29,14 +29,45 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 							),
 						)
 
-	#TODO: Add a single schema function for initialising
+	#Schema function for initialising
+	# Functions:
+	#	1	-	returnValue
+	#	2	-	functionName
+	#	3	-	arguments (list: (type, name)
+	#	4	-	const (included once at top of function)
+	#	5	-	impl (templatd by class name)
 	SCHEMA_BASIC_FUNCTION_TEMPLATE	=	(
 									(None , "void", "initialise", (
 																			("void", ""),
 																		),
+	None,
 	"""\n\t{className}::initialise(mdbconnection);""",
 									),
-
+									(None , "void", "purgeCachedObjects", (
+																			("void", ""),
+																		),
+	"""\n\t// Get Current time
+	clock_t currentTime = clock() + CACHE_INTERVAL;
+	// For each map, decide on caching""",
+	"""\n\t// {className} Cache checking
+	//Create list to clear
+	list < int > {className}List;
+	// Iterate over entries
+	for (map{className}::iterator it = {className}Map.begin(); it != {className}Map.end(); it++)
+	{{{{
+		if (it->second->canPurgeCache(currentTime))
+		{{{{
+			//Add to list
+			{className}List.push_back(it->first);
+		}}}}
+	}}}}
+	// Clear through list to avoid destroying the map
+	for (list < int >::iterator delit = {className}List.begin(); delit != {className}List.end(); delit++)
+	{{{{
+		{className}Map.erase(*delit);
+	}}}}
+""",
+									),
 	)
 	# Functions:
 	#	1	-	Function for all fields (including PK)
@@ -304,9 +335,14 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			returnValue = functionDetails[1]
 			functionName = functionDetails[2]
 			arguments = functionDetails[3]
-			impl = functionDetails[4]
-			logging.debug("templatedFunctionListCPP impl\"%s\"", impl)
+			const = functionDetails[4]
+			impl = functionDetails[5]
+			# implementation string
 			implementation = str()
+			logging.debug("templatedFunctionListCPP const\"%s\"", const)
+			if (None != const):
+				implementation += const
+			logging.debug("templatedFunctionListCPP impl\"%s\"", impl)
 			for tableName, tableObj in self.outputObject.tables.iteritems():
 				logging.debug("templatedFunctionListCPP className\"%s\"", tableObj.getName())
 				implementation += impl.format(className = tableObj.getName())

@@ -25,6 +25,8 @@ class neuronSchema : public dbquery::DBSchemaBase
 	public:
 		//Prepare Initailise
 		void initialise(void);
+		//Purge Cached Objects
+		void purgeCachedObjects(void);
 		//Get single child objects
 		ptbody gettbody(int id, string name);
 		ptbody gtbody(int primaryKey);

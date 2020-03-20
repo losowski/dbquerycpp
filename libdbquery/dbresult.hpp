@@ -36,15 +36,20 @@ class DBResult
 		//INSERT
 		void insertRow(void);
 		virtual void insertRowSQL(pqxx::work & txn) = 0;
+	public:
+		//Public cache data
+		bool canPurgeCache(clock_t & purgePastTime);
 	protected:
 		void clockModified(void);
 		void clockSavedToDB(void);
 		bool isUnSaved(void);
+		void accessed(void);
 	protected:
 		pqxx::connection *		mDBConnection;
 	private:
-		time_t					mModifiedTime;
-		time_t					mLastSavedTime;
+		clock_t					mModifiedTime;
+		clock_t					mLastSavedTime;
+		clock_t					mAccessedTime;
 };
 
 typedef shared_ptr<DBResult> ptDBResult;

@@ -93,11 +93,13 @@ void tbody::insertRowSQL(pqxx::work & txn)
 
 int tbody::getId(void )
 {
+	accessed();
 	return id;
 }
 
 string tbody::getName(void )
 {
+	accessed();
 	return name;
 }
 

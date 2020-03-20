@@ -1,4 +1,5 @@
 #include "neuronschema.hpp"
+
 using namespace std;
 namespace neuronSchema
 {
@@ -232,5 +233,46 @@ void neuronSchema::deleteindividual(int primaryKey)
 	tindividualMap.erase(primaryKey);
 }
 
+//Purge Cached Objects
+void neuronSchema::purgeCachedObjects(void)
+{
+	// Get Current time
+	clock_t currentTime = clock() + CACHE_INTERVAL;
+	// For each map, decide on caching
+	// tbody Cache checking
+	//Create list to clear
+	list < int > tbodyList;
+	// Iterate over entries
+	for (maptbody::iterator it = tbodyMap.begin(); it != tbodyMap.end(); it++)
+	{
+		if (it->second->canPurgeCache(currentTime))
+		{
+			//Add to list
+			tbodyList.push_back(it->first);
+		}
+	}
+	// Clear through list to avoid destroying the map
+	for (list < int >::iterator delit = tbodyList.begin(); delit != tbodyList.end(); delit++)
+	{
+		tbodyMap.erase(*delit);
+	}
+	// tindividual Cache checking
+	//Create list to clear
+	list < int > tindividualList;
+	// Iterate over entries
+	for (maptindividual::iterator it = tindividualMap.begin(); it != tindividualMap.end(); it++)
+	{
+		if (it->second->canPurgeCache(currentTime))
+		{
+			//Add to list
+			tindividualList.push_back(it->first);
+		}
+	}
+	// Clear through list to avoid destroying the map
+	for (list < int >::iterator delit = tindividualList.begin(); delit != tindividualList.end(); delit++)
+	{
+		tindividualMap.erase(*delit);
+	}
+}
 
 }

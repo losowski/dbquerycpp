@@ -97,16 +97,19 @@ void tindividual::insertRowSQL(pqxx::work & txn)
 
 int tindividual::getBody_Id(void )
 {
+	accessed();
 	return body_id;
 }
 
 int tindividual::getId(void )
 {
+	accessed();
 	return id;
 }
 
 string tindividual::getName(void )
 {
+	accessed();
 	return name;
 }
 
