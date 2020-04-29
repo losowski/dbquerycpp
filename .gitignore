@@ -4,3 +4,10 @@
 *.o
 #Library
 *.so
+#Cpp in root
+/*.cpp
+/*.hpp
+# SQL in database
+database/*.sql
+#Makefile
+makefile

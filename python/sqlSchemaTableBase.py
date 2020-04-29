@@ -11,11 +11,13 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 
 	def __init__(self, tableName):
 		sqlSchema.SQLSchema.__init__(self, tableName.split(".")[0])
-		self.tableName = tableName.split(".")[1]
-		self.tableFullName = tableName
-		self.columns = dict()
-		self.primaryKey = ""
-		logging.info("Created table: %s", self.tableName)
+		self.logger = logging.getLogger('SQLSchemaTableBase')
+		self.tableName		= tableName.split(".")[1]
+		self.tableFullName	= tableName
+		self.columns		= dict()
+		self.primaryKey		= ""
+		self.sequenceList	= dict()
+		self.logger.debug("Created table: %s", self.tableName)
 		pass
 
 	def __del__(self):
@@ -67,7 +69,7 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 
 	#Column and type
 	def addColumn(self, columnName, columnType):
-		logging.info("Adding column: \"%s\" - \"%s\"", columnName, columnType)
+		self.logger.debug("Adding column: \"%s\" - \"%s\"", columnName, columnType)
 		#Build column object
 		columnObj = sqlSchemaTableColumn.SQLSchemaTableColumn (columnName, columnType)
 		#Add the column object
@@ -94,3 +96,13 @@ class SQLSchemaTableBase (sqlSchema.SQLSchema):
 				output = columnObject.getSequence()
 				break
 		return output
+
+
+	def addSequences(self, sequenceDict):
+		for sequence, sequenceSQL in sequenceDict.items():
+			self.logger.debug("Adding sequence= %s", sequence)
+			self.sequenceList[sequence] = sequenceSQL
+
+	def getSequences(self):
+		self.logger.debug("Current Sequence list = %s", self.sequenceList)
+		return self.sequenceList

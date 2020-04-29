@@ -11,6 +11,7 @@ import sqlSchemaOutputMakefile
 class SQLSchemaBase (sqlSchema.SQLSchema):
 	def __init__(self):
 		sqlSchema.SQLSchema.__init__(self)
+		self.logger = logging.getLogger('SQLSchemaBase')
 		self.tables = dict()	#	tableName - TableObj
 		self.hpp = None
 		self.cpp = None

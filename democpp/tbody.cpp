@@ -124,6 +124,17 @@ void tbody::setName(string name)
 	}
 }
 
+int tbody::getSequencetbody_id_seq(void)
+{
+	int nextValue = 0;
+	pqxx::work txn(*mDBConnection);
+	pqxx::result res = txn.exec("SELECT NEXTVAL('tbody_id_seq');");
+	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
+	{
+		nextValue = stoi(res[i]["nextval"].c_str());
+	}
+	return nextValue;
+}
 
 
 }

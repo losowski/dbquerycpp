@@ -31,6 +31,10 @@ int main (int argc, char** argv)
 	// Print out the data
 	cout << "New Body ID: " << bodypt->getId() << endl;
 	cout << "Body Name: " << bodypt->name << endl;
+	// Get the sequence
+	cout << "Sequence neuron_schema.tbody_id_seq: " << bodypt->getSeqBody() << endl;
+	cout << "Sequence neuron_schema.tbody_id_seq: " << bodypt->getSeqBody() << endl;
+	cout << "Sequence neuron_schema.tbody_id_seq: " << bodypt->getSeqBody() << endl;
 	//7. Modify data
 	//8. New data
 	// Perform an Insert

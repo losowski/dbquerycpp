@@ -39,6 +39,8 @@ class tindividual : public dbquery::DBResult
 		void setBody_Id(int body_id);
 		void setId(int id);
 		void setName(string name);
+		int getSequencetindividual_id_seq(void);
+
 	public:
 		int			body_id;
 		int			id;

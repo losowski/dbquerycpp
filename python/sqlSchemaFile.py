@@ -10,18 +10,21 @@ import sqlSchemaTableColumn
 
 
 class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
-
 	#SQL Non-commented line (must begin with a tab or alpha numeric
 	nonCommentedLine = re.compile('^[A-Z\t \(\)]+')
 	#Schema Definition
 	#	CREATE SCHEMA IF NOT EXISTS neuron_schema AUTHORIZATION neuron;
 	SchemaSQL = re.compile("\s?CREATE\s+SCHEMA\s+IF\s+NOT\s+EXISTS\s+(?P<schema_name>\S+)\s+.*;")
+	# SEQUENCE
+	## CREATE SEQUENCE neuron_schema.tindividual_id_seq;
+	SequenceSQL = re.compile("\s?CREATE\s+SEQUENCE\s+(?P<schema_name>\S+)\.(?P<sequence_name>\S+);")
 	#Table Field Definitions
 	TableFieldSQL = re.compile("\s?CREATE TABLE\s?(?P<table_name>\S+)\s+\((?P<field_definitions>.*)\).*;")
 	SQLArray = re.compile("ANY\s?\(.*\)")
 	#Get the column names
 	ColumnNameSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+)")
 	ColumnNameSequenceSQL = re.compile("\s+(?P<column_name>\S+)\s+(?P<column_type>\S+).*nextval\((?P<column_sequence>\S+)::")
+	#INDEX
 	#CONSTRAINTS
 	PrimaryKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<primary_key_name>\S+)\s?PRIMARY\s?KEY\s?\((?P<column_name>\S+)\)")
 	ForeignKeyConstraintSQL = re.compile("\s+CONSTRAINT\s?(?P<foreign_key_name>\S+)\s?FOREIGN\s+KEY\s+\((?P<column_name>\S+)\)\s+REFERENCES\s+(?P<referenced_table>\S+)\s+\((?P<referenced_column>\S+)\).*")
@@ -32,13 +35,13 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
 	def __init__(self, fileName):
 		sqlSchemaBase.SQLSchemaBase.__init__(self)
-		self.fileName = fileName
-		self.schemaFile = None
-		pass
+		self.logger = logging.getLogger('SQLSchemaFile')
+		self.fileName		= fileName
+		self.schemaFile		= None
+		self.sequenceNames	= dict()
 
 	def __del__(self):
 		sqlSchemaBase.SQLSchemaBase.__del__(self)
-		pass
 
 	def loadData(self):
 		# Open file
@@ -48,18 +51,18 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 
 		sqlLine = str()
 		for line in fileContents:
-			#logging.debug("Line %s", line)
+			#self.logger.debug("Line %s", line)
 			reComment = self.nonCommentedLine.match(line)
 			if (reComment != None):
 				comment = reComment.group(0)
-				logging.debug("Non-Commented Match: %s", line)
+				self.logger.debug("Non-Commented Match: %s", line)
 				#Build the SQLine
 				#	remove tabs and linefeeds, and make the terminal ; into ;# for splitting
 				sqlLine += line.replace('\t',' ').replace('\n',' ').replace(';',';#')
 		#Now Split it into SQL Statements
 		SQLStatements = sqlLine.split('#')
 		for sqlStatement in SQLStatements:
-			logging.debug("Statement: \"%s\"", sqlStatement)
+			self.logger.debug("Statement: \"%s\"", sqlStatement)
 			#Check if it really is SQL
 			self.sqlParser(sqlStatement)
 		# Close file
@@ -68,41 +71,48 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 	def sqlParser(self, sqlStatement):
 		#Check for create table lines
 		if ("CREATE TABLE" in sqlStatement):
-			#logging.info("CreateTableSQL: \"%s\"", comment)
+			#self.logger.debug("CreateTableSQL: \"%s\"", comment)
 			self.sqlParseCreateTable(sqlStatement)
 		elif ("CREATE UNIQUE INDEX" in sqlStatement):
-			#logging.info("sqlParseCreateUniqueIndex: \"%s\"", comment)
+			#self.logger.debug("sqlParseCreateUniqueIndex: \"%s\"", comment)
 			self.sqlParseCreateUniqueIndex(sqlStatement)
 		elif ("CREATE INDEX" in sqlStatement):
-			#logging.info("sqlParseCreateIndex: \"%s\"", comment)
+			#self.logger.debug("sqlParseCreateIndex: \"%s\"", comment)
 			self.sqlParseCreateIndex(sqlStatement)
+		elif ("SEQUENCE" in sqlStatement):
+			#self.logger.debug("sqlParseSequence: \"%s\"", comment)
+			self.sqlParseSequence(sqlStatement)
 		elif ("CREATE SCHEMA" in sqlStatement):
-			#logging.info("sqlParseCreateIndex: \"%s\"", comment)
+			#self.logger.debug("sqlParseCreateIndex: \"%s\"", comment)
 			self.sqlParseCreateSchema(sqlStatement)
 
 	def sqlParseCreateTable (self, sqlStatement):
-		logging.debug("CreateTable: \"%s\"\n", sqlStatement)
+		self.logger.debug("CreateTable: \"%s\"\n", sqlStatement)
 		if "PRIMARY" not in sqlStatement:
-			logging.critical("CREATE TABLE does not have a PRIMARY KEY defined: \"%s\"", sqlStatement)
+			self.logger.critical("CREATE TABLE does not have a PRIMARY KEY defined: \"%s\"", sqlStatement)
 			sys.exit(0)
 		#Get Table name
 		tableFieldMatch = self.TableFieldSQL.match(sqlStatement)
 		if (tableFieldMatch != None):
 			tableName = tableFieldMatch.group('table_name')
-			logging.debug("tableName: \"%s\"", tableName)
+			self.logger.debug("tableName: \"%s\"", tableName)
 			#Create the table object
 			tableObj = sqlSchemaTable.SQLSchemaTable(tableName)
+			# Retrieve relevant sequences
+			seq = self.getSequence(tableName)
+			logging.debug("Common Sequence: %s - %s", seq)
+			tableObj.addSequences(seq)
 			###
 			### -- Other Field Definitions --
 			###
 			tableFieldDefinitions = tableFieldMatch.group('field_definitions')
-			logging.debug("tableFieldDefinitions: \"%s\"", tableFieldDefinitions)
+			self.logger.debug("tableFieldDefinitions: \"%s\"", tableFieldDefinitions)
 			#Remove the ARRAY
 			CleanedTableFieldDefinitions = self.SQLArray.sub("", tableFieldDefinitions)
-			logging.info("tableFieldDefinitions2: \"%s\"", CleanedTableFieldDefinitions)
+			self.logger.debug("tableFieldDefinitions2: \"%s\"", CleanedTableFieldDefinitions)
 			#field_definitions split by comma
 			for fieldData in CleanedTableFieldDefinitions.split(','):
-				logging.debug("fieldData: \"%s\"", fieldData)
+				self.logger.debug("fieldData: \"%s\"", fieldData)
 				#Run the ReGex for each identity
 				primaryKeyConstraintSQLMatch = self.PrimaryKeyConstraintSQL.match(fieldData)
 				ForeignKeyConstraintSQLMatch = self.ForeignKeyConstraintSQL.match(fieldData)
@@ -110,58 +120,58 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 				columnNameSequenceMatch = self.ColumnNameSequenceSQL.match(fieldData)
 				#Primary Key
 				if (primaryKeyConstraintSQLMatch != None):
-					logging.info("Primary Key Constraint: \"%s\"", fieldData)
+					self.logger.debug("Primary Key Constraint: \"%s\"", fieldData)
 					primaryKeyName = primaryKeyConstraintSQLMatch.group('primary_key_name')
 					columnName = primaryKeyConstraintSQLMatch.group('column_name')
-					logging.info("primaryKeyConstraintSQLMatch primaryKeyName: \"%s\"", primaryKeyName)
-					logging.info("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
+					self.logger.debug("primaryKeyConstraintSQLMatch primaryKeyName: \"%s\"", primaryKeyName)
+					self.logger.debug("primaryKeyConstraintSQLMatch columnName: \"%s\"", columnName)
 					tableObj.setPrimaryKey(columnName)
 					continue
 				#Foreign Key
 				elif (ForeignKeyConstraintSQLMatch != None):
-					logging.info("Foreign Key Constraint: \"%s\"", fieldData)
+					self.logger.debug("Foreign Key Constraint: \"%s\"", fieldData)
 					foreignKeyName = ForeignKeyConstraintSQLMatch.group('foreign_key_name')
 					columnName = ForeignKeyConstraintSQLMatch.group('column_name')
 					referencedTable = ForeignKeyConstraintSQLMatch.group('referenced_table')
 					referencedColumn = ForeignKeyConstraintSQLMatch.group('referenced_column')
-					logging.info("ForeignKeyConstraintSQLMatch foreignKeyName: \"%s\"", foreignKeyName)
-					logging.info("ForeignKeyConstraintSQLMatch columnName: \"%s\"", columnName)
-					logging.info("ForeignKeyConstraintSQLMatch referencedTable: \"%s\"", referencedTable)
-					logging.info("ForeignKeyConstraintSQLMatch referencedColumn: \"%s\"", referencedColumn)
+					self.logger.debug("ForeignKeyConstraintSQLMatch foreignKeyName: \"%s\"", foreignKeyName)
+					self.logger.debug("ForeignKeyConstraintSQLMatch columnName: \"%s\"", columnName)
+					self.logger.debug("ForeignKeyConstraintSQLMatch referencedTable: \"%s\"", referencedTable)
+					self.logger.debug("ForeignKeyConstraintSQLMatch referencedColumn: \"%s\"", referencedColumn)
 					tableObj.addForeignKey(foreignKeyName, columnName, referencedTable,referencedColumn)
 					continue
 				elif (columnNameSequenceMatch != None):
-					logging.info("Field definition: \"%s\"", fieldData)
+					self.logger.debug("Field definition: \"%s\"", fieldData)
 					#Proces Data
 					columnName = columnNameSequenceMatch.group('column_name')
 					columnType = columnNameSequenceMatch.group('column_type').replace("\"","")
 					columnSequence = columnNameSequenceMatch.group('column_sequence')
-					logging.debug("columnNameSequenceMatch column_name: \"%s\"", columnName)
-					logging.debug("columnNameSequenceMatch column_type: \"%s\"", columnType)
-					logging.debug("columnNameSequenceMatch column_sequence: \"%s\"", columnSequence)
+					self.logger.debug("columnNameSequenceMatch column_name: \"%s\"", columnName)
+					self.logger.debug("columnNameSequenceMatch column_type: \"%s\"", columnType)
+					self.logger.debug("columnNameSequenceMatch column_sequence: \"%s\"", columnSequence)
 					if (columnName != 'CONSTRAINT'):
-						logging.debug("columnNameMatch column_type: \"%s\"", columnType)
+						self.logger.debug("columnNameMatch column_type: \"%s\"", columnType)
 						columnObj = tableObj.addColumn(columnName, columnType)
 						columnObj.setSequence(columnSequence)
 					else:
-						logging.warning("Skipping column_name: \"%s\"", columnName)
+						self.logger.warning("Skipping column_name: \"%s\"", columnName)
 				#Failing above, check if a simple column definition
 				# 	Matches pretty much everything!
 				elif (columnNameMatch != None):
-					logging.info("Field definition: \"%s\"", fieldData)
+					self.logger.debug("Field definition: \"%s\"", fieldData)
 					#Proces Data
 					columnName = columnNameMatch.group('column_name')
 					columnType = columnNameMatch.group('column_type').replace("\"","")
-					logging.debug("columnNameMatch column_name: \"%s\"", columnName)
-					logging.debug("columnNameMatch column_type: \"%s\"", columnType)
+					self.logger.debug("columnNameMatch column_name: \"%s\"", columnName)
+					self.logger.debug("columnNameMatch column_type: \"%s\"", columnType)
 					if (columnName != 'CONSTRAINT'):
-						logging.debug("columnNameMatch column_type: \"%s\"", columnType)
+						self.logger.debug("columnNameMatch column_type: \"%s\"", columnType)
 						tableObj.addColumn(columnName, columnType)
 					else:
-						logging.warning("Skipping column_name: \"%s\"", columnName)
+						self.logger.warning("Skipping column_name: \"%s\"", columnName)
 				else:
 					#This is Superfluous - it gets picked up in the fields regex anyway
-					logging.error("Unhandled Constraint: \"%s\"", fieldData)
+					self.logger.error("Unhandled Constraint: \"%s\"", fieldData)
 			#Store the table object
 			self.tables[tableName] = tableObj
 
@@ -175,24 +185,46 @@ class SQLSchemaFile (sqlSchemaBase.SQLSchemaBase):
 		IndexSQLMatch = self.IndexSQL.match(sqlStatement)
 		#Primary Key
 		if (IndexSQLMatch != None):
-			logging.info("Adding Indexes: \"%s\"", sqlStatement)
+			self.logger.debug("Adding Indexes: \"%s\"", sqlStatement)
 			indexType = IndexSQLMatch.group('index_type')
 			indexName = IndexSQLMatch.group('index_name')
 			indexTable = IndexSQLMatch.group('index_table')
 			indexColumn = IndexSQLMatch.group('index_column')
-			logging.info("IndexSQLMatch indexType: \"%s\"", indexType)
-			logging.info("IndexSQLMatch indexName: \"%s\"", indexName)
-			logging.info("IndexSQLMatch indexTable: \"%s\"", indexTable)
-			logging.info("IndexSQLMatch indexColumn: \"%s\"", indexColumn)
+			self.logger.debug("IndexSQLMatch indexType: \"%s\"", indexType)
+			self.logger.debug("IndexSQLMatch indexName: \"%s\"", indexName)
+			self.logger.debug("IndexSQLMatch indexTable: \"%s\"", indexTable)
+			self.logger.debug("IndexSQLMatch indexColumn: \"%s\"", indexColumn)
 			#Setup the known table with the index information
 			self.tables[indexTable].addIndex(indexName, indexColumn)
+
+	def sqlParseSequence (self, sqlStatement):
+		#	SequenceSQL = re.compile("\s?CREATE\s+SEQUENCE\s+(?P<schema_name>\S+)\.(?P<sequence_name>\S+);")
+		#	logging.debug("Sequence SQL: %s", sqlStatement)
+		SequenceSQLMatch = self.SequenceSQL.match(sqlStatement)
+		#Primary Key
+		if (SequenceSQLMatch != None):
+			self.logger.info("Adding Sequence: \"%s\"", sqlStatement)
+			schemaName = SequenceSQLMatch.group('schema_name')
+			sequenceName = SequenceSQLMatch.group('sequence_name')
+			self.sequenceNames[sequenceName] = "{schema}.{sequence}".format(schema = schemaName, sequence=sequenceName)
+
+	def getSequence(self, tableName):
+		self.logger.debug("SchemaName: %s", self.getSchemaName())
+		safeName = tableName.replace(self.getSchemaName()+".","")
+		self.logger.debug("Safe table name : \"%s\"", safeName)
+		sequenceDict = dict()
+		for seq, seqSQL in self.sequenceNames.iteritems():
+			if safeName in seq:
+				sequenceDict[seq] = seqSQL
+		self.logger.info("Found relevant sequences : \"%s\"", sequenceDict)
+		return sequenceDict
 
 	def sqlParseCreateSchema (self, sqlStatement):
 		#	SchemaSQL = re.compile("\s?CREATE\s+SCHEMA\s+IF\s+NOT\s+EXISTS\s+(?P<schema_name>\S+)\s+.*;")
 		SchemaSQLMatch = self.SchemaSQL.match(sqlStatement)
 		#Primary Key
 		if (SchemaSQLMatch != None):
-			logging.info("Getting Schema name: \"%s\"", sqlStatement)
+			self.logger.info("Getting Schema name: \"%s\"", sqlStatement)
 			schemaName = SchemaSQLMatch.group('schema_name')
-			logging.error("SchemaSQLMatch schemaName: \"%s\"", schemaName)
+			self.logger.error("SchemaSQLMatch schemaName: \"%s\"", schemaName)
 			self.setSchema(schemaName)

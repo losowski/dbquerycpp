@@ -18,6 +18,7 @@ class SQLCPlusPlusBase:
 	PUBLIC		=	"public"
 
 	def __init__(self, filename):
+		self.logger = logging.getLogger('SQLCPlusPlusBase')
 		self.fileName = filename.lower()
 		self.classVariables = dict() # dict(scope : dict(variable, type))
 		self.typedefs = list() # (knownType, customType)
@@ -79,8 +80,8 @@ class SQLCPlusPlusBase:
 	#	2)	All templateDict items should be KEYS (i.e only "key"). If you put in "{key}" it WILL BREAK
 	def functionArgs (self, parameters, templateDict = dict()):
 		ret = str()
-		logging.debug("functionArgs parameters: %s", parameters)
-		logging.debug("functionArgs templateDict: %s", templateDict)
+		self.logger.debug("functionArgs parameters: %s", parameters)
+		self.logger.debug("functionArgs templateDict: %s", templateDict)
 		ret += ", ".join ("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		return ret
 
@@ -185,21 +186,21 @@ class SQLCPlusPlusBase:
 
 	#Constructor List
 	def parameterList (self, parameterList, templateDict = dict()):
-		logging.debug("parameterList: %s", parameterList)
+		self.logger.debug("parameterList: %s", parameterList)
 		ret = ", ".join ("{name}".format(name = name.format(**templateDict)) for name in parameterList)
-		logging.debug("parameterList output: %s", ret)
+		self.logger.debug("parameterList output: %s", ret)
 		return ret
 
 
 	def constructorBuilder(self, classConstructors, templateDict):
-		logging.debug("classConstructors: %s", classConstructors)
+		self.logger.debug("classConstructors: %s", classConstructors)
 		buildObjects = list()
 		#Construct the build objects
 		for construct in classConstructors:
 			objectName = construct[0]
-			logging.debug("objectName construct: %s", objectName)
+			self.logger.debug("objectName construct: %s", objectName)
 			initArgs = construct[1]
-			logging.debug("initArgs construct: %s", initArgs)
+			self.logger.debug("initArgs construct: %s", initArgs)
 			buildObjects.append ( (objectName, initArgs) )
 		#	ret += ", ".join ("{typeof} {name}".format(name = name.format(**templateDict), typeof = typeof.format(**templateDict)) for (typeof, name,) in parameters)
 		return ",\n\t".join("{objectName} ({initArgs})".format(objectName = objectName.format(**templateDict), initArgs = self.parameterList(initArgs, templateDict) ) for (objectName, initArgs) in  buildObjects)
@@ -208,12 +209,12 @@ class SQLCPlusPlusBase:
 		val = str()
 		#Get Constructor functions
 		for constructor in constructorsTemplate:
-			logging.info("constructorsTemplate constructor: %s", constructor)
+			self.logger.debug("constructor: %s", constructor)
 			#Get Arguments for constructor
 			parameters = constructor[0]
 			constructionArgs = constructor[1]
-			logging.info("parameters: %s", parameters)
-			logging.info("constructionArgs: %s", constructionArgs)
+			self.logger.debug("parameters: %s", parameters)
+			self.logger.debug("constructionArgs: %s", constructionArgs)
 			val += self.constructorCPP(className, parameters, constructionArgs, templateDict)
 		return val
 

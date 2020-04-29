@@ -184,6 +184,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	def __init__(self, outputObject, extension):
 		filename = outputObject.getSchemaNameCPP() + extension
 		sqlCPlusPlusCommon.SQLCPlusPlusCommon.__init__(self, outputObject, filename)
+		self.logger = logging.getLogger('SQLCPlusPlusSchema')
 
 
 	def __del__(self):
@@ -197,13 +198,13 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	#Complex Data structure Builder
 	def schemaInitialiseDataStructures(self):
 		# Override this class
-		logging.error("schemaInitialiseDataStructures not overridden")
+		self.logger.error("schemaInitialiseDataStructures not overridden")
 		pass
 
 	def tableInitialiseDataStructures(self, tableName, tableObj):
 		#Table specific building
 		# Override this class
-		logging.error("tableInitialiseDataStructures not overridden")
+		self.logger.error("tableInitialiseDataStructures not overridden")
 		pass
 
 	def initialiseDataStructures(self):
@@ -236,7 +237,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		#TODO: implement this to return the list of table objects as a list
 		ret = list()
 		for columnName, columnObject in tableObject.getNonPrimaryKeyColums().iteritems():
-			logging.debug("getTableNonPKColumsFunctionArguments columnName %s", columnName)
+			self.logger.debug("getTableNonPKColumsFunctionArguments columnName %s", columnName)
 			argType = self.SQLDATATYPEMAPPING.get(columnObject.getType(), self.SQLDATATYPEDEFAULT)
 			ret.append( (argType, columnObject.getName()) )
 		return ret
@@ -284,7 +285,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				functionName = functionDetails[2]
 				args = (())
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
-				logging.debug("functionDetails Argument HPP %s", functionDetails[3][0][0])
+				self.logger.debug("functionDetails Argument HPP %s", functionDetails[3][0][0])
 				if (self.CONST_INSERTCOLUMNS == functionDetails[3][0][0]):
 					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
@@ -293,7 +294,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 					arguments = self.getTableAllColumsFunctionArguments(tableObj)
 				else:
 					arguments = functionDetails[3]
-				logging.info("Arguments %s", arguments)
+				self.logger.debug("Arguments %s", arguments)
 				#3: Build templated stuff sensibly
 				#Process the actual functions
 				val += self.classFunctionTemplateHPP(keyWord, returnValue, functionName, arguments, templateDict)
@@ -318,7 +319,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 	def getSafeTypeVariables(self, tableObject):
 		val = str()
 		for columnName, columnData in tableObject.getColumns().iteritems():
-			logging.debug("getSafeTypeVariables column: \"%s\" - \"%s\"", columnName, columnData.getType())
+			self.logger.debug("getSafeTypeVariables column: \"%s\" - \"%s\"", columnName, columnData.getType())
 			val += "\t\t{datatype} {column};\n".format(column = columnName, datatype = columnData.getCPPReferenceType())
 		return val
 
@@ -339,12 +340,12 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 			impl = functionDetails[5]
 			# implementation string
 			implementation = str()
-			logging.debug("templatedFunctionListCPP const\"%s\"", const)
+			self.logger.debug("templatedFunctionListCPP const\"%s\"", const)
 			if (None != const):
 				implementation += const
-			logging.debug("templatedFunctionListCPP impl\"%s\"", impl)
+			self.logger.debug("templatedFunctionListCPP impl\"%s\"", impl)
 			for tableName, tableObj in self.outputObject.tables.iteritems():
-				logging.debug("templatedFunctionListCPP className\"%s\"", tableObj.getName())
+				self.logger.debug("templatedFunctionListCPP className\"%s\"", tableObj.getName())
 				implementation += impl.format(className = tableObj.getName())
 			#Process the actual functions
 			val += self.classFunctionTemplateCPP(className, returnValue, functionName, arguments, implementation, templateDict)
@@ -374,7 +375,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				args = (())
 				implementation = functionDetails[4]
 				# Handle special arguments (first parameter is the CONST_TABLEVARS)
-				logging.debug("functionDetails Argument CPP %s", functionDetails[3][0][0])
+				self.logger.debug("functionDetails Argument CPP %s", functionDetails[3][0][0])
 				if (self.CONST_INSERTCOLUMNS == functionDetails[3][0][0]):
 					#Expand the arguments to the table parameters to allow insert
 					arguments = self.getTableNonPKColumsFunctionArguments(tableObj)
@@ -383,7 +384,7 @@ class SQLCPlusPlusSchema (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 					arguments = self.getTableAllColumsFunctionArguments(tableObj)
 				else:
 					arguments = functionDetails[3]
-				logging.info("Arguments %s", arguments)
+				self.logger.debug("Arguments %s", arguments)
 				#3: Build templated stuff sensibly
 				#Process the actual functions
 				val += self.classFunctionTemplateCPP(className, returnValue, functionName, arguments, implementation, templateDict)

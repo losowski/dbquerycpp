@@ -5,8 +5,10 @@ import logging
 
 class SQLSchema:
 	def __init__(self, schemaName = "public"):
-		self.schemaNameSQL = self.__generateSchemaNameSQL(schemaName)
-		self.schemaNameCPP = self.__generateSchemaNameCPP(schemaName)
+		self.logger = logging.getLogger('SQLSchema')
+		self.schemaName		=	schemaName
+		self.schemaNameSQL	= self.__generateSchemaNameSQL(schemaName)
+		self.schemaNameCPP	= self.__generateSchemaNameCPP(schemaName)
 
 	def __del__(self):
 		pass
@@ -21,6 +23,9 @@ class SQLSchema:
 		schemaName += ''.join( word.title() for word in schema.split("_")[1:])
 		return schemaName
 
+	def getSchemaName(self):
+		return self.schemaName
+
 	def getSchemaNameCPP(self):
 		return self.schemaNameCPP
 
@@ -28,6 +33,6 @@ class SQLSchema:
 		return self.schemaNameSQL
 
 	def setSchema(self, schemaName):
-		self.schemaNameSQL = self.__generateSchemaNameSQL(schemaName)
-		self.schemaNameCPP = self.__generateSchemaNameCPP(schemaName)
-
+		self.schemaName		=	schemaName
+		self.schemaNameSQL	=	self.__generateSchemaNameSQL(schemaName)
+		self.schemaNameCPP	=	self.__generateSchemaNameCPP(schemaName)

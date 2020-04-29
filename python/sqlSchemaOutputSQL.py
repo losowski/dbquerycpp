@@ -8,6 +8,7 @@ import outputTemplate
 class sqlSchemaOutputSQL (outputTemplate.OutputTemplate):
 	def __init__(self, outputObject):
 		outputTemplate.OutputTemplate.__init__(self, "procedures.sql" , "database/"+outputObject.tableName+"_procedures.sql")
+		self.logger = logging.getLogger('sqlSchemaOutputSQL')
 		self.outputObject = outputObject
 		self.schemaName = self.outputObject.getSchemaNameSQL()
 		self.tableName = self.outputObject.tableName.lower()
@@ -21,9 +22,9 @@ class sqlSchemaOutputSQL (outputTemplate.OutputTemplate):
 		for columnName, columnData in self.outputObject.getColumns().iteritems():
 			if columnName != self.outputObject.getPrimaryKey():
 				self.nonPKColumns.append(columnName)
-				logging.debug("ColumnCheck \"%s\"", columnName)
+				self.logger.debug("ColumnCheck \"%s\"", columnName)
 			else:
-				logging.debug("ColumnCheck PK \"%s\"", columnName)
+				self.logger.debug("ColumnCheck PK \"%s\"", columnName)
 
 
 	#Functions to populate the data

@@ -6,13 +6,14 @@ import logging
 class SQLSchemaTableColumnBase:
 
 	def __init__(self, columnName, columnType):
+		self.logger = logging.getLogger('SQLSchemaTableColumnBase')
 		self.columnName = columnName
 		self.columnType = columnType
 		self.sequenceName = None
 		self.primaryKey	=	False
 		self.referencedTable = None
 		self.referencedColumn = None
-		logging.info("Created Column: %s  (%s)", self.columnName, self.columnType)
+		self.logger.debug("Created Column: %s  (%s)", self.columnName, self.columnType)
 
 	def __del__(self):
 		pass

@@ -1,15 +1,23 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 '''
 Autogenerator script to read and build the CPP module
 '''
 #import
 import logging
+import time
+import datetime
+
 from python import sqlSchemaFile
 #import signal
 
 def main():
 	print ("Autogenerator for DataBase CPP v0.01")
-	logging.basicConfig(format='%(asctime)s\t%(name)-16s\t%(funcName)-16s\t[%(levelname)-8s] %(message)s', filename='/tmp/buildDBcpp.log',level=logging.DEBUG)
+	#Build a datetime object with Current time
+	dt = datetime.datetime.now()
+	#Make the logging file
+	loggingfile = "/tmp/buildDBcpp_{timestamp}.log".format(timestamp = dt.now().isoformat())
+	#Setup logging
+	logging.basicConfig(format='%(asctime)s\t%(name)-24s\t%(funcName)-24s\t[%(levelname)-8s] %(message)s', filename=loggingfile,level=logging.INFO)
 	sqlSchema = sqlSchemaFile.SQLSchemaFile('database.sql')
 	sqlSchema.loadData()
 	sqlSchema.initialise()

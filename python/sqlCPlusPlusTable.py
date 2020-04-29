@@ -145,6 +145,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 
 	def __init__(self, outputObject, filename):
 		sqlCPlusPlusCommon.SQLCPlusPlusCommon.__init__(self, outputObject, filename)
+		self.logger = logging.getLogger('SQLCPlusPlusTable')
 		self.dataDict = None
 
 
@@ -202,10 +203,10 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		columnDictionary = None
 		if (True == usePrimaryKey):
 			columnDictionary = self.outputObject.getNonPrimaryKeyColums()
-			logging.debug("tableConstructorHPP columnDictionary use PK: %s", columnDictionary)
+			self.logger.debug("tableConstructorHPP columnDictionary use PK: %s", columnDictionary)
 		else:
 			columnDictionary = self.outputObject.getColumns()
-			logging.debug("tableConstructorHPP columnDictionary non PK: %s", columnDictionary)
+			self.logger.debug("tableConstructorHPP columnDictionary non PK: %s", columnDictionary)
 		#Add in the table columns
 		for columnName, columnObj in columnDictionary.iteritems():
 			#TODO: Move this SQL->CPP type conversion into a different place (i.e in columns)
@@ -243,6 +244,7 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		#Functions
 		ret += self.functionListHPP(self.TABLE_FUNCTION_TEMPLATES)
 		ret += self.templatedColumnFunctionHPP(self.COLUMN_FUNCTION_TEMPLATES)
+		ret += self.sequenceFunctionsHPP()
 		#Variables
 		##TODO: Remove this and use the generic classScopeVariableHPP instead (with type swaps upfront)
 		ret += self.classVariableListHPP()
@@ -340,6 +342,63 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 				val += self.classFunctionTemplateCPP(className = className, ret = functionDetails[1], functionName = functionDetails[2], arguments = functionDetails[3], implementation = functionDetails[4], templateDict = templateDict )
 		return val
 
+	#Sequence Functions
+	SEQUENCE_FUNCTIONS = (
+		("", "int", "getSeq{sequenceTitle}",	(
+																		("", "void"),
+																	),
+		"""
+	int nextValue = 0;
+	pqxx::work txn(*mDBConnection);
+	pqxx::result res = txn.exec("SELECT NEXTVAL('{sequenceName}');");
+	for (pqxx::result::size_type i = 0; i != res.size(); ++i)
+	{{
+		nextValue = stoi(res[i]["nextval"].c_str());
+	}}
+	return nextValue;
+		"""
+		),
+	)
+	def sequenceFunctionsHPP(self):
+		val = str()
+		self.logger.debug("Adding sequence functions: %s", self.outputObject.getSequences())
+		for seq, seqSQL in self.outputObject.getSequences().items():
+			self.logger.debug("Adding sequence: %s", seq)
+			#Replace with the templated functions
+			templateDict =	{
+				'sequenceTitle'		:	self.formatName(seq),
+				'sequenceName'		:	seqSQL,
+			}
+			for functionDetails in self.SEQUENCE_FUNCTIONS:
+				keyWord = functionDetails[0]
+				returnValue = functionDetails[1]
+				functionName = functionDetails[2]
+				arguments = functionDetails[3]
+			#Use template function
+			val += self.classFunctionTemplateHPP(keyWord, returnValue, functionName, arguments, templateDict)
+		return val
+
+	def sequenceFunctionsCPP(self, className):
+		#TODO: add a header function
+		val = str()
+		self.logger.debug("Adding sequence functions: %s", self.outputObject.getSequences())
+		for seq, seqSQL in self.outputObject.getSequences().items():
+			self.logger.debug("Adding sequence: %s", seq)
+						#Replace with the templated functions
+			templateDict =	{
+				'sequenceTitle'		:	self.formatName(seq),
+				'sequenceName'		:	seqSQL,
+			}
+			for functionDetails in self.SEQUENCE_FUNCTIONS:
+			#keyWord = functionDetails[0] # UNUSED
+				returnValue = functionDetails[1]
+				functionName = functionDetails[2]
+				arguments = functionDetails[3]
+				implementation = functionDetails[4]
+				#Use template function
+				val += self.classFunctionTemplateCPP(className, returnValue, functionName, arguments, implementation, templateDict)
+		return val
+
 
 	# 	Class CPP: functions : (scope, name, argument(s))
 	def buildTableClassCPP(self, className):
@@ -352,4 +411,5 @@ class SQLCPlusPlusTable (sqlCPlusPlusCommon.SQLCPlusPlusCommon):
 		# Make Function implementations
 		ret += self.templatedNamedFunctionCPP(className, self.TABLE_FUNCTION_TEMPLATES)
 		ret += self.templatedColumnFunctionCPP(className, self.COLUMN_FUNCTION_TEMPLATES)
+		ret += self.sequenceFunctionsCPP(className)
 		return ret

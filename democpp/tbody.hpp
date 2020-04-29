@@ -37,6 +37,7 @@ class tbody : public dbquery::DBResult
 		string getName(void );
 		void setId(int id);
 		void setName(string name);
+		int getSequencetbody_id_seq(void);
 	public:
 		int			id;
 		string			name;

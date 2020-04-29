@@ -55,7 +55,7 @@ LOCAL_MAN_DIR=$(LOCAL_MAN_BASE_PREFIX)/man$(MAN_EXT)
 #Compiler (gcc or g++)
 CC ?= g++
 
-TARGET_FLAG = -shared -fPIC -std=c++11
+TARGET_FLAG = -shared -fPIC -std=c++17
 #Compiler options (i.e. pedantic etc -g = adds debugging)
 COMPILER_OPTIONS = -g -Wall
 
